@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche PubMed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styles for table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .no-results {
+            background-color: #e0e0e0;
+        }
+
+        /* Styles for popin */
+        .popin {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .popin-content {
+            width: 80%;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        img.logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <img src="/public/Pubmatcher.png" alt="Pubmatcher" class="logo">
+    <h1>Recherche PubMed</h1>
+    <p style="text-align: center;">Saisie alternative de gènes:</p>
+    <button id="seqOneBtn" style="display: block; margin: 0 auto 20px auto; background-color: #90EE90;">Input SeqOne</button>
+    <div class="popin" id="seqOnePopin">
+        <div class="popin-content">
+            <h2>Entrez votre texte SeqOne</h2>
+            <textarea id="seqOneInput" rows="10" style="width: 100%;"></textarea>
+            <button id="seqOneSubmit">Valider</button>
+        </div>
+    </div>
+    <form action="/search" method="post" id="searchForm">
+        <label for="genes">Gènes:</label>
+        <input type="text" name="genes" id="genesInput" placeholder="Entrez un ou plusieurs gènes séparés par des virgules">
+        <label for="phenotypes">Phénotypes:</label>
+        <input type="text" name="phenotypes" placeholder="Entrez un ou plusieurs phénotypes séparés par des virgules">
+        <button type="submit">Rechercher</button>
+    </form>
+    <h2 style="text-align: center;">Résultats:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Gène</th>
+                <th>Titre du premier article</th>
+                <th>Nombre d'articles</th>
+                <th>Lien</th>
+                <th>Fonction</th>
+                <th>Phénotype Souris KO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% results.forEach(result => { %>
+                <tr <%= result.title === "Pas de résultats" ? 'class="no-results"' : '' %>>
+                    <td><%= result.gene %></td>
+                    <td><%= result.title %></td>
+                    <td><%= result.count %></td>
+                    <td><a href="<%= result.url %>" target="_blank">Lien</a></td>
+                    <td><%= result.function %></td>
+                    <td><%= result.mousePhenotype %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <script>
+        const seqOneBtn = document.getElementById('seqOneBtn');
+        const seqOnePopin = document.getElementById('seqOnePopin');
+        const seqOneInput = document.getElementById('seqOneInput');
+        const seqOneSubmit = document.getElementById('seqOneSubmit');
+        const genesInput = document.getElementById('genesInput');
+        const searchForm = document.getElementById('searchForm');
+
+        seqOneBtn.addEventListener('click', () => {
+            seqOnePopin.style.display = 'block';
+        });
+
+        seqOneSubmit.addEventListener('click', () => {
+            const text = seqOneInput.value;
+            const lines = text.split('\n');
+            let genes = [];
+
+            if (lines.some(line => line.startsWith('New') || /^[1-5]$/.test(line.trim()))) {
+                // Search for the gene in the SeqOne input
+                lines.forEach((line, index) => {
+                    if (line.startsWith('New') && lines[index + 1]) {
+                        genes.push(lines[index + 1].split('\t')[0]);
+                    }
+                });
+            } 
+            genesInput.value = genes.join(', ');
+            seqOnePopin.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

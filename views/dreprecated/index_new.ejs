@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+...
+<!-- Keeping the rest of the file as it is until the script tag -->
+
+<script>
+    const seqOneBtn = document.getElementById('seqOneBtn');
+    const seqOnePopin = document.getElementById('seqOnePopin');
+    const seqOneInput = document.getElementById('seqOneInput');
+    const seqOneSubmit = document.getElementById('seqOneSubmit');
+    const genesInput = document.getElementById('genesInput');
+    const searchForm = document.getElementById('searchForm');
+
+    seqOneBtn.addEventListener('click', () => {
+        seqOnePopin.style.display = 'block';
+    });
+
+    seqOneSubmit.addEventListener('click', () => {
+        const text = seqOneInput.value;
+        const lines = text.split('\n');
+        let genes = [];
+
+        if (lines.some(line => line.startsWith('New') || /^[1-5]$/.test(line.trim()))) {
+            // Handle the new type of SeqOne input
+            lines.forEach((line, index) => {
+                if (line.startsWith('New') && lines[index + 1]) {
+                    genes.push(lines[index + 1].split('\t')[0]);
+                }
+            });
+        } else {
+            // Handle the original type of SeqOne input
+            genes = lines.map(line => {
+                const parts = line.split('\t');
+                if (parts.length > 1 && parts[1].startsWith('ENST')) {
+                    return parts[0];
+                }
+                return null;
+            }).filter(gene => gene !== null);
+        }
+
+        genesInput.value = genes.join(', ');
+        seqOnePopin.style.display = 'none';
+    });
+</script>
+</body>
+</html>

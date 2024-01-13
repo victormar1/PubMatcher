@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PubMatcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+            font-size: 32px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px 40px 20px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+    
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styles for table */
+        table {
+            border-collapse: collapse;
+            width: 98%;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        table, th, td {
+            border: 2px solid #ddd;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .popin {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .popin-content {
+            width: 80%;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        img.logo {
+            display: block;
+            margin: 30px auto 10px;
+            max-width: 300px;
+        }
+
+        footer {
+            text-align: center;
+            line-height: calc(1em + 5px);
+            padding: 20px 0;
+            font-size: 12px;
+            color: #666;
+            margin-top: 40px;
+        }
+       
+
+    </style>
+</head>
+<body>
+    <img src="/public/Pubmatcher.png" alt="Pubmatcher" class="logo">
+    <h1>PubMatcher</h1>
+    <div class="popin" id="seqOnePopin">
+        <div class="popin-content">
+            <h2>Enter your SeqOne Input</h2>
+            <textarea id="seqOneInput" rows="10" style="width: 100%;" placeholder="Enter the gene listing available on SeqOne"></textarea>
+            <button id="seqOneSubmit">Enter</button>
+        </div>
+    </div>
+    <form action="/search" method="post" id="searchForm">
+        <label for="genes">Genes:</label>
+        <input type="text" name="genes" id="genesInput" placeholder="Enter one or more genes separated by commas">
+        <label for="phenotypes">Phenotypes:</label>
+        <input type="text" name="phenotypes" placeholder="Enter one or more phenotypes separated by commas">
+        <button type="submit">Search</button>
+    </form>
+    <h1 style="font-size: 20px; margin-top: 30px; text-align: center;">Alternative gene input</h1>
+    <button id="seqOneBtn" style="display: block; margin: 1% auto; background-color: #7ecf7e;">Input SeqOne</button>
+   
+    <% if (results && results.length > 0) {  %>
+    <h2 style="text-align: center; margin-top: 40px;">Phenotypes :</h2>
+    <p style="text-align: center; font-weight: bold; margin-bottom: 20px;"><%= phenotypes || 'No phenotype.' %></p>
+    <h2 style="text-align: center; margin-top: 40px;">Results:</h2>
+    
+
+    
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Gene</th>
+                <th>Title of first publication</th>
+                <th>Number of publications</th>
+                <th>Link</th>
+                <th>Function <i><b>(String-DB)</i></b> </th>
+                <th>Mouse KO Phenotype <i>(IMPC)</i></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% results.forEach(result => { %>
+                <tr>
+                    <td><%= result.gene %></td>
+                    <td><%= result.title %></td>
+                    <td><%= result.count %></td>
+                    <td><a href="<%= result.url %>" target="_blank">Link</a></td>
+                    <td><%= result.function %></td>
+                    <td><%= result.mousePhenotype %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <% } %>
+
+        <footer>
+            Developed by Victor Marin, Bordeaux University Hospital<br>
+            With the participation of Louis Lebreton and Victor Dumont
+            <img src="/public/logoCHU.jpg" alt="LogoCHU" class="logo" style="margin:0.5% auto 10px; max-width: 8%;" >
+        </footer>
+
+
+    <script>
+        const seqOneBtn = document.getElementById('seqOneBtn');
+        const seqOnePopin = document.getElementById('seqOnePopin');
+        const seqOneInput = document.getElementById('seqOneInput');
+        const seqOneSubmit = document.getElementById('seqOneSubmit');
+        const genesInput = document.getElementById('genesInput');
+        const searchForm = document.getElementById('searchForm');
+
+        seqOneBtn.addEventListener('click', () => {
+            seqOnePopin.style.display = 'block';
+        });
+
+        seqOneSubmit.addEventListener('click', () => {
+            const text = seqOneInput.value;
+            const lines = text.split('\n');
+            let genes = [];
+
+            if (lines.some(line => line.startsWith('New') || /^[1-5]$/.test(line.trim()))) {
+                // Search for the gene in the SeqOne input
+                lines.forEach((line, index) => {
+                    if (line.startsWith('New') && lines[index + 1]) {
+                        genes.push(lines[index + 1].split('\t')[0]);
+                    }
+                });
+            } 
+            genesInput.value = genes.join(', ');
+            seqOnePopin.style.display = 'none';
+        });
+    </script>
+        <script>
+            // ... (scripts pour seqOneBtn et autres) ...
+            
+            // Si des résultats existent, défilez vers le tableau
+            if (document.getElementById('resultsTable')) {
+                document.getElementById("resultsTable").scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
+</body>
+</html>
