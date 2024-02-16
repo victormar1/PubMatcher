@@ -149,8 +149,9 @@
                 <th>Title of first publication</th>
                 <th>Number of publications</th>
                 <th>Link</th>
-                <th>Function <i><b>(String-DB)</i></b> </th>
+                <th>Function <i><b>(Uniprot)</i></b> </th>
                 <th>Mouse KO Phenotype <i>(IMPC)</i></th>
+                <th>PanelApp </th>
             </tr>
         </thead>
         <tbody>
@@ -162,6 +163,7 @@
                     <td><a href="<%= result.url %>" target="_blank">Link</a></td>
                     <td><%= result.function %></td>
                     <td><%= result.mousePhenotype %></td>
+                    <td><a href="https://panelapp.genomicsengland.co.uk/panels/entities/<%= result.gene %>" target="_blank"><%= result.panelApp %></a></td>
                 </tr>
             <% }) %>
         </tbody>
