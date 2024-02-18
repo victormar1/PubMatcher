@@ -14,7 +14,7 @@ const { get } = require('http');
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
-
+app.use(bodyParser.json())
 
 // Load the databases into memory
 const mouseDBPath = path.join(__dirname, 'BDD', 'Mouse.xlsx');
@@ -159,4 +159,28 @@ const httpsServer = https.createServer(credentials, app);
 const PORT = 443;
 httpsServer.listen(PORT, () => {
     console.log(`Server is running on https://localhost:${PORT}`);
+});
+
+let genesList = []; // Pour stocker les gènes du fichier CSV
+
+// Fonction pour lire et stocker les gènes du fichier CSV
+function loadGenesFromFile(filePath) {
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => {
+        genesList.push(row.geneName); 
+      })
+      .on('end', () => {
+        console.log('CSV file successfully processed');
+      });
+}
+
+// Appel de la fonction pour charger les gènes
+loadGenesFromFile('/BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
+
+// Route pour traiter le texte libre et extraire les gènes
+app.post('/extract-genes', (req, res) => {
+    const text = req.body.text;
+    const foundGenes = genesList.filter(gene => text.includes(gene));
+    res.json({ genes: foundGenes });
 });

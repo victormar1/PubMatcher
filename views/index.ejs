@@ -133,7 +133,9 @@
         <button type="submit">Search</button>
     </form>
     <h1 style="font-size: 20px; margin-top: 30px; text-align: center;">Alternative gene input</h1>
-    <button id="seqOneBtn" style="display: block; margin: 1% auto; background-color: #7ecf7e;">Input SeqOne</button>
+    
+<button id="textFreeInputBtn" style="display: block; margin: 1% auto; background-color: #4d90fe;">Input Batch libre (WIP)</button>
+<button id="seqOneBtn" style="display: block; margin: 1% auto; background-color: #7ecf7e;">Input SeqOne</button>
    
     <% if (results && results.length > 0) {  %>
     <h2 style="text-align: center; margin-top: 40px;">Phenotypes :</h2>
@@ -177,7 +179,32 @@
         </footer>
 
 
-    <script>
+    
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    fetch('/extract-genes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('genesInput').value = data.genes.join(', ');
+        document.getElementById('textFreePopin').style.display = 'none';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+</script>
+<script>
         const seqOneBtn = document.getElementById('seqOneBtn');
         const seqOnePopin = document.getElementById('seqOnePopin');
         const seqOneInput = document.getElementById('seqOneInput');
@@ -206,7 +233,32 @@
             seqOnePopin.style.display = 'none';
         });
     </script>
-        <script>
+        
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    fetch('/extract-genes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('genesInput').value = data.genes.join(', ');
+        document.getElementById('textFreePopin').style.display = 'none';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+</script>
+<script>
             // ... (scripts pour seqOneBtn et autres) ...
             
             // Si des résultats existent, défilez vers le tableau
@@ -216,3 +268,50 @@
         </script>
 </body>
 </html>
+
+<div class="popin" id="textFreePopin">
+    <div class="popin-content">
+        <h2>Enter your Text</h2>
+        <textarea id="textFreeInput" rows="10" style="width: 100%;" placeholder="Enter your text here"></textarea>
+        <button id="textFreeSubmit">Enter</button>
+    </div>
+</div>
+
+
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    fetch('/extract-genes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('genesInput').value = data.genes.join(', ');
+        document.getElementById('textFreePopin').style.display = 'none';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+</script>
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    // Exemple de récupération des gènes. Cela devra être adapté avec la logique côté serveur.
+    let genesFound = text.split(' '); // Cette ligne est un placeholder. Utilisez la logique d'extraction appropriée.
+    document.getElementById('genesInput').value = genesFound.join(', ');
+    document.getElementById('textFreePopin').style.display = 'none';
+});
+</script>
