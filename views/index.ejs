@@ -144,7 +144,7 @@
     </form>
     <h1 style="font-size: 20px; margin-top: 30px; text-align: center;">Alternative gene input</h1>
     
-<button id="textFreeInputBtn" style="display: block; margin: 1% auto; background-color: #4d90fe;">Input Batch libre (WIP)</button>
+<button id="textFreeInputBtn" style="display: block; margin: 1% auto; background-color: #4dfeba;">Batch Input</button>
 <button id="seqOneBtn" style="display: none; margin: 1% auto; background-color: #7ecf7e;">Input SeqOne</button>
    
     <% if (results && results.length > 0) {  %>
@@ -281,8 +281,8 @@ document.getElementById('textFreeSubmit').addEventListener('click', () => {
 
 <div class="popin" id="textFreePopin">
     <div class="popin-content">
-        <h2>Paste your input containing gene(s) name(s)</h2>
-        <textarea id="textFreeInput" rows="10" style="width: 100%;" placeholder="Enter your text here"></textarea>
+        <h2>Batch input</h2>
+        <textarea id="textFreeInput" rows="10" style="width: 100%;" placeholder="Paste your raw input containing gene(s) name(s)"></textarea>
         <button id="textFreeSubmit">Enter</button>
     </div>
 </div>
