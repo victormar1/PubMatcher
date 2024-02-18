@@ -19,6 +19,15 @@
             font-size: 32px;
         }
 
+        .description {
+        text-align: center;
+        font-size: 17px; /* Taille de la police */
+        color: #555; /* Couleur du texte */
+        margin: 20px auto; /* Marge pour centrer et donner de l'espace autour du texte */
+        max-width: 80%; /* Max largeur pour une meilleure lisibilité sur de grands écrans */
+        line-height: 1.6; /* Espacement entre les lignes */
+    }
+
         form {
             width: 100%;
             max-width: 600px;
@@ -118,7 +127,7 @@
 <body>
     <img src="/public/Pubmatcher.png" alt="Pubmatcher" class="logo">
     <h1>PubMatcher</h1>
-    <p>A tool designed to facilitate the matching of multiple genes and phenotypes with relevant publications and data.</p>
+    <p class="description">A tool designed to facilitate the matching of multiple genes and phenotypes with relevant publications and data.</p>
     <div class="popin" id="seqOnePopin">
         <div class="popin-content">
             <h2>Enter your SeqOne Input</h2>
