@@ -176,13 +176,22 @@ function loadGenesFromFile(filePath) {
 }
 
 // Appel de la fonction pour charger les gènes
-loadGenesFromFile('*/BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
+loadGenesFromFile('./BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
 
 // Route pour traiter le texte libre et extraire les gènes
 app.post('/extract-genes', (req, res) => {
     const text = req.body.text;
-    // Diviser le texte en mots en utilisant un séparateur standard (espaces, virgules, points, etc.)
+    // Diviser le texte en mots en utilisant un séparateur standard.
     const words = text.split(/\W+/); // Cette regex divise par tout ce qui n'est pas un mot.
-    const foundGenes = genesList.filter(gene => words.includes(gene)); // Comparaison exacte
+    
+    let foundGenes = [];
+    // Parcourir chaque mot du texte
+    words.forEach(word => {
+        // Vérifier si le mot correspond exactement à un gène dans la liste
+        if (genesList.includes(word)) {
+            foundGenes.push(word); // Ajouter le gène à la liste s'il correspond
+        }
+    });
+
     res.json({ genes: foundGenes });
 });
