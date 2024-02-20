@@ -181,6 +181,8 @@ loadGenesFromFile('/BDD/genes.csv'); // Remplacez par le chemin correct de votre
 // Route pour traiter le texte libre et extraire les gènes
 app.post('/extract-genes', (req, res) => {
     const text = req.body.text;
-    const foundGenes = genesList.filter(gene => text.includes(gene));
+    // Diviser le texte en mots en utilisant un séparateur standard (espaces, virgules, points, etc.)
+    const words = text.split(/\W+/); // Cette regex divise par tout ce qui n'est pas un mot.
+    const foundGenes = genesList.filter(gene => words.includes(gene)); // Comparaison exacte
     res.json({ genes: foundGenes });
 });
