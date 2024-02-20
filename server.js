@@ -176,7 +176,7 @@ function loadGenesFromFile(filePath) {
 }
 
 // Appel de la fonction pour charger les gènes
-loadGenesFromFile('/BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
+loadGenesFromFile('*/BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
 
 // Route pour traiter le texte libre et extraire les gènes
 app.post('/extract-genes', (req, res) => {
