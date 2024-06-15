@@ -1,4 +1,3 @@
-
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
@@ -82,24 +81,27 @@ async function getData(req) {
 
 
             //Version Get Uniprot
-
             const responseuniprot = await axios.get(uniprotapi);
             let proteinMatch = "";
             if (responseuniprot.status === 200) {
-                await responseuniprot.data.some(function (element){
-                    if(element.comments){
-                        const comments = element.comments
+                await responseuniprot.data.some(function (element) {
+                    if (element.comments) {
+                        const comments = element.comments;
                         const finded = comments.some(function(comment) {
                             if (comment.type === 'FUNCTION') {
                                 proteinMatch = comment.text[0].value;
                                 return true;
                             }
-                        })
-                        if (finded) return true
+                        });
+                        if (finded) return true;
                     }
-                }); 
+                });
             }
 
+            // Truncate the function text to 800 characters and add " [...]" if longer
+            if (proteinMatch.length > 800) {
+                proteinMatch = proteinMatch.substring(0, 800) + " [...]";
+            }
            
             // Version DB Excel en
             //const proteinMatch = proteinData.find(row => row.Gene === gene);
@@ -133,11 +135,18 @@ async function getData(req) {
     // Récupération des données PanelApp pour chaque gène
     for (let i = 0; i < results.length; i++) {
         try {
-            const panelAppResponse = await axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${results[i].gene}&format=json`);
-            results[i].panelApp = panelAppResponse.data.count;
+            const panelAppEnglandResponse = await axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${results[i].gene}&format=json`);
+            const panelAppAustraliaResponse = await axios.get(`https://panelapp.agha.umccr.org/api/v1/genes/?entity_name=${results[i].gene}&format=json`);
+            
+            const panelAppEnglandCount = panelAppEnglandResponse.data.count;
+            const panelAppAustraliaCount = panelAppAustraliaResponse.data.count;
+            
+            results[i].panelAppEnglandCount = panelAppEnglandCount;
+            results[i].panelAppAustraliaCount = panelAppAustraliaCount;
         } catch (error) {
             console.error(`Error fetching PanelApp data for gene ${results[i].gene}: `, error);
-            results[i].panelApp = 'Error';
+            results[i].panelAppEnglandCount = 'Error';
+            results[i].panelAppAustraliaCount = 'Error';
         }
     }
 
@@ -161,6 +170,7 @@ httpsServer.listen(PORT, () => {
     console.log(`Server is running on https://localhost:${PORT}`);
 });
 
+
 let genesList = []; // Pour stocker les gènes du fichier CSV
 
 // Fonction pour lire et stocker les gènes du fichier CSV
@@ -168,7 +178,7 @@ function loadGenesFromFile(filePath) {
     fs.createReadStream(filePath)
       .pipe(csv())
       .on('data', (row) => {
-        genesList.push(row.geneName); 
+        genesList.push(row.geneName); // Assurez-vous que 'geneName' correspond à la clé de votre fichier CSV
       })
       .on('end', () => {
         console.log('CSV file successfully processed');
@@ -176,22 +186,11 @@ function loadGenesFromFile(filePath) {
 }
 
 // Appel de la fonction pour charger les gènes
-loadGenesFromFile('./BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
+loadGenesFromFile('C:/Users/Victor/Desktop/Pyton/Pubmatcher/WEB/pubmed_search/Pubmatcher_Local/BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
 
 // Route pour traiter le texte libre et extraire les gènes
 app.post('/extract-genes', (req, res) => {
     const text = req.body.text;
-    // Diviser le texte en mots en utilisant un séparateur standard.
-    const words = text.split(/\W+/); // Cette regex divise par tout ce qui n'est pas un mot.
-    
-    let foundGenes = [];
-    // Parcourir chaque mot du texte
-    words.forEach(word => {
-        // Vérifier si le mot correspond exactement à un gène dans la liste
-        if (genesList.includes(word)) {
-            foundGenes.push(word); // Ajouter le gène à la liste s'il correspond
-        }
-    });
-
+    const foundGenes = genesList.filter(gene => text.includes(gene));
     res.json({ genes: foundGenes });
 });

@@ -20,12 +20,16 @@
         }
 
         .description {
-        text-align: center;
-        font-size: 17px; /* Taille de la police */
-        color: #555; /* Couleur du texte */
-        margin: 20px auto; /* Marge pour centrer et donner de l'espace autour du texte */
-        max-width: 80%; /* Max largeur pour une meilleure lisibilité sur de grands écrans */
-        line-height: 1.6; /* Espacement entre les lignes */
+            text-align: center;
+            font-size: 17px; 
+            color: #555; 
+            margin: 20px auto; 
+            max-width: 80%; 
+            line-height: 1.6; 
+        }
+
+        .no-result-row {
+        background-color: rgb(190, 183, 183);
     }
 
         form {
@@ -56,7 +60,6 @@
         button {
             padding: 10px 20px;
             margin: 5px;
-    
             background-color: #007BFF;
             border: none;
             border-radius: 4px;
@@ -69,7 +72,6 @@
             background-color: #0056b3;
         }
 
-        /* Styles for table */
         table {
             border-collapse: collapse;
             width: 98%;
@@ -81,7 +83,7 @@
         }
         th, td {
             padding: 8px 12px;
-            text-align: left;
+            text-align: center;
         }
         th {
             background-color: #f2f2f2;
@@ -106,6 +108,7 @@
             padding: 20px;
             background-color: #fff;
         }
+        
         img.logo {
             display: block;
             margin: 30px auto 10px;
@@ -120,8 +123,10 @@
             color: #666;
             margin-top: 40px;
         }
-       
-
+        .no-match {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -160,27 +165,40 @@
                 <th>Gene</th>
                 <th>Title of first publication</th>
                 <th>Number of publications</th>
-                <th>Link</th>
-                <th>Function <i><b>(Uniprot)</i></b> </th>
+                <th>Function <i><b>(Uniprot)</b></i></th>
                 <th>Mouse KO Phenotype <i>(IMPC)</i></th>
-                <th>PanelApp </th>
+                <th>PanelApp (England/Australia)</th>
             </tr>
         </thead>
         <tbody>
             <% results.forEach(result => { %>
                 <tr>
-                    <td><%= result.gene %></td>
+                    <td class="gene"><i><b><%= result.gene %></b></i></td>
                     <td><%= result.title %></td>
-                    <td><%= result.count %></td>
-                    <td><a href="<%= result.url %>" target="_blank">Link</a></td>
-                    <td><%= result.function %></td>
-                    <td><%= result.mousePhenotype %></td>
-                    <td><a href="https://panelapp.genomicsengland.co.uk/panels/entities/<%= result.gene %>" target="_blank"><%= result.panelApp %></a></td>
+                    <td><a href="<%= result.url %>" target="_blank"><%= result.count %></a></td>
+                    <td>
+                        <% if (result.function === "No match") { %>
+                            <img src="/public/cross.png" alt="No Match" class="no-match">
+                        <% } else { %>
+                            <%= result.function %>
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (result.mousePhenotype === "No match") { %>
+                            <img src="/public/cross.png" alt="No Match" class="no-match">
+                        <% } else { %>
+                            <%= result.mousePhenotype %>
+                        <% } %>
+                    </td>
+                    <td>
+                        <a href="https://panelapp.genomicsengland.co.uk/panels/entities/<%= result.gene %>" target="_blank">ENG: <%= result.panelAppEnglandCount %></a> / 
+                        <a href="https://panelapp.agha.umccr.org/panels/entities/<%= result.gene %>" target="_blank">AUS: <%= result.panelAppAustraliaCount %></a>
+                    </td>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
-    <% } %>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
 
         <footer>
             Developed by Victor Marin, Bordeaux University Hospital<br>
