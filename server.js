@@ -51,8 +51,11 @@ app.get('/api/search', async (req, res) => {
 });
 
 async function getData(req) {
+    // Extraire les gènes, supprimer les espaces et filtrer les valeurs "N/A"
     const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
-    const genesWithoutDuplicate = [...new Set(genes)];
+    
+    // Supprimer les duplicats tout en préservant l'ordre d'apparition
+    const genesWithoutDuplicate = genes.filter((gene, index) => genes.indexOf(gene) === index);
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
 
     let results = [];
