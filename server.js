@@ -188,9 +188,11 @@ function loadGenesFromFile(filePath) {
 // Appel de la fonction pour charger les gènes
 loadGenesFromFile('./BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
 
-// Route pour traiter le texte libre et extraire les gènes
 app.post('/extract-genes', (req, res) => {
     const text = req.body.text;
     const foundGenes = genesList.filter(gene => text.includes(gene));
+    // Trier les gènes trouvés selon leur ordre d'apparition dans le texte
+    foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
     res.json({ genes: foundGenes });
 });
+
