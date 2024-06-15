@@ -9,6 +9,7 @@ const path = require('path');
 const app = express();
 const XLSX = require('xlsx');
 const { get } = require('http');
+const { OrderedDict } = require('collections');
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -51,13 +52,10 @@ app.get('/api/search', async (req, res) => {
 });
 
 async function getData(req) {
-    // Extraire les gènes, supprimer les espaces et filtrer les valeurs "N/A"
     const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
-    
-    // Supprimer les duplicats tout en préservant l'ordre d'apparition
-    const genesWithoutDuplicate = genes.filter((gene, index) => genes.indexOf(gene) === index);
+    const genesWithoutDuplicate = Array.from(new Set(genes));  // Using Set to remove duplicates while preserving order
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
-
+    
     let results = [];
     
     for (let gene of genesWithoutDuplicate) {
