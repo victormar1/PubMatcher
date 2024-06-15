@@ -190,7 +190,10 @@ loadGenesFromFile('./BDD/genes.csv'); // Remplacez par le chemin correct de votr
 
 app.post('/extract-genes', (req, res) => {
     const text = req.body.text;
-    const foundGenes = genesList.filter(gene => text.includes(gene));
+    const foundGenes = genesList.filter(gene => {
+        const regex = new RegExp(`\\b${gene}\\b`, 'i'); // correspondance exacte insensible à la casse
+        return regex.test(text);
+    });
     // Trier les gènes trouvés selon leur ordre d'apparition dans le texte
     foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
     res.json({ genes: foundGenes });
