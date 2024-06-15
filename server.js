@@ -52,17 +52,7 @@ app.get('/api/search', async (req, res) => {
 
 async function getData(req) {
     const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
-
-    // Remove duplicates while preserving order
-    const seen = new Set();
-    const genesWithoutDuplicate = genes.filter(gene => {
-        if (seen.has(gene)) {
-            return false;
-        }
-        seen.add(gene);
-        return true;
-    });
-
+    const genesWithoutDuplicate = [...new Set(genes)];
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
 
     let results = [];
