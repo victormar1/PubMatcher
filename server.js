@@ -170,6 +170,14 @@ app.post('/export-pdf', (req, res) => {
         }
     };
 
+    // Fonction pour créer une cellule avec une image ou du texte
+    function createCell(content, fontSize = 8) {
+        if (content === "No match") {
+            return { image: path.join(__dirname, 'public', 'cross.png'), width: 10, alignment: 'center' };
+        }
+        return { text: content, alignment: 'center', fontSize, margin: [0, 5] };
+    }
+
     // Ajustement des largeurs des colonnes
     const colWidths = [50, 90, 30, 140, 100, 40]; // Réduction de moitié de la colonne PanelApp ENG/AUS et augmentation de Function
 
@@ -201,13 +209,13 @@ app.post('/export-pdf', (req, res) => {
                     body: [
                         ['Gene', 'Title', 'Count', 'Function', 'Mouse Phenotype', 'PanelApp\nENG/AUS'].map(header => ({ text: header, fontSize: 8, bold: true, alignment: 'center' })), // Retour à la ligne
                         ...results.map(result => [
-                            result.gene,
-                            result.title.length > 800 ? result.title.substring(0, 800) + '...' : result.title,
-                            result.count.toString(),
-                            result.function.length > 800 ? result.function.substring(0, 800) + '...' : result.function,
-                            result.mousePhenotype.length > 800 ? result.mousePhenotype.substring(0, 800) + '...' : result.mousePhenotype,
-                            `${result.panelAppEnglandCount.toString()}/${result.panelAppAustraliaCount.toString()}`
-                        ]).map(row => row.map(cell => ({ text: cell, alignment: 'center', fontSize: 8, margin: [0, 5] }))) // Augmenter la police des résultats du tableau
+                            createCell(result.gene),
+                            createCell(result.title.length > 800 ? result.title.substring(0, 800) + '...' : result.title),
+                            createCell(result.count.toString()),
+                            createCell(result.function.length > 800 ? result.function.substring(0, 800) + '...' : result.function),
+                            createCell(result.mousePhenotype.length > 800 ? result.mousePhenotype.substring(0, 800) + '...' : result.mousePhenotype),
+                            createCell(`${result.panelAppEnglandCount.toString()}/${result.panelAppAustraliaCount.toString()}`)
+                        ])
                     ]
                 },
                 layout: 'lightHorizontalLines'
@@ -248,6 +256,7 @@ app.post('/export-pdf', (req, res) => {
     pdfDoc.pipe(res);
     pdfDoc.end();
 });
+
 
 // Chemins vers votre certificat SSL et votre clé privée
 const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
