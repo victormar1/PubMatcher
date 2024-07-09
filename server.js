@@ -9,6 +9,8 @@ const path = require('path');
 const app = express();
 const XLSX = require('xlsx');
 const { get } = require('http');
+const moment = require('moment');
+const PdfPrinter = require('pdfmake');
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -152,6 +154,100 @@ async function getData(req) {
 
     return results;
 }
+
+// Route pour générer le PDF
+app.post('/export-pdf', (req, res) => {
+    const results = JSON.parse(req.body.results);
+    const phenotypes = req.body.phenotypes;
+
+    // Polices par défaut pour pdfmake
+    const fonts = {
+        Roboto: {
+            normal: 'Helvetica',
+            bold: 'Helvetica-Bold',
+            italics: 'Helvetica-Oblique',
+            bolditalics: 'Helvetica-BoldOblique'
+        }
+    };
+
+    // Ajustement des largeurs des colonnes
+    const colWidths = [50, 90, 30, 140, 100, 40]; // Réduction de moitié de la colonne PanelApp ENG/AUS et augmentation de Function
+
+    // Contenu du document PDF
+    const docDefinition = {
+        pageSize: 'A4',
+        pageOrientation: 'portrait',
+        pageMargins: [20, 20, 20, 40], // Réduction des marges en haut
+        content: [
+            {
+                columns: [
+                    { image: path.join(__dirname, 'public', 'logo.png'), width: 50 }, // Taille du logo réduite
+                    {
+                        width: '*',
+                        stack: [
+                            { text: 'Search Results', style: 'header', alignment: 'center' },
+                            { text: `Generated on: ${moment().format('MMMM Do YYYY, h:mm:ss a')}`, style: 'subheader', alignment: 'center' },
+                            { text: 'Phenotypes:', style: 'subheader', alignment: 'center' },
+                            { text: phenotypes, alignment: 'center', margin: [0, 5, 0, 0] } // Marge ajustée
+                        ]
+                    }
+                ]
+            },
+            {
+                style: 'tableExample',
+                table: {
+                    headerRows: 1,
+                    widths: colWidths,
+                    body: [
+                        ['Gene', 'Title', 'Count', 'Function', 'Mouse Phenotype', 'PanelApp\nENG/AUS'].map(header => ({ text: header, fontSize: 8, bold: true, alignment: 'center' })), // Retour à la ligne
+                        ...results.map(result => [
+                            result.gene,
+                            result.title.length > 800 ? result.title.substring(0, 800) + '...' : result.title,
+                            result.count.toString(),
+                            result.function.length > 800 ? result.function.substring(0, 800) + '...' : result.function,
+                            result.mousePhenotype.length > 800 ? result.mousePhenotype.substring(0, 800) + '...' : result.mousePhenotype,
+                            `${result.panelAppEnglandCount.toString()}/${result.panelAppAustraliaCount.toString()}`
+                        ]).map(row => row.map(cell => ({ text: cell, alignment: 'center', fontSize: 8, margin: [0, 5] }))) // Augmenter la police des résultats du tableau
+                    ]
+                },
+                layout: 'lightHorizontalLines'
+            }
+        ],
+        styles: {
+            header: {
+                fontSize: 18, // Police ajustée
+                bold: true,
+                margin: [0, 5, 0, 5] // Réduction de la marge en haut et en bas
+            },
+            subheader: {
+                fontSize: 12, // Police ajustée
+                bold: true,
+                margin: [0, 5, 0, 5] // Réduction de la marge en haut et en bas
+            },
+            tableExample: {
+                margin: [0, 5, 0, 15] // Réduction de la marge
+            }
+        },
+        footer: function (currentPage, pageCount) {
+            return {
+                columns: [
+                    { text: '', alignment: 'left' },
+                    { image: path.join(__dirname, 'public', 'logo.png'), width: 20, alignment: 'right' } // Petit logo en bas à droite
+                ],
+                margin: [20, 0]
+            };
+        }
+    };
+
+    // Génération du PDF
+    const printer = new PdfPrinter(fonts);
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    const filename = `PM_${moment().format('DDMMYY_HHmm')}.pdf`;
+    res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
+    res.setHeader('Content-type', 'application/pdf');
+    pdfDoc.pipe(res);
+    pdfDoc.end();
+});
 
 // Chemins vers votre certificat SSL et votre clé privée
 const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
