@@ -115,6 +115,23 @@
             max-width: 300px;
         }
 
+.export-button {
+            display: block;
+            margin: 20px auto;
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #ddd; /* Couleur plus discrète */
+            color: #333; /* Couleur du texte */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .export-button:hover {
+            background-color: #ccc; /* Couleur légèrement plus foncée au survol */
+        }
+
         footer {
             text-align: center;
             line-height: calc(1em + 5px);
@@ -197,7 +214,12 @@
                 </tr>
                 <% }) %>
             </tbody>
-        </table>
+            </table>
+            <form id="export-pdf-form" action="/export-pdf" method="post">
+                <input type="hidden" name="results" value='<%= JSON.stringify(results) %>'>
+                <input type="hidden" name="phenotypes" value='<%= phenotypes %>'>
+                <button type="submit" class="export-button">Export to PDF</button>
+            </form>
         <% } %>
 
         <footer>
