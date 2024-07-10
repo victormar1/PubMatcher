@@ -210,10 +210,10 @@ app.post('/export-pdf', (req, res) => {
                         ['Gene', 'Title', 'Count', 'Function', 'Mouse Phenotype', 'PanelApp\nENG/AUS'].map(header => ({ text: header, fontSize: 8, bold: true, alignment: 'center' })), // Retour à la ligne
                         ...results.map(result => [
                             createCell(result.gene),
-                            createCell(result.title.length > 800 ? result.title.substring(0, 800) + '...' : result.title),
-                            createCell(result.count.toString()),
-                            createCell(result.function.length > 800 ? result.function.substring(0, 800) + '...' : result.function),
-                            createCell(result.mousePhenotype.length > 800 ? result.mousePhenotype.substring(0, 800) + '...' : result.mousePhenotype),
+                            createCell(result.title && result.title.length > 800 ? result.title.substring(0, 800) + '...' : result.title || "No result"),
+                            createCell(result.count ? result.count.toString() : "0"),
+                            createCell(result.function && result.function.length > 800 ? result.function.substring(0, 800) + '...' : result.function || "No match"),
+                            createCell(result.mousePhenotype && result.mousePhenotype.length > 800 ? result.mousePhenotype.substring(0, 800) + '...' : result.mousePhenotype || "No match"),
                             createCell(`${result.panelAppEnglandCount.toString()}/${result.panelAppAustraliaCount.toString()}`)
                         ])
                     ]
@@ -256,6 +256,7 @@ app.post('/export-pdf', (req, res) => {
     pdfDoc.pipe(res);
     pdfDoc.end();
 });
+
 
 
 // Chemins vers votre certificat SSL et votre clé privée
