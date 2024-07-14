@@ -11,12 +11,14 @@
             margin: 0;
             padding: 0;
         }
+
         h1 {
             text-align: center;
             margin-top: 20px;
             color: #333;
             font-size: 32px;
         }
+
         .description {
             text-align: center;
             font-size: 17px; 
@@ -25,6 +27,11 @@
             max-width: 80%; 
             line-height: 1.6; 
         }
+
+        .no-result-row {
+        background-color: rgb(190, 183, 183);
+    }
+
         form {
             width: 100%;
             max-width: 600px;
@@ -34,11 +41,13 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
         label {
             font-weight: bold;
             display: block;
             margin-bottom: 10px;
         }
+
         input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -47,6 +56,7 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         button {
             padding: 10px 20px;
             margin: 5px;
@@ -57,9 +67,11 @@
             cursor: pointer;
             font-size: 16px;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         table {
             border-collapse: collapse;
             width: 98%;
@@ -96,26 +108,30 @@
             padding: 20px;
             background-color: #fff;
         }
+        
         img.logo {
             display: block;
             margin: 30px auto 10px;
             max-width: 300px;
         }
-        .export-button {
+
+.export-button {
             display: block;
             margin: 20px auto;
             padding: 5px 10px;
             font-size: 14px;
-            background-color: #ddd;
-            color: #333;
+            background-color: #ddd; /* Couleur plus discrète */
+            color: #333; /* Couleur du texte */
             border: 1px solid #ccc;
             border-radius: 5px;
             text-align: center;
             cursor: pointer;
         }
+
         .export-button:hover {
-            background-color: #ccc;
+            background-color: #ccc; /* Couleur légèrement plus foncée au survol */
         }
+
         footer {
             text-align: center;
             line-height: calc(1em + 5px);
@@ -128,6 +144,8 @@
             width: 20px;
             height: 20px;
         }
+
+        /* Styles pour le bouton Bug Report */
         #bug-report-button {
             position: fixed;
             bottom: 20px;
@@ -139,6 +157,8 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
+        /* Styles pour la boîte de dialogue */
         .modal {
             display: none;
             position: fixed;
@@ -148,9 +168,11 @@
             width: 100%;
             height: 100%;
             overflow: auto;
+            background-color: rgb(0, 0, 0);
             background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
+
         .modal-content {
             background-color: #fefefe;
             margin: 5% auto;
@@ -160,18 +182,21 @@
             max-width: 600px;
             border-radius: 10px;
         }
+
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
+
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
+
         .modal-content input, .modal-content textarea {
             width: 100%;
             padding: 10px;
@@ -181,6 +206,7 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+
         .modal-content button {
             background-color: #4CAF50;
             color: white;
@@ -191,36 +217,25 @@
             border-radius: 5px;
             width: 100%;
         }
+
         .modal-content button:hover {
             background-color: #45a049;
         }
-        #loadingScreen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 9999;
-        }
-        #loadingScreen > div {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+
     </style>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGNGTTRTN2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGNGTTRTN2');
+</script>
+
 </head>
 <body>
-
-<!-- Écran de chargement -->
-<div id="loadingScreen" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
-    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
-        <img src="/public/loading.gif" alt="Loading..." style="width: 100px; height: 100px;">
-    </div>
-</div>
-
     <img src="/public/Pubmatcher.png" alt="Pubmatcher" class="logo">
     <h1>PubMatcher</h1>
     <p class="description">A tool designed to facilitate the matching of multiple genes and phenotypes with relevant publications and data.</p>
@@ -247,6 +262,8 @@
     <h2 style="text-align: center; margin-top: 40px;">Phenotypes :</h2>
     <p style="text-align: center; font-weight: bold; margin-bottom: 20px;"><%= phenotypes || 'No phenotype.' %></p>
     <h2 style="text-align: center; margin-top: 40px;">Results:</h2>
+    
+
     
     <table id="resultsTable">
         <thead>
@@ -312,113 +329,197 @@
         </div>
     </div>
 
- <footer>
-        Developed by Victor Marin, Bordeaux University Hospital<br>
-        With the participation of Louis Lebreton and Victor Dumont
-        <img src="/public/logoCHU.jpg" alt="LogoCHU" class="logo" style="margin:0.5% auto 10px; max-width: 8%;" >
-    </footer>
+        <footer>
+            Developed by Victor Marin, Bordeaux University Hospital<br>
+            With the participation of Louis Lebreton and Victor Dumont
+            <img src="/public/logoCHU.jpg" alt="LogoCHU" class="logo" style="margin:0.5% auto 10px; max-width: 8%;" >
+        </footer>
 
+
+    
 <script>
-    // JavaScript pour ouvrir et fermer la boîte de dialogue
-    const modal = document.getElementById('bug-report-modal');
-    const btn = document.getElementById('bug-report-button');
-    const span = document.getElementsByClassName('close')[0];
+        // JavaScript pour ouvrir et fermer la boîte de dialogue
+        const modal = document.getElementById('bug-report-modal');
+        const btn = document.getElementById('bug-report-button');
+        const span = document.getElementsByClassName('close')[0];
 
-    btn.onclick = function() {
-        modal.style.display = 'block';
-    }
+        btn.onclick = function() {
+            modal.style.display = 'block';
+        }
 
-    span.onclick = function() {
-        modal.style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
+        span.onclick = function() {
             modal.style.display = 'none';
         }
-    }
 
-    // Envoi du formulaire de rapport de bug
-    document.getElementById('bug-report-form').onsubmit = async function(event) {
-        event.preventDefault();
-
-        const name = document.getElementById('name').value;
-        const message = document.getElementById('message').value;
-
-        try {
-            const response = await fetch('/reportbug', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name, message })
-            });
-
-            if (response.ok) {
-                alert('Bug report sent successfully');
+        window.onclick = function(event) {
+            if (event.target == modal) {
                 modal.style.display = 'none';
-            } else {
-                const errorText = await response.text();
-                console.error('Failed to send bug report:', errorText);
-                alert('Failed to send bug report');
             }
-        } catch (error) {
-            console.error('Network error:', error);
-            alert('Network error');
         }
-    }
-</script>
 
-<script>
-    document.getElementById('searchForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        document.getElementById('loadingScreen').style.display = 'block';
+        // Envoi du formulaire de rapport de bug
+        document.getElementById('bug-report-form').onsubmit = async function(event) {
+            event.preventDefault();
 
-        const genes = document.getElementById('genesInput').value;
-        const phenotypes = document.querySelector('input[name="phenotypes"]').value;
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
 
-        const requestURL = '/search';
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ genes, phenotypes })
-        };
+            console.log('Sending bug report:', { name, message }); // Ajout de message de débogage
 
-        fetch(requestURL, requestOptions)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            try {
+                const response = await fetch('/reportbug', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, message })
+                });
+
+                if (response.ok) {
+                    alert('Bug report sent successfully');
+                    modal.style.display = 'none';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to send bug report:', errorText);
+                    alert('Failed to send bug report');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('Network error');
             }
-            return response.json();
-        })
-        .then(data => {
-            updateResults(data);
-            document.getElementById('loadingScreen').style.display = 'none';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('loadingScreen').style.display = 'none';
-        });
+        }
+
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    fetch('/extract-genes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('genesInput').value = data.genes.join(', ');
+        document.getElementById('textFreePopin').style.display = 'none';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
     });
-
-    function updateResults(data) {
-        const resultsTable = document.getElementById('resultsTable');
-        const tbody = resultsTable.querySelector('tbody');
-        tbody.innerHTML = '';
-
-        data.results.forEach(result => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td class="gene"><i><b>${result.gene}</b></i></td>
-                <td>${result.title}</td>
-                <td><a href="${result.url}" target="_blank">${result.count}</a></td>
-                <td>${result.function || '<img src="/public/cross.png" alt="No Match" class="no-match">'}</td>
-                <td>${result.mousePhenotype || '<img src="/public/cross.png" alt="No Match" class="no-match">'}</td>
-                <td>ENG: ${result.panelAppEnglandCount} / AUS: ${result.panelAppAustraliaCount}</td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
+});
 </script>
+<script>
+        const seqOneBtn = document.getElementById('seqOneBtn');
+        const seqOnePopin = document.getElementById('seqOnePopin');
+        const seqOneInput = document.getElementById('seqOneInput');
+        const seqOneSubmit = document.getElementById('seqOneSubmit');
+        const genesInput = document.getElementById('genesInput');
+        const searchForm = document.getElementById('searchForm');
+
+        seqOneBtn.addEventListener('click', () => {
+            seqOnePopin.style.display = 'block';
+        });
+
+        seqOneSubmit.addEventListener('click', () => {
+            const text = seqOneInput.value;
+            const lines = text.split('\n');
+            let genes = [];
+
+            if (lines.some(line => line.startsWith('New') || /^[1-5]$/.test(line.trim()))) {
+                // Search for the gene in the SeqOne input
+                lines.forEach((line, index) => {
+                    if (line.startsWith('New') && lines[index + 1]) {
+                        genes.push(lines[index + 1].split('\t')[0]);
+                    }
+                });
+            } 
+            genesInput.value = genes.join(', ');
+            seqOnePopin.style.display = 'none';
+        });
+    </script>
+        
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    fetch('/extract-genes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('genesInput').value = data.genes.join(', ');
+        document.getElementById('textFreePopin').style.display = 'none';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+</script>
+<script>
+            // ... (scripts pour seqOneBtn et autres) ...
+            
+            // Si des résultats existent, défilez vers le tableau
+            if (document.getElementById('resultsTable')) {
+                document.getElementById("resultsTable").scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
 </body>
 </html>
+
+<div class="popin" id="textFreePopin">
+    <div class="popin-content">
+        <h2>Batch input</h2>
+        <textarea id="textFreeInput" rows="10" style="width: 100%;" placeholder="Paste your raw input containing gene(s) name(s)"></textarea>
+        <button id="textFreeSubmit">Enter</button>
+    </div>
+</div>
+
+
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    fetch('/extract-genes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('genesInput').value = data.genes.join(', ');
+        document.getElementById('textFreePopin').style.display = 'none';
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+</script>
+<script>
+document.getElementById('textFreeInputBtn').addEventListener('click', () => {
+    document.getElementById('textFreePopin').style.display = 'block';
+});
+
+document.getElementById('textFreeSubmit').addEventListener('click', () => {
+    const text = document.getElementById('textFreeInput').value;
+    // Exemple de récupération des gènes. Cela devra être adapté avec la logique côté serveur.
+    let genesFound = text.split(' '); // Cette ligne est un placeholder. Utilisez la logique d'extraction appropriée.
+    document.getElementById('genesInput').value = genesFound.join(', ');
+    document.getElementById('textFreePopin').style.display = 'none';
+});
+</script>
