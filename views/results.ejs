@@ -21,14 +21,14 @@
                     <td><a href="<%= result.url %>" target="_blank"><%= result.count %></a></td>
                     <td>
                         <% if (result.function === "No match") { %>
-                            <img src="/public/cross.png" alt="No Match" class="no-match">
+                            <img src="/images/cross.png" alt="No Match" class="no-match"> <!-- Chemin de l'image -->
                         <% } else { %>
                             <%= result.function %>
                         <% } %>
                     </td>
                     <td>
                         <% if (result.mousePhenotype === "No match") { %>
-                            <img src="/public/cross.png" alt="No Match" class="no-match">
+                            <img src="/images/cross.png" alt="No Match" class="no-match"> <!-- Chemin de l'image -->
                         <% } else { %>
                             <%= result.mousePhenotype %>
                         <% } %>
