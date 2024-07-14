@@ -99,33 +99,22 @@ async function getData(req) {
     const genesWithoutDuplicate = Array.from(new Set(genes));
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
     
-    let results = [];
-    
-    for (let gene of genesWithoutDuplicate) {
+    const results = await Promise.all(genesWithoutDuplicate.map(async (gene) => {
         const queries = phenotypes.map(phenotype => `(${gene} AND ${phenotype})`);
         const combinedQuery = queries.join(' OR ');
         const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
-        const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`
-            
+        const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
+
         try {
-            const response = await axios.get(url);
-            const respReq = response.request
-            const path = respReq['path']
+            const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
             const $ = cheerio.load(response.data);
-                
             const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
             const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
 
             const title = $(titleSelector).text().trim();
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
-
-            // Match with the databases
-            const mouseMatch = mouseData.find(row => row.Gene === gene);
-
-
-            //Version Get Uniprot
-            const responseuniprot = await axios.get(uniprotapi);
+            
             let proteinMatch = "";
             if (responseuniprot.status === 200) {
                 await responseuniprot.data.some(function (element) {
@@ -142,60 +131,51 @@ async function getData(req) {
                 });
             }
 
-            // Truncate the function text to 800 characters and add " [...]" if longer
             if (proteinMatch.length > 800) {
                 proteinMatch = proteinMatch.substring(0, 800) + " [...]";
             }
-           
-            // Version DB Excel en
-            //const proteinMatch = proteinData.find(row => row.Gene === gene);
 
-            let mousePhenotype
-            if (path.includes("term")) {
-                results.push({
-                    gene,
-                    title: title || "No result",
-                    count: isNaN(count) ? 0 : count,
-                    function: proteinMatch !== "" ? proteinMatch : "No match",
-                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                    url: url
-                });
-            } else {
-                results.push({
-                    gene,
-                    title: $("#full-view-heading > h1.heading-title").text().trim(),
-                    count: 1,
-                    function: proteinMatch ? proteinMatch.annotation : "No match",
-                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                    url: url
-                });
-            }
+            const mouseMatch = mouseData.find(row => row.Gene === gene);
+            const path = response.request.path;
+
+            return {
+                gene,
+                title: title || "No result",
+                count: isNaN(count) ? 0 : count,
+                function: proteinMatch !== "" ? proteinMatch : "No match",
+                mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                url: url,
+                path
+            };
         } catch (error) {
             console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);
+            return null;
         }
-    }
+    }));
 
+    // Filtrer les résultats non null
+    const validResults = results.filter(result => result !== null);
 
     // Récupération des données PanelApp pour chaque gène
-    for (let i = 0; i < results.length; i++) {
+    await Promise.all(validResults.map(async (result) => {
         try {
-            const panelAppEnglandResponse = await axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${results[i].gene}&format=json`);
-            const panelAppAustraliaResponse = await axios.get(`https://panelapp.agha.umccr.org/api/v1/genes/?entity_name=${results[i].gene}&format=json`);
-            
-            const panelAppEnglandCount = panelAppEnglandResponse.data.count;
-            const panelAppAustraliaCount = panelAppAustraliaResponse.data.count;
-            
-            results[i].panelAppEnglandCount = panelAppEnglandCount;
-            results[i].panelAppAustraliaCount = panelAppAustraliaCount;
-        } catch (error) {
-            console.error(`Error fetching PanelApp data for gene ${results[i].gene}: `, error);
-            results[i].panelAppEnglandCount = 'Error';
-            results[i].panelAppAustraliaCount = 'Error';
-        }
-    }
+            const [panelAppEnglandResponse, panelAppAustraliaResponse] = await Promise.all([
+                axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${result.gene}&format=json`),
+                axios.get(`https://panelapp.agha.umccr.org/api/v1/genes/?entity_name=${result.gene}&format=json`)
+            ]);
 
-    return results;
+            result.panelAppEnglandCount = panelAppEnglandResponse.data.count;
+            result.panelAppAustraliaCount = panelAppAustraliaResponse.data.count;
+        } catch (error) {
+            console.error(`Error fetching PanelApp data for gene ${result.gene}: `, error);
+            result.panelAppEnglandCount = 'Error';
+            result.panelAppAustraliaCount = 'Error';
+        }
+    }));
+
+    return validResults;
 }
+
 
 // Route pour générer le PDF
 app.post('/export-pdf', (req, res) => {
