@@ -327,6 +327,57 @@
 
     
 <script>
+        // JavaScript pour ouvrir et fermer la boîte de dialogue
+        const modal = document.getElementById('bug-report-modal');
+        const btn = document.getElementById('bug-report-button');
+        const span = document.getElementsByClassName('close')[0];
+
+        btn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Envoi du formulaire de rapport de bug
+        document.getElementById('bug-report-form').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
+
+            console.log('Sending bug report:', { name, message }); // Ajout de message de débogage
+
+            try {
+                const response = await fetch('/reportbug', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, message })
+                });
+
+                if (response.ok) {
+                    alert('Bug report sent successfully');
+                    modal.style.display = 'none';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Failed to send bug report:', errorText);
+                    alert('Failed to send bug report');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('Network error');
+            }
+        }
+
 document.getElementById('textFreeInputBtn').addEventListener('click', () => {
     document.getElementById('textFreePopin').style.display = 'block';
 });
