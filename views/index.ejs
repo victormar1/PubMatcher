@@ -222,6 +222,24 @@
             </form>
         <% } %>
 
+<!-- Bouton Bug Report -->
+    <button id="bug-report-button">Bug Report</button>
+
+    <!-- Boîte de dialogue pour le rapport de bug -->
+    <div id="bug-report-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Report a Bug</h2>
+            <form id="bug-report-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="message">Description:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
         <footer>
             Developed by Victor Marin, Bordeaux University Hospital<br>
             With the participation of Louis Lebreton and Victor Dumont
