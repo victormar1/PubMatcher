@@ -98,7 +98,7 @@ async function getData(req) {
     const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
     const genesWithoutDuplicate = Array.from(new Set(genes));
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
-    
+
     const results = await Promise.all(genesWithoutDuplicate.map(async (gene) => {
         const queries = phenotypes.map(phenotype => `(${gene} AND ${phenotype})`);
         const combinedQuery = queries.join(' OR ');
@@ -108,13 +108,23 @@ async function getData(req) {
         try {
             const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
             const $ = cheerio.load(response.data);
-            const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
-            const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
-
-            const title = $(titleSelector).text().trim();
-            const countText = $(countSelector).text().trim().replace(',', '');
-            const count = parseInt(countText, 10);
             
+            let title, count;
+            const singleResultRedirectMessage = $(".single-result-redirect-message");
+            if (singleResultRedirectMessage.length) {
+                // If single result redirect
+                title = $("#full-view-heading > h1.heading-title").text().trim();
+                count = 1;
+            } else {
+                // Regular search results page
+                const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
+                const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
+
+                title = $(titleSelector).text().trim();
+                const countText = $(countSelector).text().trim().replace(',', '');
+                count = parseInt(countText, 10);
+            }
+
             let proteinMatch = "";
             if (responseuniprot.status === 200) {
                 await responseuniprot.data.some(function (element) {
