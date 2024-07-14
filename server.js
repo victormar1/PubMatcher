@@ -108,29 +108,19 @@ async function getData(req) {
         try {
             const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
             const $ = cheerio.load(response.data);
-            
-            let title, count;
-            const singleResultRedirectMessage = $(".single-result-redirect-message");
-            if (singleResultRedirectMessage.length) {
-                // If single result redirect
-                title = $("#full-view-heading > h1.heading-title").text().trim();
-                count = 1;
-            } else {
-                // Regular search results page
-                const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
-                const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
+            const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
+            const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
 
-                title = $(titleSelector).text().trim();
-                const countText = $(countSelector).text().trim().replace(',', '');
-                count = parseInt(countText, 10);
-            }
+            const title = $(titleSelector).text().trim();
+            const countText = $(countSelector).text().trim().replace(',', '');
+            const count = parseInt(countText, 10);
 
             let proteinMatch = "";
             if (responseuniprot.status === 200) {
-                await responseuniprot.data.some(function (element) {
+                await responseuniprot.data.some((element) => {
                     if (element.comments) {
                         const comments = element.comments;
-                        const finded = comments.some(function(comment) {
+                        const finded = comments.some((comment) => {
                             if (comment.type === 'FUNCTION') {
                                 proteinMatch = comment.text[0].value;
                                 return true;
@@ -148,25 +138,33 @@ async function getData(req) {
             const mouseMatch = mouseData.find(row => row.Gene === gene);
             const path = response.request.path;
 
-            return {
-                gene,
-                title: title || "No result",
-                count: isNaN(count) ? 0 : count,
-                function: proteinMatch !== "" ? proteinMatch : "No match",
-                mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                url: url,
-                path
-            };
+            if (path.includes("term")) {
+                return {
+                    gene,
+                    title: title || "No result",
+                    count: isNaN(count) ? 0 : count,
+                    function: proteinMatch !== "" ? proteinMatch : "No match",
+                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                    url: url
+                };
+            } else {
+                return {
+                    gene,
+                    title: $("#full-view-heading > h1.heading-title").text().trim(),
+                    count: 1,
+                    function: proteinMatch ? proteinMatch : "No match",
+                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                    url: url
+                };
+            }
         } catch (error) {
             console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);
             return null;
         }
     }));
 
-    // Filtrer les résultats non null
     const validResults = results.filter(result => result !== null);
 
-    // Récupération des données PanelApp pour chaque gène
     await Promise.all(validResults.map(async (result) => {
         try {
             const [panelAppEnglandResponse, panelAppAustraliaResponse] = await Promise.all([
