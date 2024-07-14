@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
@@ -11,11 +13,51 @@ const XLSX = require('xlsx');
 const { get } = require('http');
 const moment = require('moment');
 const PdfPrinter = require('pdfmake');
+const nodemailer = require('nodemailer');
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json())
+
+// Configuration de nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// Route pour rapporter un bug
+app.post('/reportbug', (req, res) => {
+    console.log('Received /reportbug request'); // Ajout de message de débogage
+
+    const { name, message } = req.body;
+    console.log('Bug report data:', { name, message }); // Ajout de message de débogage
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.ADMIN_EMAIL,
+        subject: 'Bug Report from Pubmatcher',
+        text: `Name: ${name}\n\nMessage: ${message}`
+    };
+
+    console.log('Mail Options:', mailOptions); // Ajout de message de débogage
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+            res.status(500).send('Error sending email');
+        } else {
+            console.log('Email sent:', info.response);
+            res.status(200).send('Email sent');
+        }
+    });
+    res.status(200).send("Bug report received");
+});
+
+console.log('Bug report route configured.');
 
 // Load the databases into memory
 const mouseDBPath = path.join(__dirname, 'BDD', 'Mouse.xlsx');
