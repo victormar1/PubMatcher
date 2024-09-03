@@ -2,10 +2,11 @@
     <h2 style="text-align: center; margin-top: 40px;">Phenotypes :</h2>
     <p style="text-align: center; font-weight: bold; margin-bottom: 20px;"><%= phenotypes || 'No phenotype.' %></p>
     <h2 style="text-align: center; margin-top: 40px;">Results:</h2>
-    <table id="resultsTable">
+
+    <table id="resultsTable" style="width: 100%;">
         <thead>
             <tr>
-                <th>Gene</th>
+                <th style="width: 8%;">Gene</th>
                 <th>Title of first publication</th>
                 <th>Number of publications</th>
                 <th>Function <i><b>(Uniprot)</b></i></th>
@@ -16,7 +17,37 @@
         <tbody>
             <% results.forEach(result => { %>
                 <tr>
-                    <td class="gene"><i><b><%= result.gene %></b></i></td>
+                    <td class="gene">
+                            <div style="text-align: center;">
+                                <i><b><%= result.gene %></b></i>
+                                <table style="margin: 0 auto; border: none;">
+                                    <tr>
+                                        <td style="padding: 0 5px;">
+                                            <small>pLI: <span style="color: <%= parseFloat(result.constraints.pLI.replace(',', '.')) == 1 ? 'red' : 'black' %>;">
+                                                <%= result.constraints.pLI %>
+                                            </span></small>
+                                        </td>
+                                        <td style="padding: 0 5px;">
+                                            <small>Loeuf: <span style="color: <%= parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.26 ? 'red' : 'black' %>;">
+                                                <%= result.constraints.oe_lof_upper %>
+                                            </span></small>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 0 5px;">
+                                            <small>Z score: <span style="color: <%= parseFloat(result.constraints.mis_z.replace(',', '.')) > 3 ? 'red' : 'black' %>;">
+                                                <%= result.constraints.mis_z %>
+                                            </span></small>
+                                        </td>
+                                        <td style="padding: 0 5px;">
+                                            <small>Moeuf: <span style="color: <%= parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.58 ? 'red' : 'black' %>;">
+                                                <%= result.constraints.oe_mis_upper %>
+                                            </span></small>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
                     <td><%= result.title %></td>
                     <td><a href="<%= result.url %>" target="_blank"><%= result.count %></a></td>
                     <td>
