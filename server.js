@@ -63,11 +63,27 @@ console.log('Bug report route configured.');
 // Load the databases into memory
 const mouseDBPath = path.join(__dirname, 'BDD', 'Mouse.xlsx');
 const proteinDBPath = path.join(__dirname, 'BDD', 'Protein.xlsx');
+const constraints = {};
 
 const mouseDB = XLSX.readFile(mouseDBPath);
 const proteinDB = XLSX.readFile(proteinDBPath);
 const mouseData = XLSX.utils.sheet_to_json(mouseDB.Sheets[mouseDB.SheetNames[0]]);
 const proteinData = XLSX.utils.sheet_to_json(proteinDB.Sheets[proteinDB.SheetNames[0]]);
+
+fs.createReadStream(path.join(__dirname, 'BDD', 'constraints.csv'))
+  .pipe(csv({ separator: ';' })) // Specify the correct delimiter if needed
+  .on('data', (row) => {
+    // Ensure the gene names match those in your results
+    constraints[row.gene] = {
+      pLI: row.pLI,
+      oe_mis_upper: row.oe_mis_upper,
+      oe_lof_upper: row.oe_lof_upper,
+      mis_z: row.mis_z
+    };
+  })
+  .on('end', () => {
+    console.log('Constraints CSV file successfully processed');
+  });
 
 app.get('/', (req, res) => {
     res.render('index', { results: [], phenotypes: '' });
@@ -139,25 +155,26 @@ async function getData(req) {
             const mouseMatch = mouseData.find(row => row.Gene === gene);
             const path = response.request.path;
 
-            if (path.includes("term")) {
-                return {
-                    gene,
-                    title: title || "No result",
-                    count: isNaN(count) ? 0 : count,
-                    function: proteinMatch !== "" ? proteinMatch : "No match",
-                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                    url: url
-                };
+            const result = {
+                gene,
+                title: title || "No result",
+                count: isNaN(count) ? 0 : count,
+                function: proteinMatch !== "" ? proteinMatch : "No match",
+                mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                url: url,
+                panelAppEnglandCount: 0,  // default to 0 until populated
+                panelAppAustraliaCount: 0  // default to 0 until populated
+            };
+
+            // Add the constraint data for this gene
+            if (constraints[gene]) {
+                result.constraints = constraints[gene];
             } else {
-                return {
-                    gene,
-                    title: $("#full-view-heading > h1.heading-title").text().trim(),
-                    count: 1,
-                    function: proteinMatch ? proteinMatch : "No match",
-                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                    url: url
-                };
+                result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
             }
+
+            return result;
+
         } catch (error) {
             console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);
             return null;
@@ -184,6 +201,7 @@ async function getData(req) {
 
     return validResults;
 }
+
 
 
 // Route pour générer le PDF
