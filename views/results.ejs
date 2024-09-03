@@ -21,17 +21,17 @@
                             <div style="text-align: center;">
                                 <i><b><%= result.gene %></b></i>
                                 <table style="margin: 10px auto 0; border: none; width: 80%; font-size: 12px;">
-                                    <!-- Row for pLI and LOEUF -->
+                                    <!-- Row for pLi and LOEUF -->
                                     <tr>
                                         <td style="padding: 0 4px;">
-                                            <small>pLI: 
+                                            <small>pLi: 
                                                 <span style="color: <%= parseFloat(result.constraints.pLI.replace(',', '.')) == 1 ? 'red' : 'black' %>;">
                                                     <%= result.constraints.pLI %>
                                                 </span>
                                             </small>
                                         </td>
                                         <td style="padding: 0 4px;">
-                                            <small>Loeuf: 
+                                            <small>LOEUF: 
                                                 <span style="color: <%= parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.26 ? 'red' : 
                                                                 (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.41 ? 'darkred' : 
                                                                 (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.48 ? 'orange' : 
@@ -44,14 +44,14 @@
                                     <!-- Row for Z score and MOEUF -->
                                     <tr>
                                         <td style="padding: 0 4px;">
-                                            <small>Z score: 
+                                            <small>Z_score: 
                                                 <span style="color: <%= parseFloat(result.constraints.mis_z.replace(',', '.')) > 3 ? 'red' : 'black' %>;">
                                                     <%= result.constraints.mis_z %>
                                                 </span>
                                             </small>
                                         </td>
                                         <td style="padding: 0 4px;">
-                                            <small>Moeuf: 
+                                            <small>MOEUF: 
                                                 <span style="color: <%= parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.58 ? 'red' : 
                                                                 (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.70 ? 'darkred' : 
                                                                 (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.73 ? 'orange' : 
