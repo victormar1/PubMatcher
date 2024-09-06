@@ -155,26 +155,47 @@ async function getData(req) {
             const mouseMatch = mouseData.find(row => row.Gene === gene);
             const path = response.request.path;
 
-            const result = {
-                gene,
-                title: title || "No result",
-                count: isNaN(count) ? 0 : count,
-                function: proteinMatch !== "" ? proteinMatch : "No match",
-                mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                url: url,
-                panelAppEnglandCount: 0,  // default to 0 until populated
-                panelAppAustraliaCount: 0  // default to 0 until populated
-            };
+                       if (!path.includes("term")) {
+                const result = {
+                    gene,
+                    title: $("#full-view-heading > h1.heading-title").text().trim(),
+                    count: 1,
+                    function: proteinMatch ? proteinMatch : "No match",
+                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                    url: url,
+                    panelAppEnglandCount: 0,  // default to 0 until populated
+                    panelAppAustraliaCount: 0  // default to 0 until populated
+                };
 
-            // Add the constraint data for this gene
-            if (constraints[gene]) {
-                result.constraints = constraints[gene];
+                // Ajouter les contraintes pour ce gène
+                if (constraints[gene]) {
+                    result.constraints = constraints[gene];
+                } else {
+                    result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+                }
+
+                return result;
             } else {
-                result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+                const result = {
+                    gene,
+                    title: title || "No result",
+                    count: isNaN(count) ? 0 : count,
+                    function: proteinMatch !== "" ? proteinMatch : "No match",
+                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                    url: url,
+                    panelAppEnglandCount: 0,  // default to 0 until populated
+                    panelAppAustraliaCount: 0  // default to 0 until populated
+                };
+
+                // Ajouter les contraintes pour ce gène
+                if (constraints[gene]) {
+                    result.constraints = constraints[gene];
+                } else {
+                    result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+                }
+
+                return result;
             }
-
-            return result;
-
         } catch (error) {
             console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);
             return null;
@@ -182,7 +203,7 @@ async function getData(req) {
     }));
 
     const validResults = results.filter(result => result !== null);
-
+    
     await Promise.all(validResults.map(async (result) => {
         try {
             const [panelAppEnglandResponse, panelAppAustraliaResponse] = await Promise.all([
