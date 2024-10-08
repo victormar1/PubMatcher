@@ -94,6 +94,11 @@ app.post('/search', async (req, res) => {
     res.render('index', { results, phenotypes: req.body.phenotypes });
 });
 
+app.get('/search', async (req, res) => {
+    req.body = req.query
+    const results = await getData(req);
+    res.render('index', { results, phenotypes: req.body.phenotypes });
+});
 
 app.get('/api/search', async (req, res) => {
     const genesQuery = req.query.genes ? req.query.genes.split(',') : [];
