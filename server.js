@@ -14,12 +14,17 @@ const { get } = require('http');
 const moment = require('moment');
 const PdfPrinter = require('pdfmake');
 const nodemailer = require('nodemailer');
+const http = require('http'); // Import http for dev server
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
+
+const mode = process.env.NODE_ENV || 'development'; // Par défaut, 'development' si NODE_ENV n'est pas défini
+console.log(`Server is starting in ${mode} mode...`);
+
 
 // Configuration de nodemailer
 const transporter = nodemailer.createTransport({
@@ -126,81 +131,70 @@ async function getData(req) {
         const combinedQuery = queries.join(' OR ');
         const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
         const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
-
         try {
             const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
             const $ = cheerio.load(response.data);
             const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
             const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
-
             const title = $(titleSelector).text().trim();
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
-
+            
             let proteinMatch = "";
+            let accession = "";
             if (responseuniprot.status === 200) {
                 await responseuniprot.data.some((element) => {
                     if (element.comments) {
                         const comments = element.comments;
-                        const finded = comments.some((comment) => {
+                        for (const comment of comments) {
                             if (comment.type === 'FUNCTION') {
+                                accession = element.accession;
                                 proteinMatch = comment.text[0].value;
+                                console.log(comments)   
                                 return true;
                             }
-                        });
-                        if (finded) return true;
+                        }
                     }
                 });
             }
 
             if (proteinMatch.length > 800) {
-                proteinMatch = proteinMatch.substring(0, 800) + " [...]";
+                proteinMatch = proteinMatch.substring(0, 800) + "... ";
             }
 
             const mouseMatch = mouseData.find(row => row.Gene === gene);
             const path = response.request.path;
 
-                       if (!path.includes("term")) {
-                const result = {
-                    gene,
-                    title: $("#full-view-heading > h1.heading-title").text().trim(),
-                    count: 1,
-                    function: proteinMatch ? proteinMatch : "No match",
-                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                    url: url,
-                    panelAppEnglandCount: 0,  // default to 0 until populated
-                    panelAppAustraliaCount: 0  // default to 0 until populated
-                };
 
-                // Ajouter les contraintes pour ce gène
-                if (constraints[gene]) {
-                    result.constraints = constraints[gene];
-                } else {
-                    result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
-                }
-
-                return result;
+            let result = {
+                gene,
+                function: proteinMatch ? proteinMatch : "No match",
+                mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
+                url: url,
+                panelAppEnglandCount: 0,  // default to 0 until populated
+                panelAppAustraliaCount: 0, // default to 0 until populated
+                urlAccession:`https://www.uniprot.org/uniprotkb/${accession}/entry`
+            };
+            
+            if (!path.includes("term")) {
+                result.title = $("#full-view-heading > h1.heading-title").text().trim();
+                result.count = 1;
+                
             } else {
-                const result = {
-                    gene,
-                    title: title || "No result",
-                    count: isNaN(count) ? 0 : count,
-                    function: proteinMatch !== "" ? proteinMatch : "No match",
-                    mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                    url: url,
-                    panelAppEnglandCount: 0,  // default to 0 until populated
-                    panelAppAustraliaCount: 0  // default to 0 until populated
-                };
-
+                result.title = title || "No result",
+                result.count = isNaN(count) ? 0 : count
                 // Ajouter les contraintes pour ce gène
-                if (constraints[gene]) {
-                    result.constraints = constraints[gene];
-                } else {
-                    result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
-                }
-
-                return result;
             }
+            
+            if (constraints[gene]) {
+                result.constraints = constraints[gene];
+            } else {
+                result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+            }
+
+            return result;
+
+
         } catch (error) {
             console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);
             return null;
@@ -334,22 +328,6 @@ app.post('/export-pdf', (req, res) => {
 
 
 
-// Chemins vers votre certificat SSL et votre clé privée
-const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
-const certificatePath = '/etc/letsencrypt/live/pubmatcher.fr/fullchain.pem';
-
-// Lire les fichiers de certificat
-const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-const certificate = fs.readFileSync(certificatePath, 'utf8');
-const credentials = { key: privateKey, cert: certificate };
-
-// Créer un serveur HTTPS avec les certificats
-const httpsServer = https.createServer(credentials, app);
-
-const PORT = 443;
-httpsServer.listen(PORT, () => {
-    console.log(`Server is running on https://localhost:${PORT}`);
-});
 
 
 let genesList = []; // Pour stocker les gènes du fichier CSV
@@ -357,26 +335,51 @@ let genesList = []; // Pour stocker les gènes du fichier CSV
 // Fonction pour lire et stocker les gènes du fichier CSV
 function loadGenesFromFile(filePath) {
     fs.createReadStream(filePath)
-      .pipe(csv())
+    .pipe(csv())
       .on('data', (row) => {
-        genesList.push(row.geneName); // Assurez-vous que 'geneName' correspond à la clé de votre fichier CSV
+          genesList.push(row.geneName); // Assurez-vous que 'geneName' correspond à la clé de votre fichier CSV
       })
       .on('end', () => {
-        console.log('CSV file successfully processed');
+          console.log('CSV file successfully processed');
       });
-}
-
-// Appel de la fonction pour charger les gènes
-loadGenesFromFile('./BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
-
-app.post('/extract-genes', (req, res) => {
-    const text = req.body.text;
-    const foundGenes = genesList.filter(gene => {
-        const regex = new RegExp(`\\b${gene}\\b`, 'i'); // correspondance exacte insensible à la casse
+    }
+    
+    // Appel de la fonction pour charger les gènes
+    loadGenesFromFile('./BDD/genes.csv'); // Remplacez par le chemin correct de votre fichier CSV
+    
+    app.post('/extract-genes', (req, res) => {
+        const text = req.body.text;
+        const foundGenes = genesList.filter(gene => {
+            const regex = new RegExp(`\\b${gene}\\b`, 'i'); // correspondance exacte insensible à la casse
         return regex.test(text);
     });
     // Trier les gènes trouvés selon leur ordre d'apparition dans le texte
     foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
     res.json({ genes: foundGenes });
 });
+
+
+// Conditional configuration for HTTP/HTTPS server
+const isProduction = process.env.NODE_ENV === 'production';
+console.log(isProduction)
+console.log(mode);
+
+if (isProduction) {
+    const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
+    const certificatePath = '/etc/letsencrypt/live/pubmatcher.fr/fullchain.pem';
+    
+    const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+    const certificate = fs.readFileSync(certificatePath, 'utf8');
+    const credentials = { key: privateKey, cert: certificate };
+    
+    const httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(443, () => {
+        console.log(`Server is running on https://localhost:443`);
+    });
+} else {
+    const httpServer = http.createServer(app);
+    httpServer.listen(3000, () => {
+        console.log('Server is running on http://localhost:3000');
+    });
+}
 

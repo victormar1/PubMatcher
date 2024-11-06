@@ -70,7 +70,8 @@
                         <% if (result.function === "No match") { %>
                             <img src="/images/cross.png" alt="No Match" class="no-match"> <!-- Chemin de l'image -->
                         <% } else { %>
-                            <%= result.function %>
+                            <%= result.function %> 
+                            <a href="<%= result.urlAccession %>" target="_blank"> [...]</a>
                         <% } %>
                     </td>
                     <td>
