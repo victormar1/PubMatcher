@@ -4,8 +4,8 @@
   "description": "A web app to search PubMed based on genes and phenotypes",
   "main": "server.js",
   "scripts": {
-    "prod": "set NODE_ENV=production&& node server.js",
-    "dev": "set NODE_ENV=development&& node server.js"
+    "prod": "export NODE_ENV=production&& node server.js",
+    "dev": "export NODE_ENV=development&& node server.js"
   },
   "dependencies": {
     "axios": "^0.24.0",
