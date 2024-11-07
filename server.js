@@ -365,8 +365,8 @@ console.log(isProduction)
 console.log(mode);
 
 if (isProduction) {
-    const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
-    const certificatePath = '/etc/letsencrypt/live/pubmatcher.fr/fullchain.pem';
+    const privateKeyPath = 'privkey.pem';
+    const certificatePath = 'fullchain.pem';
     
     const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
     const certificate = fs.readFileSync(certificatePath, 'utf8');
