@@ -131,6 +131,7 @@ async function getData(req) {
         const combinedQuery = queries.join(' OR ');
         const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
         const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
+
         try {
             const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
             const $ = cheerio.load(response.data);
@@ -142,6 +143,8 @@ async function getData(req) {
             
             let proteinMatch = "";
             let accession = "";
+            let hgncId = "";  // Variable pour l'ID HGNC
+            
             if (responseuniprot.status === 200) {
                 await responseuniprot.data.some((element) => {
                     if (element.comments) {
@@ -150,8 +153,18 @@ async function getData(req) {
                             if (comment.type === 'FUNCTION') {
                                 accession = element.accession;
                                 proteinMatch = comment.text[0].value;
-                                console.log(comments)   
-                                return true;
+                                console.log(comments)
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Recherche de l'ID HGNC dans dbReferences
+                    if (element.dbReferences) {
+                        for (const dbRef of element.dbReferences) {
+                            if (dbRef.type === 'HGNC') {
+                                hgncId = dbRef.id; // On récupère l'ID HGNC
+                                break;
                             }
                         }
                     }
@@ -165,7 +178,6 @@ async function getData(req) {
             const mouseMatch = mouseData.find(row => row.Gene === gene);
             const path = response.request.path;
 
-
             let result = {
                 gene,
                 function: proteinMatch ? proteinMatch : "No match",
@@ -173,7 +185,8 @@ async function getData(req) {
                 url: url,
                 panelAppEnglandCount: 0,  // default to 0 until populated
                 panelAppAustraliaCount: 0, // default to 0 until populated
-                urlAccession:`https://www.uniprot.org/uniprotkb/${accession}/entry`
+                urlAccession: `https://www.uniprot.org/uniprotkb/${accession}/entry`,
+                geneLink: hgncId ? `https://search.thegencc.org/genes/${hgncId}` : "" // Construire le lien HGNC si l'ID est présent
             };
             
             if (!path.includes("term")) {
@@ -183,7 +196,6 @@ async function getData(req) {
             } else {
                 result.title = title || "No result",
                 result.count = isNaN(count) ? 0 : count
-                // Ajouter les contraintes pour ce gène
             }
             
             if (constraints[gene]) {
@@ -193,7 +205,6 @@ async function getData(req) {
             }
 
             return result;
-
 
         } catch (error) {
             console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);

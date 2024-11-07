@@ -18,52 +18,58 @@
             <% results.forEach(result => { %>
                 <tr>
                     <td class="gene">
-                            <div style="text-align: center;">
+                        <div style="text-align: center;">
+                            <% if (result.geneLink) { %>
+                                <a href="<%= result.geneLink %>" target="_blank">
+                                    <i><b><%= result.gene %></b></i>
+                                </a>
+                            <% } else { %>
                                 <i><b><%= result.gene %></b></i>
-                                <table style="margin: 10px auto 0; border: none; width: 80%; font-size: 12px;">
-                                    <!-- Row for pLi and LOEUF -->
-                                    <tr>
-                                        <td style="padding: 0 4px;">
-                                            <small>pLi: 
-                                                <span style="color: <%= parseFloat(result.constraints.pLI.replace(',', '.')) == 1 ? 'red' : 'black' %>;">
-                                                    <%= result.constraints.pLI %>
-                                                </span>
-                                            </small>
-                                        </td>
-                                        <td style="padding: 0 4px;">
-                                            <small>LOEUF: 
-                                                <span style="color: <%= parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.26 ? 'red' : 
-                                                                (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.41 ? 'darkred' : 
-                                                                (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.48 ? 'orange' : 
-                                                                (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.55 ? 'yellow' : 'black'))) %>;">
-                                                    <%= result.constraints.oe_lof_upper %>
-                                                </span>
-                                            </small>
-                                        </td>
-                                    </tr>
-                                    <!-- Row for Z score and MOEUF -->
-                                    <tr>
-                                        <td style="padding: 0 4px;">
-                                            <small>Z_score: 
-                                                <span style="color: <%= parseFloat(result.constraints.mis_z.replace(',', '.')) > 3 ? 'red' : 'black' %>;">
-                                                    <%= result.constraints.mis_z %>
-                                                </span>
-                                            </small>
-                                        </td>
-                                        <td style="padding: 0 4px;">
-                                            <small>MOEUF: 
-                                                <span style="color: <%= parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.58 ? 'red' : 
-                                                                (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.70 ? 'darkred' : 
-                                                                (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.73 ? 'orange' : 
-                                                                (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.77 ? 'yellow' : 'black'))) %>;">
-                                                    <%= result.constraints.oe_mis_upper %>
-                                                </span>
-                                            </small>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
+                            <% } %>
+                            <table style="margin: 10px auto 0; border: none; width: 80%; font-size: 12px;">
+                                <!-- Row for pLi and LOEUF -->
+                                <tr>
+                                    <td style="padding: 0 4px;">
+                                        <small>pLi: 
+                                            <span style="color: <%= parseFloat(result.constraints.pLI.replace(',', '.')) == 1 ? 'red' : 'black' %>;">
+                                                <%= result.constraints.pLI %>
+                                            </span>
+                                        </small>
+                                    </td>
+                                    <td style="padding: 0 4px;">
+                                        <small>LOEUF: 
+                                            <span style="color: <%= parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.26 ? 'red' : 
+                                                            (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.41 ? 'darkred' : 
+                                                            (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.48 ? 'orange' : 
+                                                            (parseFloat(result.constraints.oe_lof_upper.replace(',', '.')) <= 0.55 ? 'yellow' : 'black'))) %>;">
+                                                <%= result.constraints.oe_lof_upper %>
+                                            </span>
+                                        </small>
+                                    </td>
+                                </tr>
+                                <!-- Row for Z score and MOEUF -->
+                                <tr>
+                                    <td style="padding: 0 4px;">
+                                        <small>Z_score: 
+                                            <span style="color: <%= parseFloat(result.constraints.mis_z.replace(',', '.')) > 3 ? 'red' : 'black' %>;">
+                                                <%= result.constraints.mis_z %>
+                                            </span>
+                                        </small>
+                                    </td>
+                                    <td style="padding: 0 4px;">
+                                        <small>MOEUF: 
+                                            <span style="color: <%= parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.58 ? 'red' : 
+                                                            (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.70 ? 'darkred' : 
+                                                            (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.73 ? 'orange' : 
+                                                            (parseFloat(result.constraints.oe_mis_upper.replace(',', '.')) <= 0.77 ? 'yellow' : 'black'))) %>;">
+                                                <%= result.constraints.oe_mis_upper %>
+                                            </span>
+                                        </small>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>                    
                     <td><%= result.title %></td>
                     <td><a href="<%= result.url %>" target="_blank"><%= result.count %></a></td>
                     <td>
