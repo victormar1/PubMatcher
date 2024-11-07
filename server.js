@@ -15,6 +15,7 @@ const moment = require('moment');
 const PdfPrinter = require('pdfmake');
 const nodemailer = require('nodemailer');
 const http = require('http'); // Import http for dev server
+const { debug } = require('console');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
@@ -122,6 +123,8 @@ app.get('/api/search', async (req, res) => {
 });
 
 async function getData(req) {
+    console.log("Received request with genes:", req.body.genes);
+
     const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
     const genesWithoutDuplicate = Array.from(new Set(genes));
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
@@ -131,6 +134,7 @@ async function getData(req) {
         const combinedQuery = queries.join(' OR ');
         const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
         const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
+
         try {
             const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
             const $ = cheerio.load(response.data);
@@ -148,9 +152,20 @@ async function getData(req) {
                         const comments = element.comments;
                         for (const comment of comments) {
                             if (comment.type === 'FUNCTION') {
+                                //get accession id
                                 accession = element.accession;
+                                //get description text
                                 proteinMatch = comment.text[0].value;
-                                console.log(comments)   
+                                if (element.dbReferences) {
+                                    // Search for HGNC types references"
+                                    for (const dbRef of element.dbReferences) {
+                                        if (dbRef.type === 'HGNC') {
+                                            //get HGNC-- id 
+                                            const hgncId = dbRef.id;
+                                            return true;  
+                                        }
+                                    }
+                                } 
                                 return true;
                             }
                         }
