@@ -15,7 +15,9 @@ const moment = require('moment');
 const PdfPrinter = require('pdfmake');
 const nodemailer = require('nodemailer');
 const http = require('http'); // Import http for dev server
+const favicon = require('serve-favicon');
 
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
 app.use(express.static(path.join(__dirname, 'public')));
