@@ -99,6 +99,15 @@ document.addEventListener('DOMContentLoaded', function() {
         seqOnePopin.style.display = 'none';
     });
 
+
+    document.getElementById('textFreeInputBtn').addEventListener('click', function() {
+        document.getElementById('textFreePopin').style.display = 'block';
+    });
+    
+    document.getElementById('textFreeClose').addEventListener('click', function() {
+        document.getElementById('textFreePopin').style.display = 'none';
+    });
+
     if (document.getElementById('resultsTable')) {
         document.getElementById("resultsTable").scrollIntoView({ behavior: 'smooth' });
     }
