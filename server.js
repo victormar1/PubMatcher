@@ -132,45 +132,49 @@ async function getData(req) {
         const queries = phenotypes.map(phenotype => `(${gene} AND ${phenotype})`);
         const combinedQuery = queries.join(' OR ');
         const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
-        const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
 
         try {
-            const [response, responseuniprot] = await Promise.all([axios.get(url), axios.get(uniprotapi)]);
+            // Appel à l'API PubMed
+            const response = await axios.get(url);
             const $ = cheerio.load(response.data);
             const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
             const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
             const title = $(titleSelector).text().trim();
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
-            
+
             let proteinMatch = "";
             let accession = "";
             let hgncId = "";  // Variable pour l'ID HGNC
-            
-            if (responseuniprot.status === 200) {
-                await responseuniprot.data.some((element) => {
-                    if (element.comments) {
-                        const comments = element.comments;
-                        for (const comment of comments) {
-                            if (comment.type === 'FUNCTION') {
-                                accession = element.accession;
-                                proteinMatch = comment.text[0].value;
-                                console.log(comments)
-                                break;
+
+            // API UniProt uniquement si gène de 3 caractères ou plus
+            if (gene.length > 2) {
+                const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
+                const responseuniprot = await axios.get(uniprotapi);
+                
+                if (responseuniprot.status === 200) {
+                    await responseuniprot.data.some((element) => {
+                        if (element.comments) {
+                            for (const comment of element.comments) {
+                                if (comment.type === 'FUNCTION') {
+                                    accession = element.accession;
+                                    proteinMatch = comment.text[0].value;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    
-                    // Recherche de l'ID HGNC dans dbReferences
-                    if (element.dbReferences) {
-                        for (const dbRef of element.dbReferences) {
-                            if (dbRef.type === 'HGNC') {
-                                hgncId = dbRef.id; // On récupère l'ID HGNC
-                                break;
+                        
+                        // Recherche de l'ID HGNC dans dbReferences
+                        if (element.dbReferences) {
+                            for (const dbRef of element.dbReferences) {
+                                if (dbRef.type === 'HGNC') {
+                                    hgncId = dbRef.id;
+                                    break;
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             if (proteinMatch.length > 800) {
@@ -182,24 +186,23 @@ async function getData(req) {
 
             let result = {
                 gene,
-                function: proteinMatch ? proteinMatch : "No match",
-                mousePhenotype: (mouseMatch && !(typeof mouseMatch['Souris KO'] === "undefined")) ? mouseMatch['Souris KO'] : "No match",
-                url: url,
-                panelAppEnglandCount: 0,  // default to 0 until populated
-                panelAppAustraliaCount: 0, // default to 0 until populated
+                function: proteinMatch || "No match",
+                mousePhenotype: mouseMatch?.['Souris KO'] || "No match",
+                url,
+                panelAppEnglandCount: 0,  // Valeur par défaut
+                panelAppAustraliaCount: 0, // Valeur par défaut
                 urlAccession: `https://www.uniprot.org/uniprotkb/${accession}/entry`,
-                geneLink: hgncId ? `https://search.thegencc.org/genes/${hgncId}` : "" // Construire le lien HGNC si l'ID est présent
+                geneLink: hgncId ? `https://search.thegencc.org/genes/${hgncId}` : ""
             };
-            
+
             if (!path.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
                 result.count = 1;
-                
             } else {
-                result.title = title || "No result",
-                result.count = isNaN(count) ? 0 : count
+                result.title = title || "No result";
+                result.count = isNaN(count) ? 0 : count;
             }
-            
+
             if (constraints[gene]) {
                 result.constraints = constraints[gene];
             } else {
@@ -215,25 +218,28 @@ async function getData(req) {
     }));
 
     const validResults = results.filter(result => result !== null);
-    
-    await Promise.all(validResults.map(async (result) => {
-        try {
-            const [panelAppEnglandResponse, panelAppAustraliaResponse] = await Promise.all([
-                axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${result.gene}&format=json`),
-                axios.get(`https://panelapp.agha.umccr.org/api/v1/genes/?entity_name=${result.gene}&format=json`)
-            ]);
 
-            result.panelAppEnglandCount = panelAppEnglandResponse.data.count;
-            result.panelAppAustraliaCount = panelAppAustraliaResponse.data.count;
-        } catch (error) {
-            console.error(`Error fetching PanelApp data for gene ${result.gene}: `, error);
-            result.panelAppEnglandCount = 'Error';
-            result.panelAppAustraliaCount = 'Error';
+    await Promise.all(validResults.map(async (result) => {
+        if (result) {
+            try {
+                const [panelAppEnglandResponse, panelAppAustraliaResponse] = await Promise.all([
+                    axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${result.gene}&format=json`),
+                    axios.get(`https://panelapp.agha.umccr.org/api/v1/genes/?entity_name=${result.gene}&format=json`)
+                ]);
+
+                result.panelAppEnglandCount = panelAppEnglandResponse.data.count;
+                result.panelAppAustraliaCount = panelAppAustraliaResponse.data.count;
+            } catch (error) {
+                console.error(`Error fetching PanelApp data for gene ${result.gene}: `, error);
+                result.panelAppEnglandCount = 'Error';
+                result.panelAppAustraliaCount = 'Error';
+            }
         }
     }));
 
     return validResults;
 }
+
 
 
 
