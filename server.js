@@ -1,5 +1,6 @@
-require('dotenv').config();
 
+//#region imports
+require('dotenv').config();
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
@@ -16,6 +17,34 @@ const PdfPrinter = require('pdfmake');
 const nodemailer = require('nodemailer');
 const http = require('http'); // Import http for dev server
 const favicon = require('serve-favicon');
+const xml2js = require('xml2js');
+//#endregion imports
+
+//#region Server Startup
+// Conditional configuration for HTTP/HTTPS server
+const mode = process.env.NODE_ENV || 'development'; // Par défaut, 'development' si NODE_ENV n'est pas défini
+console.log(`Server is starting in ${mode} mode...`);
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction) {
+    const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
+    const certificatePath = '/etc/letsencrypt/live/pubmatcher.fr/fullchain.pem';
+    
+    const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+    const certificate = fs.readFileSync(certificatePath, 'utf8');
+    const credentials = { key: privateKey, cert: certificate };
+    
+    const httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(443, () => {
+        console.log(`Running on https://localhost:443`);
+    });
+} else {
+    const httpServer = http.createServer(app);
+    httpServer.listen(3000, () => {
+        console.log('Running on http://localhost:3000');
+    });
+}
+//#endregion Server Startup
+
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.set('view engine', 'ejs');
@@ -24,8 +53,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 
-const mode = process.env.NODE_ENV || 'development'; // Par défaut, 'development' si NODE_ENV n'est pas défini
-console.log(`Server is starting in ${mode} mode...`);
 
 
 // Configuration de nodemailer
@@ -62,7 +89,6 @@ app.post('/reportbug', (req, res) => {
             res.status(200).send('Email sent');
         }
     });
-    res.status(200).send("Bug report received");
 });
 
 console.log('Bug report route configured.');
@@ -78,19 +104,19 @@ const mouseData = XLSX.utils.sheet_to_json(mouseDB.Sheets[mouseDB.SheetNames[0]]
 const proteinData = XLSX.utils.sheet_to_json(proteinDB.Sheets[proteinDB.SheetNames[0]]);
 
 fs.createReadStream(path.join(__dirname, 'BDD', 'constraints.csv'))
-  .pipe(csv({ separator: ';' })) // Specify the correct delimiter if needed
-  .on('data', (row) => {
-    // Ensure the gene names match those in your results
-    constraints[row.gene] = {
-      pLI: row.pLI,
-      oe_mis_upper: row.oe_mis_upper,
-      oe_lof_upper: row.oe_lof_upper,
-      mis_z: row.mis_z
-    };
-  })
-  .on('end', () => {
-    console.log('Constraints CSV file successfully processed');
-  });
+    .pipe(csv({ separator: ';' })) // Specify the correct delimiter if needed
+    .on('data', (row) => {
+        // Ensure the gene names match those in your results
+        constraints[row.gene] = {
+        pLI: row.pLI,
+        oe_mis_upper: row.oe_mis_upper,
+        oe_lof_upper: row.oe_lof_upper,
+        mis_z: row.mis_z
+        };
+    })
+    .on('end', () => {
+        console.log('Constraints CSV file successfully processed');
+    });
 
 app.get('/', (req, res) => {
     res.render('index', { results: [], phenotypes: '' });
@@ -123,18 +149,116 @@ app.get('/api/search', async (req, res) => {
     });
 });
 
+
+async function fetchGeneCARD(gene) {
+    //gene="ldlr"
+    const hgncresponse = await fetch(`https://rest.genenames.org/fetch/symbol/${gene}`);
+    let xmlData = await hgncresponse.text();
+
+    if (hgncresponse.status === 200) {
+        xmlData = xmlData.replace(/^\uFEFF/, '');
+
+        // Parse XML data in a Promise
+        const validatedGene = await new Promise((resolve, reject) => {
+            xml2js.parseString(xmlData, (err, result) => {
+                if (err) {
+                console.error("Error parsing XML:", err);
+                reject(err);
+                return;
+                }
+
+                // Check if there are any genes found
+                const numFound = parseInt(result.response.result?.[0]?.$?.numFound, 10);
+                if (numFound > 0) {
+                    const doc = result.response.result[0].doc[0];
+
+                    // Extract specific fields with fallback to "No match"
+                    const geneName = doc.str?.find(item => item.$.name === "name")?._ || "No match";
+                    const location = doc.str?.find(item => item.$.name === "location")?._ || "No match";
+                    const aliasName = doc.arr?.find(item => item.$.name === "alias_name")?.str?.[0] || "No match";
+                    const maneSelect = doc.arr?.find(item => item.$.name === "mane_select")?.str || "No match";
+                    const mgdId = doc.arr?.find(item => item.$.name === "mgd_id")?.str?.[0] || "No match";
+                    const enzymeId = doc.arr?.find(item => item.$.name === "enzyme_id")?.str?.[0] || "No match";
+                    const uniprotIds = doc.arr?.find(item => item.$.name === "uniprot_ids")?.str?.map(item => item)[0] || "No match";
+                    const hgncId = doc.str?.find(item => item.$.name === "hgnc_id")?._ || "No match";
+                    const rgdId = doc.arr?.find(item => item.$.name === "rgd_id")?.str?.[0] || "No match";
+                    const ensemblGeneId = doc.str?.find(item => item.$.name === "ensembl_gene_id")?._ || "No match";
+                    const orphanet = doc.int?.find(item => item.$.name === "orphanet")?._ || "No match";
+                    const dateModified = doc.date?.find(item => item.$.name === "date_modified")?._ || "No match";
+                    const dateApprovedReserved = doc.date?.find(item => item.$.name === "date_approved_reserved")?._ || "No match";
+
+                    // Create the validatedGene object with extracted data
+                    const validatedGene = {
+                        geneName,
+                        aliasName,
+                        location,
+                        maneSelect,
+                        mgdId,
+                        enzymeId,
+                        uniprotIds,
+                        hgncId,
+                        rgdId,
+                        ensemblGeneId,
+                        orphanet,
+                        dateModified,
+                        dateApprovedReserved
+                    };
+
+                    resolve(validatedGene); // Resolve with the validated gene data
+                } else {
+                    console.log("No gene found");
+                    resolve(false)// Resolve with null if no genes found
+                }
+            });
+        });
+
+        return validatedGene; // Return validatedGene after parse completion
+    } else {
+        console.error("Failed to fetch data from HGNC API.");
+        return null;
+    }
+}
+async function getUniProtFunction(uniprotId) {
+    try {
+
+        const uniProtApiUrl = `https://www.ebi.ac.uk/proteins/api/proteins/${uniprotId}.xml`;
+        const responseuniprot = await axios.get(uniProtApiUrl);
+        if (responseuniprot.status === 200) {
+            let proteinMatch = null;
+            await responseuniprot.data.comments.some((element) => {
+                if (element.type === "FUNCTION") {
+                    proteinMatch = element.text[0].value;
+                    return; // 
+                }
+            });
+            return proteinMatch
+        }else {
+            return "No match"
+        }
+    } catch (error) {
+        console.error("Error fetching UniProt data:", error);
+        return "No uniprot match"
+    }
+}
 async function getData(req) {
+    //Get input / clean / remove spaces
     const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
+    //Remove duplicates
     const genesWithoutDuplicate = Array.from(new Set(genes));
+    //Get phenotypes  
     const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
-
     const results = await Promise.all(genesWithoutDuplicate.map(async (gene) => {
-        const queries = phenotypes.map(phenotype => `(${gene} AND ${phenotype})`);
-        const combinedQuery = queries.join(' OR ');
-        const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
 
+        const queries = phenotypes.map(phenotype => `${gene} AND ${phenotype}`);
+        const combinedQuery = queries.join(' OR ');
+        const validatedGene = await fetchGeneCARD(gene);
+        //If gene is non existent, exit
+        if (!validatedGene) {
+            return null;
+        }
         try {
-            // Appel à l'API PubMed
+                // Appel à l'API PubMed
+            const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
             const response = await axios.get(url);
             const $ = cheerio.load(response.data);
             const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
@@ -143,57 +267,52 @@ async function getData(req) {
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
 
-            let proteinMatch = "";
-            let accession = "";
-            let hgncId = "";  // Variable pour l'ID HGNC
+            //fecth function  
+            let uniProtFunction = await getUniProtFunction(validatedGene.uniprotIds);
 
-            // API UniProt uniquement si gène de 3 caractères ou plus
-            if (gene.length > 2) {
-                const uniprotapi = `https://www.ebi.ac.uk/proteins/api/proteins?offset=0&size=100&exact_gene=${gene}&organism=homo%20sapiens`;
-                const responseuniprot = await axios.get(uniprotapi);
-                
-                if (responseuniprot.status === 200) {
-                    await responseuniprot.data.some((element) => {
-                        if (element.comments) {
-                            for (const comment of element.comments) {
-                                if (comment.type === 'FUNCTION') {
-                                    accession = element.accession;
-                                    proteinMatch = comment.text[0].value;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        // Recherche de l'ID HGNC dans dbReferences
-                        if (element.dbReferences) {
-                            for (const dbRef of element.dbReferences) {
-                                if (dbRef.type === 'HGNC') {
-                                    hgncId = dbRef.id;
-                                    break;
-                                }
-                            }
-                        }
-                    });
+            //Crops function text
+            if(uniProtFunction){
+                if (uniProtFunction.length > 800) {
+                    uniProtFunction = uniProtFunction.substring(0, 800) + "... ";
                 }
             }
 
-            if (proteinMatch.length > 800) {
-                proteinMatch = proteinMatch.substring(0, 800) + "... ";
+            //Get mouse phenotypes corresp
+            const mouseUrl = `https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_accession_id:"${validatedGene.mgdId}"`;      
+            console.log(mouseUrl)
+            var mouseMatch = "No match"
+            
+            try {
+                const response = await axios.get(mouseUrl);
+                console.log(response.data.response.docs)
+                //const markerSymbol = response.data.response.docs[0].marker_symbol;
+                const mouseKOPhenotypes = response.data.response.docs.map(result => result.mp_term_name).join(' ');
+                console.log(validatedGene.mgdId)
+                mouseMatch = {
+                    Gene:validatedGene.geneName,
+                    'Souris KO':mouseKOPhenotypes
+                }
+                console.log(mouseMatch)
+            } catch (error) {
+                console.error("Error fetching phenotypes from Alliance:", error);
+                
             }
 
-            const mouseMatch = mouseData.find(row => row.Gene === gene);
+            //Get path ??
             const path = response.request.path;
 
+            //Build result
             let result = {
-                gene,
-                function: proteinMatch || "No match",
-                mousePhenotype: mouseMatch?.['Souris KO'] || "No match",
-                url,
+                gene,//Name  
+                function: uniProtFunction || "No match",//Function
+                mousePhenotype: mouseMatch?.['Souris KO'] || "No match",//MouseKO
+                url,//Pubmed
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut
-                urlAccession: `https://www.uniprot.org/uniprotkb/${accession}/entry`,
-                geneLink: hgncId ? `https://search.thegencc.org/genes/${hgncId}` : ""
+                urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`,//Url to UniProt
+                geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : ""//Url to HGNC
             };
+
 
             if (!path.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
@@ -212,13 +331,12 @@ async function getData(req) {
             return result;
 
         } catch (error) {
-            console.error(`Erreur lors de la recherche pour ${combinedQuery}:`, error);
+            console.error(`Erreur lors de la recherche pubmed pour ${combinedQuery}:`, error);
             return null;
         }
     }));
 
     const validResults = results.filter(result => result !== null);
-
     await Promise.all(validResults.map(async (result) => {
         if (result) {
             try {
@@ -355,12 +473,12 @@ let genesList = []; // Pour stocker les gènes du fichier CSV
 function loadGenesFromFile(filePath) {
     fs.createReadStream(filePath)
     .pipe(csv())
-      .on('data', (row) => {
-          genesList.push(row.geneName); // Assurez-vous que 'geneName' correspond à la clé de votre fichier CSV
-      })
-      .on('end', () => {
-          console.log('CSV file successfully processed');
-      });
+        .on('data', (row) => {
+            genesList.push(row.geneName); // Assurez-vous que 'geneName' correspond à la clé de votre fichier CSV
+        })
+        .on('end', () => {
+            console.log('CSV file successfully processed');
+        });
     }
     
     // Appel de la fonction pour charger les gènes
@@ -377,28 +495,4 @@ function loadGenesFromFile(filePath) {
     res.json({ genes: foundGenes });
 });
 
-
-// Conditional configuration for HTTP/HTTPS server
-const isProduction = process.env.NODE_ENV === 'production';
-console.log(isProduction)
-console.log(mode);
-
-if (isProduction) {
-    const privateKeyPath = '/etc/letsencrypt/live/pubmatcher.fr/privkey.pem';
-    const certificatePath = '/etc/letsencrypt/live/pubmatcher.fr/fullchain.pem';
-    
-    const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-    const certificate = fs.readFileSync(certificatePath, 'utf8');
-    const credentials = { key: privateKey, cert: certificate };
-    
-    const httpsServer = https.createServer(credentials, app);
-    httpsServer.listen(443, () => {
-        console.log(`Server is running on https://localhost:443`);
-    });
-} else {
-    const httpServer = http.createServer(app);
-    httpServer.listen(3000, () => {
-        console.log('Server is running on http://localhost:3000');
-    });
-}
 
