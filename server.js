@@ -279,20 +279,16 @@ async function getData(req) {
 
             //Get mouse phenotypes corresp
             const mouseUrl = `https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_accession_id:"${validatedGene.mgdId}"`;      
-            console.log(mouseUrl)
             var mouseMatch = "No match"
             
             try {
                 const response = await axios.get(mouseUrl);
-                console.log(response.data.response.docs)
-                //const markerSymbol = response.data.response.docs[0].marker_symbol;
-                const mouseKOPhenotypes = response.data.response.docs.map(result => result.mp_term_name).join(' ');
-                console.log(validatedGene.mgdId)
+                const mouseKOPhenotypes = response.data.response.docs.map(result => result.mp_term_name);
+                const mouseKOPhenotypesRemoveDuplicate = Array.from(new Set(mouseKOPhenotypes)).join(" - ");
                 mouseMatch = {
                     Gene:validatedGene.geneName,
-                    'Souris KO':mouseKOPhenotypes
+                    'Souris KO':mouseKOPhenotypesRemoveDuplicate
                 }
-                console.log(mouseMatch)
             } catch (error) {
                 console.error("Error fetching phenotypes from Alliance:", error);
                 
