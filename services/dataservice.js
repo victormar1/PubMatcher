@@ -81,8 +81,8 @@ async function getData(req) {
             let uniProtFunction = await getUniProtFunction(validatedGene.uniprotIds);
 
             // Tronquer le texte si trop long
-            if (uniProtFunction && uniProtFunction.length > 800) {
-                uniProtFunction = uniProtFunction.substring(0, 800) + "... ";
+            if (uniProtFunction && uniProtFunction.length > 5000) {
+                uniProtFunction = uniProtFunction.substring(0, 5000) + "... ";
             }
 
             // Fetch Mouse Phenotypes

@@ -8,9 +8,15 @@ const axios = require('axios');
  */
 async function getUniProtFunction(uniprotId) {
     try {
-        const uniProtApiUrl = `https://www.ebi.ac.uk/proteins/api/proteins/${uniprotId}`;
+        const uniProtApiUrl = `https://www.ebi.ac.uk/proteins/api/proteins/${uniprotId}.xml`;
         console.log(`Fetching UniProt data for ID: ${uniprotId} from URL: ${uniProtApiUrl}`);
         const response = await axios.get(uniProtApiUrl, { headers: { 'Accept': 'application/json' } });
+        const getKeywordsCSV = await axios.get('https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/docs/keywlist.txt')
+        const keywordsCSV = getKeywordsCSV.data
+        const biologicalProcessKeywords = [];
+
+        //console.log(keywordsCSV)
+        let functionKeywords = [];
 
         if (response.status === 200) {
             console.log(`Successfully fetched data for ${uniprotId}`);
@@ -21,16 +27,52 @@ async function getUniProtFunction(uniprotId) {
                 data.comments.some((element) => {
                     if (element.type === "FUNCTION") {
                         proteinMatch = element.text[0].value;
+                        // Extracting function keywords
+                        for (let i = 0; i < Object.keys(data.keywords).length; i++){
+                            functionKeywords.push(data.keywords[i].value)
+                        }
+                        // ADD HERE: Process each function keyword
+                        functionKeywords.forEach(keyword => {
+                            // Search for the keyword in keywordsCSV by matching the ID line
+                            const keywordEntry = keywordsCSV.split('//').find(entry => 
+                                entry.includes(`ID   ${keyword}`)
+                            );
+
+                            if (keywordEntry) {
+                                // Check if the CA line is "Biological process"
+                                const isBiologicalProcess = keywordEntry.split('\n').some(line =>
+                                    line.startsWith('CA') && line.includes('Biological process')
+                                );
+
+                                // If it is a biological process, add it to the list
+                                if (isBiologicalProcess) {
+                                    biologicalProcessKeywords.push(keyword);
+                                }
+                            }
+                        });
+
+                        //ADD HERE
+                        
+                        
                         return true; // Arrêter l'itération une fois trouvé
                     }
                 });
             }
+            //ADD keywords to proteinMatch
+            proteinMatch = proteinMatch + "Keywords: " + biologicalProcessKeywords.join(", ").toUpperCase()
 
             return proteinMatch || "No match";
         } else {
             console.error(`UniProt API responded with status: ${response.status}`);
             return "No match";
         }
+        
+
+        
+
+
+
+
     } catch (error) {
         console.error("Error fetching UniProt data:", error.message);
         return "No UniProt match";
