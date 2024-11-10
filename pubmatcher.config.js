@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name   : "Pub Matcher",
-    script : "./server.js",
+    script : "./app.js",
     env_production: {
 	NODE_ENV: "production"
     },
