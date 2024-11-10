@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
 // Configurer Nodemailer
 configureNodemailer(app);
 
@@ -25,20 +26,10 @@ configureNodemailer(app);
 configureServer(app);
 
 // Charger les routes
-const indexRoutes = require('./routes/index');
-const reportBugRoutes = require('./routes/reportBug');
-const searchRoutes = require('./routes/search');
-const apiRoutes = require('./routes/api');
-const exportPdfRoutes = require('./routes/exportPdf');
-const extractGenesRoutes = require('./routes/extractGenes');
-
+const router = require('./routes/router');
 // Utiliser les routes
-app.use('/', indexRoutes);
-app.use('/reportbug', reportBugRoutes);
-app.use('/search', searchRoutes);
-app.use('/api', apiRoutes);
-app.use('/export-pdf', exportPdfRoutes);
-app.use('/extract-genes', extractGenesRoutes);
+app.use('/', router);
+
 
 // Exporter l'application pour les tests ou autres utilisations
 module.exports = app;
