@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const csv = require('csv-parser');
 const XLSX = require('xlsx');
+const svgIcons = require('../utils/svgIcons');
 
 let constraints = {};
 
@@ -91,14 +92,18 @@ async function getData(req) {
             
             try {
                 const mouseResponse = await axios.get(mouseUrl);
-                const mouseKOPhenotypes = mouseResponse.data.response.docs.map(result => result.mp_term_name);
-                const mouseKOPhenotypesRemoveDuplicate = Array.from(new Set(mouseKOPhenotypes)).join(" - ");
-                mouseMatch = {
-                    Gene: validatedGene.geneName,
-                    'Souris KO': mouseKOPhenotypesRemoveDuplicate
-                };
+                const mouseKOPhenotypes = mouseResponse.data.response.docs.map(result => result.top_level_mp_term_name).flat();
+                const mouseKOPhenotypesRemoveDuplicate = Array.from(new Set(mouseKOPhenotypes));
+                mouseMatch = mouseKOPhenotypesRemoveDuplicate.map(phenotypeCategory => {
+                    const key = phenotypeCategory.toLowerCase().replace(/\s+/g, '_').replace(/\//g, '_');
+                    const iconHtml = svgIcons[key] || '';
+                    return {
+                        category: phenotypeCategory,
+                        icon: iconHtml
+                    };
+                });
             } catch (error) {
-                console.error("Error fetching phenotypes from Alliance:", error);
+                console.error("Error fetching phenotypes from IMPC:", error);
             }
 
             // Obtenir le chemin de la requête
@@ -108,7 +113,7 @@ async function getData(req) {
             let result = {
                 gene, // Nom  
                 function: uniProtFunction || "No match", // Fonction
-                mousePhenotype: mouseMatch?.['Souris KO'] || "No match", // MouseKO
+                mousePhenotype: mouseMatch, // MouseKO
                 url, // Pubmed
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut
