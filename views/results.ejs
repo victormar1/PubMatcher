@@ -85,9 +85,9 @@
                             <img src="/images/cross.png" alt="No Match" class="no-match">
                         <% } else { %>
                             <div>
-                                <% result.mousePhenotype.forEach(phenotype => { %>
-                                    <span class="icon" style="cursor: pointer; color: black;" title="<%= phenotype.category %>">
-                                        <%= phenotype.icon %>
+                                <% Object.entries(result.mousePhenotype).forEach(([category, phenotype]) => { %>
+                                    <span class="icon" style="cursor: pointer; color: black;" title="<%= phenotype.names.join(', ') %>">
+                                        <%- phenotype.icon %> <!-- '%-' to unescape html -->
                                     </span>
                                 <% }) %>
                             </div>
