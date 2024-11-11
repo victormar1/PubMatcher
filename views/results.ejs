@@ -82,11 +82,17 @@
                     </td>
                     <td>
                         <% if (result.mousePhenotype === "No match") { %>
-                            <img src="/images/cross.png" alt="No Match" class="no-match"> <!-- Chemin de l'image -->
+                            <img src="/images/cross.png" alt="No Match" class="no-match">
                         <% } else { %>
-                            <%= result.mousePhenotype %>
+                            <div>
+                                <% Object.entries(result.mousePhenotype).forEach(([category, phenotype]) => { %>
+                                    <span class="icon" style="cursor: pointer; color: black;" title="<%= phenotype.names.join(', ') %>">
+                                        <%- phenotype.icon %> <!-- '%-' to unescape html -->
+                                    </span>
+                                <% }) %>
+                            </div>
                         <% } %>
-                    </td>
+                    </td>                    
                     <td>
                         <a href="https://panelapp.genomicsengland.co.uk/panels/entities/<%= result.gene %>" target="_blank">ENG: <%= result.panelAppEnglandCount %></a> / 
                         <a href="https://panelapp.agha.umccr.org/panels/entities/<%= result.gene %>" target="_blank">AUS: <%= result.panelAppAustraliaCount %></a>
