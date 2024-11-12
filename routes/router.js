@@ -13,6 +13,9 @@ const apiController = require('../controllers/apiController');
 // Route pour la recherche
 router.post('/search', searchController.search);
 
+// Route GET pour la recherche
+router.get('/search', searchController.search);
+
 // Route pour le rapport de bug
 router.post('/reportbug', reportbugController.reportBug);
 
