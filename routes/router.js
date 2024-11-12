@@ -13,6 +13,9 @@ const apiController = require('../controllers/apiController');
 // Route pour la recherche
 router.post('/search', searchController.search);
 
+// Route GET pour la recherche
+router.get('/search', searchController.search);
+
 // Route pour le rapport de bug
 router.post('/reportbug', reportbugController.reportBug);
 
@@ -20,7 +23,7 @@ router.post('/reportbug', reportbugController.reportBug);
 router.post('/exportpdf', exportpdfController.exportPdf);
 
 // Route pour l'extraction de gènes
-router.post('/extractgenes', extractgenesController.extractGenes);
+router.post('/extract-genes', extractgenesController.extractGenes);
 
 // Route pour api
 router.get('/api/search', apiController.searchApi);
