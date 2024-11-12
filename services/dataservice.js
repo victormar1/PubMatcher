@@ -180,13 +180,7 @@ async function getData(req) {
             } catch (error) {
                 console.error("Error fetching phenotypes from IMPC:", error);
             }
-            //GOOFY ASS
-            if(Object.keys(groupedPhenotypes).length===0){ 
-            groupedPhenotypes["noMatch"] = {
-                    names: [],
-                    icon: svgIcons.find(icon => icon.name === "noMatch")?.path.replace(/^"|"$/g, '') || ''
-                };
-            }
+            
 
 
             // Obtenir le chemin de la requête
@@ -203,6 +197,11 @@ async function getData(req) {
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
                 geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : "" // URL vers HGNC
             };
+
+            //NoMatch icon
+            if(Object.keys(groupedPhenotypes).length===0){
+                result.mousePhenotype = "No match";
+            }
 
             if (!requestPath.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();

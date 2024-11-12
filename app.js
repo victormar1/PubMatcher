@@ -15,6 +15,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/BDD/SVG', express.static(path.join(__dirname, 'BDD/SVG')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
