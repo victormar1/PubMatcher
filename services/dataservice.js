@@ -64,7 +64,6 @@ function loadSVGIcons() {
             });
         }
     });
-    console.log(svgIcons);
     return svgIcons;
 }
 
