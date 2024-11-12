@@ -181,7 +181,15 @@ async function getData(req) {
             } catch (error) {
                 console.error("Error fetching phenotypes from IMPC:", error);
             }
-            console.log(groupedPhenotypes)
+            //GOOFY ASS
+            if(Object.keys(groupedPhenotypes).length===0){ 
+            groupedPhenotypes["noMatch"] = {
+                    names: [],
+                    icon: svgIcons.find(icon => icon.name === "noMatch")?.path.replace(/^"|"$/g, '') || ''
+                };
+            }
+
+
             // Obtenir le chemin de la requête
             const requestPath = response.request.path;
 
