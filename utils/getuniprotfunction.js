@@ -59,7 +59,8 @@ async function getUniProtFunction(uniprotId) {
                 });
             }
             //ADD keywords to proteinMatch
-            proteinMatch = proteinMatch + "Keywords: " + biologicalProcessKeywords.join(", ").toUpperCase()
+            proteinMatch = proteinMatch 
+            // "Keywords: " + biologicalProcessKeywords.join(", ").toUpperCase()
 
             return proteinMatch || "No match";
         } else {

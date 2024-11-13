@@ -64,7 +64,6 @@ function loadSVGIcons() {
             });
         }
     });
-    console.log(svgIcons);
     return svgIcons;
 }
 
@@ -181,7 +180,9 @@ async function getData(req) {
             } catch (error) {
                 console.error("Error fetching phenotypes from IMPC:", error);
             }
-            console.log(groupedPhenotypes)
+            
+
+
             // Obtenir le chemin de la requête
             const requestPath = response.request.path;
 
@@ -196,6 +197,11 @@ async function getData(req) {
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
                 geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : "" // URL vers HGNC
             };
+
+            //NoMatch icon
+            if(Object.keys(groupedPhenotypes).length===0){
+                result.mousePhenotype = "No match";
+            }
 
             if (!requestPath.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
