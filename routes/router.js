@@ -34,6 +34,10 @@ router.get('/', (req, res) => {
     res.render('index', { results: [], phenotypes: '' });
 });
 
+// Route root
+router.get('/home', (req, res) => {
+    res.render('homepage', { results: [], phenotypes: '' });
+});
 
 
 module.exports = router;
