@@ -10,6 +10,7 @@ const csv = require('csv-parser');
 const XLSX = require('xlsx');
 
 let constraints = {};
+let svgIcons = [];
 
 /**
  * Charge les contraintes depuis le fichier CSV une seule fois au démarrage
@@ -34,8 +35,43 @@ function loadConstraints() {
         });
 }
 
+//load the svgData.json 
+
+
+function loadSVGIcons() {
+    const entries = [];
+    const folderPath = 'BDD/SVG/';
+
+    // Lire tous les fichiers dans le dossier
+    const files = fs.readdirSync(folderPath);
+
+    files.forEach((file) => {
+        const filePath = path.join(folderPath, file);
+
+        // Vérifier si le fichier est un SVG
+        if (path.extname(file) === '.svg') {
+            // Lire le contenu du fichier SVG
+            let svgContent = fs.readFileSync(filePath, 'utf-8');
+
+            svgContent = svgContent
+                .replace(/width="[^"]*"/, 'width="25px"')// DEGUELASSE A CHANGER ASAP
+                .replace(/height="[^"]*"/, 'height="25px"');
+
+            // Push the modified SVG icon to the array
+            svgIcons.push({
+                name: path.basename(file, '.svg'), // File name without extension
+                path: svgContent, // Modified SVG content
+            });
+        }
+    });
+    return svgIcons;
+}
+
+
+
 // Initialiser les contraintes
 loadConstraints();
+loadSVGIcons();
 
 // Charger les bases de données Excel
 const mouseDBPath = path.join(__dirname, '..', 'BDD', 'Mouse.xlsx');
@@ -89,17 +125,63 @@ async function getData(req) {
             const mouseUrl = `https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_accession_id:"${validatedGene.mgdId}"`;      
             let mouseMatch = "No match";
             
+            const matchingPhenotypes=[]
+            const groupedPhenotypes = {};
+
             try {
                 const mouseResponse = await axios.get(mouseUrl);
-                const mouseKOPhenotypes = mouseResponse.data.response.docs.map(result => result.mp_term_name);
-                const mouseKOPhenotypesRemoveDuplicate = Array.from(new Set(mouseKOPhenotypes)).join(" - ");
-                mouseMatch = {
-                    Gene: validatedGene.geneName,
-                    'Souris KO': mouseKOPhenotypesRemoveDuplicate
-                };
+            
+                // Step 1: Populate matchingPhenotypes with phenotype data
+                mouseResponse.data.response.docs.forEach(doc => {
+                    const phenotype = {
+                        phenotypeName: doc.mp_term_name, // Set the phenotype name
+                        //Initialize the category while removing special char and replacing them by underscore 
+                    //Clean the phenotype name by removing special characters and replacing them with underscores
+                        phenotypeCategory: doc.top_level_mp_term_name[0].replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() // Set the phenotype category
+                    };
+                    
+                    matchingPhenotypes.push(phenotype); // Add to the list of matching phenotypes
+                });
+            
+                // Step 2: Remove duplicates by phenotypeName
+                const matchingPhenotypesNoDuplicates = [...new Map(matchingPhenotypes.map(item => [item.phenotypeName, item])).values()];
+            
+                // Step 3: Group phenotypes by category and find corresponding SVG icons
+                matchingPhenotypesNoDuplicates.forEach(item => {
+                    const { phenotypeCategory, phenotypeName } = item;
+            
+                    // Initialize the category array if it doesn't exist
+                    if (!groupedPhenotypes[phenotypeCategory]) {
+                        groupedPhenotypes[phenotypeCategory] = {
+                            names: [],
+                            icon: null
+                        };
+                    }
+                    // Add the phenotype name to the array for this category
+                    groupedPhenotypes[phenotypeCategory].names.push(phenotypeName);
+                    let matchingIcon = "NoICONFOUND";
+
+                    try {
+                        for (const key in svgIcons) {
+                            if (svgIcons[key].name === phenotypeCategory) {
+                                matchingIcon = svgIcons[key];
+                                groupedPhenotypes[phenotypeCategory].icon = matchingIcon ? matchingIcon.path.replace(/^"|"$/g, '') : '';
+                                break;
+                            }
+                        }
+                    //make a try catch
+                    } catch (error) {
+                        console.error("Error finding SVG icon for category:", phenotypeCategory, error);
+                    }
+
+
+                });
+            
             } catch (error) {
-                console.error("Error fetching phenotypes from Alliance:", error);
+                console.error("Error fetching phenotypes from IMPC:", error);
             }
+            
+
 
             // Obtenir le chemin de la requête
             const requestPath = response.request.path;
@@ -108,13 +190,18 @@ async function getData(req) {
             let result = {
                 gene, // Nom  
                 function: uniProtFunction || "No match", // Fonction
-                mousePhenotype: mouseMatch?.['Souris KO'] || "No match", // MouseKO
+                mousePhenotype: groupedPhenotypes, // <- Categories to display
                 url, // Pubmed
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
                 geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : "" // URL vers HGNC
             };
+
+            //NoMatch icon
+            if(Object.keys(groupedPhenotypes).length===0){
+                result.mousePhenotype = "No match";
+            }
 
             if (!requestPath.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
