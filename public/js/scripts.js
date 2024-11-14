@@ -8,7 +8,14 @@ gtag('config', 'G-PGNGTTRTN2');
 document.addEventListener('DOMContentLoaded', function() {
 
 
+    //LISTENERS VARIABLES
     const addGeneButton = document.getElementById('addGeneButton');
+    const addGeneInput = document.getElementById('geneInput'); 
+    const addPhenotypeInput = document.getElementById('phenotypeInput');
+    const addPhenotypeButton = document.getElementById('addPhenotypeButton');
+
+
+    //SUGESTION #DEBUG
     /*
     const modal = document.getElementById('bug-report-modal');
     const btn = document.getElementById('bug-report-button');
@@ -20,20 +27,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const seqOneInput = document.getElementById('seqOneInput');
     const seqOneSubmit = document.getElementById('seqOneSubmit');
     */
-   
+
+    displayItems('gene');
+    displayItems('phenotype');
+    //Look for stored persistent data on DOM load then init update the containers
+    if (!localStorage.getItem('data')) {
+        localStorage.setItem('data', JSON.stringify([{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }]));
+    }
+    
     const clearTextButton = document.getElementById('clearTextArea');
     clearTextButton.addEventListener('click', () => {
         clearList('gene');
     });
 
-   
+    
+    addGeneButton.addEventListener('click', () => { // Add event listener
+        const geneName = addGeneInput.value.trim(); // Get the gene name from the input field
 
-    //Look for stored persistent data on DOM load
-    if (!localStorage.getItem('data')) {
-        localStorage.setItem('data', JSON.stringify([{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }]));
-    }
+        if (geneName) { // Check if the input is not empty
+            addGene(geneName); // Call addGene with the gene name
+            addGeneInput.value = ''; // Clear the input field
+        }
+    });
+
+
+
+    addPhenotypeButton.addEventListener('click', () => {
+        const phenotypeName = addPhenotypeInput.value.trim();
+
+        if (phenotypeName) {
+            addPhenotype(phenotypeName);
+            addPhenotypeInput.value = ''; // Clear the input
+        }
+    });
+
+
+    document.addEventListener('mouseenter', () => {
+        location.reload();
+    });
+
     
     
+
     btn.onclick = function() {
         modal.style.display = 'block';
     }
@@ -129,15 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('resultsTable')) {
         document.getElementById("resultsTable").scrollIntoView({ behavior: 'smooth' });
     }
-    
-    
-    
-    
-    
 });
 
 
-// Afficher les éléments
 function displayItems(type) {
     const items = getItems(type);
     const container = (type === 'gene') ? document.querySelector('.flex-wrap.gene-items') : document.querySelector('.flex-wrap.phenotype-items');
@@ -149,9 +178,7 @@ function displayItems(type) {
             const geneElement = document.createElement('div');
             geneElement.className = 'bg-gray-200 text-gray-700 rounded-full text-xl font-mono font-bold px-4 py-2 flex items-center space-x-2';
             geneElement.textContent = item; // Set the text content directly
-
             const svgIcon = createSvgIcon(type, item); // Create the SVG element with click handler
-
             geneElement.appendChild(svgIcon);
             container.appendChild(geneElement);
         });
@@ -161,40 +188,29 @@ function displayItems(type) {
         console.error("Container element not found!");
     }
 }
-
-
-function createSvgIcon(type, item) {
-    const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    // ... (set SVG attributes - same as before)
-    svgIcon.addEventListener('click', () => removeItem(type, item)); // Attach click listener directly to SVG
-    return svgIcon;
-}
-
 function addPhenotype(phenotype) {
     const data = JSON.parse(localStorage.getItem('data'));
-    const genes = data.find(item => item.type === 'phenotype');
-    genes.items.push(phenotype);
+    const phenotypes = data.find(item => item.type === 'phenotype');
+    if (!phenotypes.items.includes(phenotype)) {
+    phenotypes.items.push(phenotype);
     localStorage.setItem('data', JSON.stringify(data));
+    console.log("Phenotype added:", phenotype);
     displayItems('phenotype'); // Met à jour l'affichage
+    }
 }
-
 function addGene(gene) {
     const data = JSON.parse(localStorage.getItem('data'));
     const genes = data.find(item => item.type === 'gene');
     if (!genes.items.includes(gene)) {
         genes.items.push(gene);
         localStorage.setItem('data', JSON.stringify(data));
-
         console.log("Gene added:", gene);
         displayItems('gene'); // Update the display
     }
 }
-
-
-
 function createSvgIcon(type, item) {
     const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgIcon.setAttribute('class', 'w-6 h-6 text-gray-800 dark:text-white');
+    svgIcon.setAttribute('class', 'w-6 h-6 hover:text-gray-600 text-gray-800 dark:text-white');
     svgIcon.setAttribute('aria-hidden', 'true');
     svgIcon.setAttribute('width', '24');
     svgIcon.setAttribute('height', '24');
@@ -208,17 +224,11 @@ function createSvgIcon(type, item) {
     svgIcon.addEventListener('click', () => removeItem(type, item)); // Attach click listener
     return svgIcon;
 }
-
-
-
 function getItems(type) {
     const data = JSON.parse(localStorage.getItem('data'));
     const typeObject = data.find(item => item.type === type); 
     return typeObject ? typeObject.items : []; // Return empty array if type not found
 }
-
-
-
 function removeItem(type, itemToRemove) {
     const data = JSON.parse(localStorage.getItem('data'));
     const items = data.find(item => item.type === type).items;
@@ -228,7 +238,6 @@ function removeItem(type, itemToRemove) {
     console.log("Item removed:", itemToRemove);
     displayItems(type) // Refresh the display
 }
-
 function clearList(type) {
     console.log("List cleared:", type);
     const data = JSON.parse(localStorage.getItem('data'));
@@ -241,3 +250,49 @@ function clearList(type) {
 
 
 
+
+
+
+
+function showSuggestions(type) {
+    const geneSuggestions = ["BRCA1", "TP53", "APOE", "CFTR", "EGFR", "MTHFR", "HBB", "ACE", "FTO", "MYH7"];
+    const phenotypeSuggestions = ["Diabetes", "Obesity", "Hypertension", "Asthma", "Alzheimer's Disease",  "Cystic Fibrosis", "Cancer", "Heart Disease", "Arthritis"]; // Example phenotype list
+
+    const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
+    const suggestions = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions");
+    const query = inputField.value.toLowerCase();
+    const suggestionList = type === 'gene' ? geneSuggestions : phenotypeSuggestions; // Select correct suggestion list
+    suggestions.innerHTML = "";
+    if (query) {
+        const filteredSuggestions = suggestionList.filter(suggestion => suggestion.toLowerCase().includes(query));
+
+        if (filteredSuggestions.length > 0) {
+            filteredSuggestions.forEach(suggestion => {
+                const listItem = document.createElement("li");
+                listItem.textContent = suggestion;
+                listItem.className = "p-2 hover:bg-blue-100 cursor-pointer";
+                listItem.onclick = () => selectItem(type, suggestion); // Pass type and suggestion
+                suggestions.appendChild(listItem);
+            });
+            suggestions.classList.remove("hidden");
+        } else {
+            suggestions.classList.add("hidden");
+        }
+    } else {
+        suggestions.classList.add("hidden");
+    }
+
+
+}
+function selectItem(type, item) {  // Modified to handle both genes and phenotypes
+    const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
+    const suggestions = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions"); // Hide the correct list
+    inputField.value = '';      // Clear the search bar
+    inputField.focus();         // Put the cursor back in the search bar
+    suggestions.classList.add("hidden");
+    if (type === 'gene') {
+        addGene(item);
+    } else if (type === 'phenotype') {
+        addPhenotype(item);
+    }
+}
