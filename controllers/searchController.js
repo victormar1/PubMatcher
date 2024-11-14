@@ -16,8 +16,9 @@ exports.search = async (req, res) => {
         const results = await getData(queryParams);
 
         // Rendre la vue avec les résultats
-        res.render('index', { results, phenotypes });
-    } catch (error) {
+        console.log(results)
+        res.json({ results });
+        } catch (error) {
         console.error('Error during search:', error);
         res.status(500).send('Internal Server Error');
     }

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addGeneInput = document.getElementById('geneInput'); 
     const addPhenotypeInput = document.getElementById('phenotypeInput');
     const addPhenotypeButton = document.getElementById('addPhenotypeButton');
-
+    const researchButton = document.getElementById('researchButton');
 
     //SUGESTION #DEBUG
     /*
@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
         clearList('gene');
     });
 
-   
     addGeneButton.addEventListener('click', () => { // Add event listener
         const geneName = addGeneInput.value.trim(); // Get the gene name from the input field
 
@@ -49,8 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
             addGeneInput.value = ''; // Clear the input field
         }
     });
-
-
 
     addPhenotypeButton.addEventListener('click', () => {
         const phenotypeName = addPhenotypeInput.value.trim();
@@ -61,9 +58,114 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    
+    //write a listener code for researchButton if there is data in genes and phenotype, then make a post request to /search
+    researchButton.addEventListener('click', () => {
+        const genes = getItems('gene');
+        const phenotypes = getItems('phenotype');
+
+        if (genes.length > 0 || phenotypes.length > 0) {
+            const data = { genes, phenotypes };
+            
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(jsonData => { // jsonData now holds the parsed JSON
+                const searchResultsContainer = document.getElementById('searchResults');
+                searchResultsContainer.classList.remove('hidden');
+                renderResults(jsonData)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                //Consider adding UI feedback to the user about the error.  For example,  display an error message in the `searchResultsContainer`.
+            });
+        }
+    });
+
+
+
+    function renderResults(data) {
+        const tbody = document.getElementById('resultsTable').querySelector('tbody'); // Target the tbody, not the entire table.
+        tbody.innerHTML = ''; // Clear existing rows
+    
+        if (!data || !data.results || data.results.length === 0) {
+            // No results case - add a row indicating no results found.
+            const row = tbody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 6; // Adjust colSpan to match your table's columns
+            cell.classList.add("px-6", "py-4", "font-medium", "text-gray-900", "whitespace-nowrap", "dark:text-white", "text-center"); // Add classes for styling
+            cell.textContent = "No results found";
+            return;
+        }
+    
+        data.results.forEach(result => {
+            const row = tbody.insertRow();
+            row.classList.add("bg-white", "border-b", "dark:bg-gray-800", "dark:border-gray-700"); // Add row classes for styling
+    
+            // Gene Name Cell
+            const geneCell = row.insertCell();
+            geneCell.classList.add("px-6", "py-4", "font-medium", "text-gray-900", "whitespace-nowrap", "dark:text-white");
+            geneCell.textContent = result.gene || 'N/A';
+    
+            // Title of First Publication Cell
+            const firstPubCell = row.insertCell();
+            firstPubCell.classList.add("px-6", "py-4");
+            firstPubCell.textContent = result.title || 'N/A';
+    
+            // Function Cell
+            const functionCell = row.insertCell();
+            functionCell.classList.add("px-6", "py-4");
+            functionCell.textContent = result.function || 'N/A';
+    
+            // Mouse Phenotype Cell
+            const mousePhenotypeCell = row.insertCell();
+            mousePhenotypeCell.classList.add("px-6", "py-4");
+            mousePhenotypeCell.textContent = result.mousePhenotype || 'N/A';
+    
+            // Panel App Count Cell
+            const panelAppCell = row.insertCell();
+            panelAppCell.classList.add("px-6", "py-4");
+            panelAppCell.textContent = `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}`; // Display counts for England and Australia
+    
+        });
+    }
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+    addGeneInput.addEventListener('input', () => showSuggestions('gene'));
+    addPhenotypeInput.addEventListener('input', () => showSuggestions('phenotype'));
+
+
+    function createResultsElement(data) {
+        // Create the results element dynamically based on the data received from the server
+        // This may involve creating tables, lists, or other HTML elements.
+        const container = document.createElement('div')
+        container.innerHTML = `<p>Results from the search: ${data}</p>` //Replace with proper logic
+        return container
+    }
 
     document.addEventListener('mouseenter', () => {
-        location.reload();
+        //location.reload(); //POOR MANS HOT RELOAD
     });
 
     
@@ -176,7 +278,7 @@ function displayItems(type) {
 
         items.forEach(item => {
             const geneElement = document.createElement('div');
-            geneElement.className = 'bg-gray-200 text-gray-700 rounded-full text-xl font-mono font-bold px-4 py-2 flex items-center space-x-2';
+            geneElement.className = 'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-2';
             geneElement.textContent = item; // Set the text content directly
             const svgIcon = createSvgIcon(type, item); // Create the SVG element with click handler
             geneElement.appendChild(svgIcon);

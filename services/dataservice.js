@@ -89,18 +89,25 @@ const proteinData = XLSX.utils.sheet_to_json(proteinDB.Sheets[proteinDB.SheetNam
  */
 async function getData(req) {
     // Extraire et nettoyer les entrées
-    const genes = req.body.genes.split(',').map(gene => gene.trim()).filter(item => item !== "N/A");
-    const genesWithoutDuplicate = Array.from(new Set(genes));
-    const phenotypes = req.body.phenotypes.split(',').map(phenotype => phenotype.trim());
-
-    const results = await Promise.all(genesWithoutDuplicate.map(async (gene) => {
-        const queries = phenotypes.map(phenotype => `${gene} AND ${phenotype}`);
-        const combinedQuery = queries.join(' OR ');
+    console.log(req)
+    const genes = req.body.genes || [];
+    const phenotypes = req.body.phenotypes || [];
+    
+    const results = await Promise.all(genes.map(async (gene) => {
         const validatedGene = await fetchGeneCARD(gene);
-
         if (!validatedGene) {
             return null;
         }
+
+        let combinedQuery = ''; // Initialize as empty string
+        if (phenotypes.length > 0) {
+            const queries = phenotypes.map(phenotype => `${gene} AND ${phenotype}`);
+            combinedQuery = queries[0];
+        } else {
+            combinedQuery = gene;
+             // Search only by gene if no phenotypes are selected
+        }
+        
 
         try {
             // Appel à l'API PubMed
@@ -112,6 +119,7 @@ async function getData(req) {
             const title = $(titleSelector).text().trim();
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
+
 
             // Fetch UniProt function
             let uniProtFunction = await getUniProtFunction(validatedGene.uniprotIds);
