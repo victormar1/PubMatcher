@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearList('gene');
     });
 
-    
+   
     addGeneButton.addEventListener('click', () => { // Add event listener
         const geneName = addGeneInput.value.trim(); // Get the gene name from the input field
 
@@ -254,36 +254,38 @@ function clearList(type) {
 
 
 
-function showSuggestions(type) {
-    const geneSuggestions = ["BRCA1", "TP53", "APOE", "CFTR", "EGFR", "MTHFR", "HBB", "ACE", "FTO", "MYH7"];
-    const phenotypeSuggestions = ["Diabetes", "Obesity", "Hypertension", "Asthma", "Alzheimer's Disease",  "Cystic Fibrosis", "Cancer", "Heart Disease", "Arthritis"]; // Example phenotype list
-
+async function showSuggestions(type) {
     const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
-    const suggestions = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions");
-    const query = inputField.value.toLowerCase();
-    const suggestionList = type === 'gene' ? geneSuggestions : phenotypeSuggestions; // Select correct suggestion list
-    suggestions.innerHTML = "";
-    if (query) {
-        const filteredSuggestions = suggestionList.filter(suggestion => suggestion.toLowerCase().includes(query));
+    const suggestionsContainer = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions");
+    const query = inputField.value.trim();
 
-        if (filteredSuggestions.length > 0) {
-            filteredSuggestions.forEach(suggestion => {
-                const listItem = document.createElement("li");
-                listItem.textContent = suggestion;
-                listItem.className = "p-2 hover:bg-blue-100 cursor-pointer";
-                listItem.onclick = () => selectItem(type, suggestion); // Pass type and suggestion
-                suggestions.appendChild(listItem);
-            });
-            suggestions.classList.remove("hidden");
-        } else {
-            suggestions.classList.add("hidden");
+    suggestionsContainer.innerHTML = ""; // Clear previous suggestions
+
+    if (query) {
+        try {
+            const terms = type === 'gene' ? await fetchGenesAPI(query) : await fetchPhenotypesAPI(query);
+            if (terms.length > 0) {
+                terms.forEach(term => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = term.name;
+                    listItem.className = "p-2 hover:bg-blue-100 cursor-pointer";
+                    listItem.onclick = () => selectItem(type, term.name);
+                    suggestionsContainer.appendChild(listItem);
+                });
+                suggestionsContainer.classList.remove("hidden");
+            } else {
+                suggestionsContainer.classList.add("hidden");
+            }
+        } catch (error) {
+            console.error("Error fetching suggestions:", error);
+            suggestionsContainer.classList.add("hidden");
         }
     } else {
-        suggestions.classList.add("hidden");
+        suggestionsContainer.classList.add("hidden"); // Hide if query is empty
     }
-
-
 }
+
+
 function selectItem(type, item) {  // Modified to handle both genes and phenotypes
     const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
     const suggestions = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions"); // Hide the correct list
@@ -295,4 +297,67 @@ function selectItem(type, item) {  // Modified to handle both genes and phenotyp
     } else if (type === 'phenotype') {
         addPhenotype(item);
     }
+}
+
+async function fetchPhenotypesAPI(query) {
+    try {
+        const response = await fetch(`https://ontology.jax.org/api/hp/search?q=${encodeURIComponent(query)}&page=0&limit=10`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from OLS API');
+        }
+        const data = await response.json();
+        console.log(data.terms)
+        return data.terms;
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return []; // Return an empty array on error
+    }
+}
+
+async function fetchGenesAPI(query) {
+    try {
+        const apiUrl = `https://clinicaltables.nlm.nih.gov/api/ncbi_genes/v3/search?terms=${encodeURIComponent(query)}&maxList=10`; //CORS BYPASS NEED TO CHANGE BEFORE PROD
+        const response = await fetch(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'http://localhost:3000'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data for gene symbol ${query}`);
+        }
+
+        let data = await response.json();
+        const geneSymbols = data[3].map(gene => ({
+            name: gene[3] 
+        }));
+
+        console.log(data)
+        console.log(geneSymbols)
+
+        
+        // Return data in the same structure as fetchPhenotypesAPI
+        return geneSymbols
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return []; // Return an empty array on error
+    }
+}
+
+
+function parseGeneXML(xmlString) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+    const docs = xmlDoc.getElementsByTagName("doc");
+    const genes = [];
+
+    Array.from(docs).forEach(doc => {
+        const symbol = doc.querySelector("str[name='symbol']").textContent;
+        const hgnc_id = doc.querySelector("str[name='hgnc_id']").textContent;
+        genes.push({ symbol, hgnc_id });
+    });
+
+    return genes;
 }
