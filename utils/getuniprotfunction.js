@@ -48,6 +48,7 @@ async function getUniProtFunction(uniprotId) {
                                 if (isBiologicalProcess) {
                                     biologicalProcessKeywords.push(keyword);
                                 }
+                                
                             }
                         });
 
@@ -58,25 +59,23 @@ async function getUniProtFunction(uniprotId) {
                     }
                 });
             }
-            //ADD keywords to proteinMatch
+            //Add keywords to proteinMatch
             proteinMatch = proteinMatch 
-            // "Keywords: " + biologicalProcessKeywords.join(", ").toUpperCase()
+            keywordsMatch = biologicalProcessKeywords;
+            const result = {
+                proteinMatch: proteinMatch,
+                keywordsMatch: biologicalProcessKeywords
+            };
+            console.log(biologicalProcessKeywords)
+            return result
 
-            return proteinMatch || "No match";
         } else {
             console.error(`UniProt API responded with status: ${response.status}`);
             return "No match";
         }
-        
-
-        
-
-
-
-
     } catch (error) {
         console.error("Error fetching UniProt data:", error.message);
-        return "No UniProt match";
+        return "No Function Found";
     }
 }
 

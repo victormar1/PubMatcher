@@ -125,8 +125,8 @@ async function getData(req) {
             let uniProtFunction = await getUniProtFunction(validatedGene.uniprotIds);
 
             // Tronquer le texte si trop long
-            if (uniProtFunction && uniProtFunction.length > 800) {
-                uniProtFunction = uniProtFunction.substring(0, 800) + "... ";
+            if (uniProtFunction.proteinMatch && uniProtFunction.proteinMatch.length > 800) {
+                uniProtFunction.proteinMatch = uniProtFunction.proteinMatch.substring(0, 800) + "... ";
             }
 
             // Fetch Mouse Phenotypes
@@ -189,10 +189,10 @@ async function getData(req) {
                 console.error("Error fetching phenotypes from IMPC:", error);
             }
             //GOOFY ASS
-            if(Object.keys(groupedPhenotypes).length===0){ 
-            groupedPhenotypes["noMatch"] = {
-                    names: [],
-                    icon: svgIcons.find(icon => icon.name === "noMatch")?.path.replace(/^"|"$/g, '') || ''
+            if (Object.keys(groupedPhenotypes).length === 0) {
+                groupedPhenotypes["noMatch"] = {
+                    names: ["No Match"], // Add "No Match" as the name
+                    icon: svgIcons.find(icon => icon.name === "noMatch")?.path.replace(/^"|"$/g, '') || '' // Add the SVG icon
                 };
             }
 
@@ -203,9 +203,10 @@ async function getData(req) {
             // Construire l'objet résultat
             let result = {
                 gene, // Nom  
-                function: uniProtFunction || "No match", // Fonction
+                function: uniProtFunction.proteinMatch || "No match", // Fonction
                 mousePhenotype: groupedPhenotypes, // <- Categories to display
                 url, // Pubmed
+                functionKeywords : uniProtFunction.keywordsMatch || "No match",
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
@@ -216,7 +217,7 @@ async function getData(req) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
                 result.count = 1;
             } else {
-                result.title = title || "No result";
+                result.title = title || "No PubMed Articles";
                 result.count = isNaN(count) ? 0 : count;
             }
 

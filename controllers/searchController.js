@@ -17,6 +17,7 @@ exports.search = async (req, res) => {
 
         // Rendre la vue avec les résultats
         console.log(results)
+
         res.json({ results });
         } catch (error) {
         console.error('Error during search:', error);

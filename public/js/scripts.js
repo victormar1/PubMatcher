@@ -1,4 +1,7 @@
 // scripts.js
+// REFACTOR WHEN DONE
+
+
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -8,6 +11,7 @@ gtag('config', 'G-PGNGTTRTN2');
 document.addEventListener('DOMContentLoaded', function() {
 
 
+
     //LISTENERS VARIABLES
     const addGeneButton = document.getElementById('addGeneButton');
     const addGeneInput = document.getElementById('geneInput'); 
@@ -15,18 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const addPhenotypeButton = document.getElementById('addPhenotypeButton');
     const researchButton = document.getElementById('researchButton');
 
-    //SUGESTION #DEBUG
-    /*
-    const modal = document.getElementById('bug-report-modal');
-    const btn = document.getElementById('bug-report-button');
-    const span = document.getElementsByClassName('close')[0];
-    const searchForm = document.getElementById('searchForm');
-    const genesInput = document.getElementById('genesInput');
-    const seqOneBtn = document.getElementById('seqOneBtn');
-    const seqOnePopin = document.getElementById('seqOnePopin');
-    const seqOneInput = document.getElementById('seqOneInput');
-    const seqOneSubmit = document.getElementById('seqOneSubmit');
-    */
+
+
 
     displayItems('gene');
     displayItems('phenotype');
@@ -34,6 +28,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!localStorage.getItem('data')) {
         localStorage.setItem('data', JSON.stringify([{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }]));
     }
+    //check if there is a response stored 
+    const storedResults = localStorage.getItem('results');
+    if (storedResults) {
+        const jsonData = JSON.parse(storedResults);
+        renderResults(jsonData);
+        document.getElementById('resultsTable').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('searchResults').classList.remove('hidden');
+    }
+
+
     
     const clearTextButton = document.getElementById('clearTextArea');
     clearTextButton.addEventListener('click', () => {
@@ -59,11 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     
-    //write a listener code for researchButton if there is data in genes and phenotype, then make a post request to /search
+    //RESEARCH BUTTON
     researchButton.addEventListener('click', () => {
+        startLoader()
         const genes = getItems('gene');
         const phenotypes = getItems('phenotype');
-
         if (genes.length > 0 || phenotypes.length > 0) {
             const data = { genes, phenotypes };
             
@@ -81,143 +85,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json(); // Parse the response as JSON
             })
             .then(jsonData => { // jsonData now holds the parsed JSON
+                console.log(jsonData)
+                if (!jsonData || !jsonData.results || jsonData.results.length === 0) {
+                    stopLoader()
+                }
                 const searchResultsContainer = document.getElementById('searchResults');
                 searchResultsContainer.classList.remove('hidden');
                 renderResults(jsonData)
+                document.getElementById('resultsTable').scrollIntoView({ behavior: 'smooth' });
+                //stock resonse in a localstorage
+                localStorage.setItem('results', JSON.stringify(jsonData));
+                stopLoader()
             })
             .catch(error => {
                 console.error('Error:', error);
                 //Consider adding UI feedback to the user about the error.  For example,  display an error message in the `searchResultsContainer`.
             });
+        }else if((genes, phenotypes) => 
+            Object.keys(genes).length === 0 && Object.keys(phenotypes).length === 0){
+            stopLoader() //loader check for no input
         }
     });
-
-
-
-    function renderResults(data) {
-        const tbody = document.getElementById('resultsTable').querySelector('tbody'); // Target the tbody, not the entire table.
-        tbody.innerHTML = ''; // Clear existing rows
-    
-        if (!data || !data.results || data.results.length === 0) {
-            // No results case - add a row indicating no results found.
-            const row = tbody.insertRow();
-            const cell = row.insertCell();
-            cell.colSpan = 6; // Adjust colSpan to match your table's columns
-            cell.classList.add("px-6", "py-4", "font-medium", "text-gray-900", "whitespace-nowrap", "dark:text-white", "text-center"); // Add classes for styling
-            cell.textContent = "No results found";
-            return;
-        }
-    
-        data.results.forEach(result => {
-            const row = tbody.insertRow();
-            row.classList.add("bg-white", "border-b", "dark:bg-gray-800", "dark:border-gray-700"); // Add row classes for styling
-    
-            // Gene Name Cell
-            const geneCell = row.insertCell();
-            geneCell.classList.add("px-6", "py-4", "font-medium", "text-gray-900", "whitespace-nowrap", "dark:text-white");
-            geneCell.textContent = result.gene || 'N/A';
-    
-            // Title of First Publication Cell
-            const firstPubCell = row.insertCell();
-            firstPubCell.classList.add("px-6", "py-4");
-            firstPubCell.textContent = result.title || 'N/A';
-    
-            // Function Cell
-            const functionCell = row.insertCell();
-            functionCell.classList.add("px-6", "py-4");
-            functionCell.textContent = result.function || 'N/A';
-    
-            // Mouse Phenotype Cell
-            const mousePhenotypeCell = row.insertCell();
-            mousePhenotypeCell.classList.add("px-6", "py-4");
-            mousePhenotypeCell.textContent = result.mousePhenotype || 'N/A';
-    
-            // Panel App Count Cell
-            const panelAppCell = row.insertCell();
-            panelAppCell.classList.add("px-6", "py-4");
-            panelAppCell.textContent = `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}`; // Display counts for England and Australia
-    
-        });
-    }
-    
-    
-
-
-
-
-
-
-
-
-
 
 
     addGeneInput.addEventListener('input', () => showSuggestions('gene'));
     addPhenotypeInput.addEventListener('input', () => showSuggestions('phenotype'));
 
-
-    function createResultsElement(data) {
-        // Create the results element dynamically based on the data received from the server
-        // This may involve creating tables, lists, or other HTML elements.
-        const container = document.createElement('div')
-        container.innerHTML = `<p>Results from the search: ${data}</p>` //Replace with proper logic
-        return container
-    }
-
     document.addEventListener('mouseenter', () => {
         //location.reload(); //POOR MANS HOT RELOAD
     });
 
-    
-    
-
-    btn.onclick = function() {
-        modal.style.display = 'block';
-    }
-    
-    span.onclick = function() {
-        modal.style.display = 'none';
-    }
-    
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    }
-    
-    document.getElementById('bug-report-form').onsubmit = async function(event) {
-        event.preventDefault();
-        const name = document.getElementById('name').value;
-        const message = document.getElementById('message').value;
-        console.log('Sending bug report:', { name, message });
-        try {
-            const response = await fetch('/reportbug', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name, message })
-            });
-            if (response.ok) {
-                alert('Bug report sent successfully');
-                modal.style.display = 'none';
-            } else {
-                const errorText = await response.text();
-                console.error('Failed to send bug report:', errorText);
-                alert('Failed to send bug report');
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-            alert('Network error');
-        }
-    }
-    
-    document.getElementById('textFreeInputBtn').addEventListener('click', () => {
-        document.getElementById('textFreePopin').style.display = 'block';
-    });
-    
-    document.getElementById('textFreeSubmit').addEventListener('click', () => {
-        const text = document.getElementById('textFreeInput').value;
+    document.getElementById('extractGenesBUtton').addEventListener('click', () => {
+        const text = document.getElementById('batchInputText').value;
         fetch('/extract-genes', {
             method: 'POST',
             headers: {
@@ -228,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             document.getElementById('genesInput').value = data.genes.join(', ');
-            document.getElementById('textFreePopin').style.display = 'none';
+            document.getElementById('batchInputText').style.display = 'none';
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -267,12 +166,203 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("resultsTable").scrollIntoView({ behavior: 'smooth' });
     }
 });
+function startLoader() {
+    document.querySelectorAll('.loader').forEach(loader => {
+        loader.classList.add('animate-spin'); // Start rotation on each loader
+    });
+}
+function stopLoader() {
+    document.querySelectorAll('.loader').forEach(loader => {
+        loader.classList.remove('animate-spin'); // Stop rotation on each loader
+    });
+}
+function renderResults(data) {
+    const tbody = document.getElementById('resultsTable').querySelector('tbody'); // Target the tbody, not the entire table.
+    tbody.innerHTML = ''; // Clear existing rows
+
+    if (!data || !data.results || data.results.length === 0) {
+        // No results case - add a row indicating no results found.
+        const row = tbody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 6; // Adjust colSpan to match your table's columns
+        cell.classList.add("px-6", "py-4", "font-medium", "text-gray-900", "whitespace-nowrap", "dark:text-white", "text-center"); // Add classes for styling
+        cell.textContent = "No results found";
+        return;
+    }
+
+    data.results.forEach(result => {
+        console.log(result)
+
+        const row = tbody.insertRow();
+        row.classList.add("bg-white", "border-b", "dark:bg-gray-800", "dark:border-gray-700"); // Add row classes for styling
+
+        // Gene Name Cell
+        const geneCell = row.insertCell();
+        geneCell.classList.add("px-6", "py-4", "font-medium", "text-gray-700", "text-lg", "whitespace-nowrap", "dark:text-white");
+        const hgncLink = document.createElement("a");
+        hgncLink.href = result.geneLink; // Set the URL
+        hgncLink.textContent = result.gene; // Set the text
+        hgncLink.classList.add("text-blue-700", "hover:underline"); // Add styles for link
+        hgncLink.target = "_blank"; // Open in a new tab
+        hgncLink.rel = "noopener noreferrer"; // Ensure security for external links
+        geneCell.appendChild(hgncLink);
+    
 
 
+
+        // Title of First Publication Cell
+        const firstPubCell = row.insertCell();
+        firstPubCell.classList.add("px-6", "py-4");
+        firstPubCell.textContent = result.title || 'N/A';
+
+        // Function Cell
+        const functionCell = row.insertCell();
+        functionCell.classList.add("px-6", "py-4");
+        //keywords
+        if (result.functionKeywords && Array.isArray(result.functionKeywords)) {
+            const keywordsDiv = document.createElement("div");
+            keywordsDiv.classList.add("mb-2", "flex", "flex-wrap", "gap-2");
+
+            result.functionKeywords.forEach(keyword => {
+                const keywordItem = document.createElement("div");
+                keywordItem.classList.add(
+                    "px-2", 
+                    "py-1", 
+                    "text-xs", 
+                    "font-bold",
+                    "font-sans", 
+                    "text-blue-700", 
+                    "bg-blue-100", 
+                    "rounded"
+                );
+                keywordItem.textContent = keyword;
+                keywordsDiv.appendChild(keywordItem);
+            });
+
+            // Append the keywords div to the cell
+            functionCell.appendChild(keywordsDiv);
+        }
+
+        // Add the function text below the keywords
+        const functionText = document.createElement("div");
+        functionText.textContent = result.function || 'N/A';
+        // [...]"
+        const link = document.createElement("a");
+        link.href = result.urlAccession;
+        link.classList.add("font-bold","text-blue-600")
+        link.target = "_blank";
+        link.textContent = "[...]";
+        functionCell.appendChild(functionText);
+        functionText.appendChild(link);
+
+        // Mouse Phenotype Cell
+        const mousePhenotypeCell = row.insertCell();
+        mousePhenotypeCell.classList.add("px-6", "py-4");
+        if (result.mousePhenotype && typeof result.mousePhenotype === "object" && Object.keys(result.mousePhenotype).length > 0) {
+            // Create a container div for the phenotypes
+            const phenotypeContainer = document.createElement("div");
+            phenotypeContainer.classList.add("flex", "flex-wrap", "gap-2", "justify-center");
+
+            for (const [category, details] of Object.entries(result.mousePhenotype)) {
+                const categoryDiv = document.createElement("div");
+                categoryDiv.classList.add("relative", "flex", "items-center", "gap-2");
+            
+                if (details.icon) {
+                    const svgContainer = document.createElement("div");
+                    svgContainer.innerHTML = details.icon;
+                    svgContainer.classList.add("w-6", "h-6", "cursor-pointer");
+                    categoryDiv.appendChild(svgContainer);
+            
+                    const tooltip = document.createElement("div");
+            
+                    details.names.forEach(name => {
+                        const line = document.createElement("div");
+                        line.textContent = name.trim(); 
+                        tooltip.appendChild(line);
+                    });
+            
+                    tooltip.classList.add(
+                        "absolute",
+                        "hidden",
+                        "bg-gray-800",
+                        "text-white",
+                        "text-ml",
+                        "font-mono",
+                        "font-bold",
+                        "rounded",
+                        "p-2",
+                        "z-50",
+                        "top-full",
+                        "left-1/2",
+                        "-translate-x-1/2",
+                        "mt-2",
+                        "shadow-lg",
+                        "pointer-events-none"
+                    );
+            
+                    // Remove any fixed or max width
+                    tooltip.style.width = "auto";
+                    tooltip.style.maxWidth = "unset"; // Ensure no maximum width constraint
+                    tooltip.style.whiteSpace = "nowrap"; // Prevent wrapping
+
+                    // Handle tooltip positioning to stay within viewport
+                    svgContainer.addEventListener("mouseenter", () => {
+                        tooltip.classList.remove("hidden");
+                    
+                        // Get bounding box for the parent container and tooltip
+                        const containerRect = svgContainer.getBoundingClientRect();
+                        const tooltipRect = tooltip.getBoundingClientRect();
+                        const viewportWidth = window.innerWidth;
+                    
+                        // Reset tooltip position
+                        tooltip.style.left = "50%";
+                        tooltip.style.transform = "translateX(-50%)";
+                    
+                        // Adjust if the tooltip overflows on the right
+                        if (tooltipRect.right > viewportWidth) {
+                            const overflowRight = tooltipRect.right - viewportWidth;
+                            tooltip.style.left = `calc(50% - ${overflowRight + 10}px)`; //GPT MAGIC 
+                        }
+                    
+                        // Adjust if the tooltip overflows on the left
+                        if (tooltipRect.left < 0) {
+                            const overflowLeft = Math.abs(tooltipRect.left);
+                            tooltip.style.left = `calc(50% + ${overflowLeft + 10}px)`;
+                        }
+                    });
+                    
+                    svgContainer.addEventListener("mouseleave", () => {
+                        tooltip.classList.add("hidden");
+                    });
+            
+                    categoryDiv.appendChild(tooltip);
+                }
+            
+                phenotypeContainer.appendChild(categoryDiv);
+            }
+            
+            
+            
+
+            mousePhenotypeCell.appendChild(phenotypeContainer);
+
+        } 
+
+        // Panel App Count Cell
+        const panelAppCell = row.insertCell();
+        panelAppCell.classList.add("px-6", "py-4");
+        panelAppCell.textContent = `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}`; // Display counts for England and Australia
+    });
+
+    stopLoader();
+}
 function displayItems(type) {
     const items = getItems(type);
     const container = (type === 'gene') ? document.querySelector('.flex-wrap.gene-items') : document.querySelector('.flex-wrap.phenotype-items');
+    if(type==='gene'){
 
+        document.querySelector('.genes-count').textContent = `RESEARCH ${Object.keys(items).length} GENES`;
+    }
     if (container) {
         container.innerHTML = ''; // Clear existing content
 
@@ -283,12 +373,14 @@ function displayItems(type) {
             const svgIcon = createSvgIcon(type, item); // Create the SVG element with click handler
             geneElement.appendChild(svgIcon);
             container.appendChild(geneElement);
+            
         });
-
-        console.log(`Updated ${type} list:`, items); // Log updated items directly
+        
     } else {
+        
         console.error("Container element not found!");
     }
+    
 }
 function addPhenotype(phenotype) {
     const data = JSON.parse(localStorage.getItem('data'));
@@ -348,14 +440,6 @@ function clearList(type) {
     localStorage.setItem('data', JSON.stringify(data));
     displayItems(type) // Refresh the display
 }
-
-
-
-
-
-
-
-
 async function showSuggestions(type) {
     const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
     const suggestionsContainer = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions");
@@ -386,13 +470,11 @@ async function showSuggestions(type) {
         suggestionsContainer.classList.add("hidden"); // Hide if query is empty
     }
 }
-
-
-function selectItem(type, item) {  // Modified to handle both genes and phenotypes
+function selectItem(type, item) {  
     const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
-    const suggestions = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions"); // Hide the correct list
-    inputField.value = '';      // Clear the search bar
-    inputField.focus();         // Put the cursor back in the search bar
+    const suggestions = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions"); 
+    inputField.value = '';     
+    inputField.focus();       
     suggestions.classList.add("hidden");
     if (type === 'gene') {
         addGene(item);
@@ -400,7 +482,6 @@ function selectItem(type, item) {  // Modified to handle both genes and phenotyp
         addPhenotype(item);
     }
 }
-
 async function fetchPhenotypesAPI(query) {
     try {
         const response = await fetch(`https://ontology.jax.org/api/hp/search?q=${encodeURIComponent(query)}&page=0&limit=10`);
@@ -415,7 +496,6 @@ async function fetchPhenotypesAPI(query) {
         return []; // Return an empty array on error
     }
 }
-
 async function fetchGenesAPI(query) {
     try {
         const apiUrl = `https://clinicaltables.nlm.nih.gov/api/ncbi_genes/v3/search?terms=${encodeURIComponent(query)}&maxList=10`; //CORS BYPASS NEED TO CHANGE BEFORE PROD
@@ -434,11 +514,6 @@ async function fetchGenesAPI(query) {
         const geneSymbols = data[3].map(gene => ({
             name: gene[3] 
         }));
-
-        console.log(data)
-        console.log(geneSymbols)
-
-        
         // Return data in the same structure as fetchPhenotypesAPI
         return geneSymbols
 
@@ -447,8 +522,6 @@ async function fetchGenesAPI(query) {
         return []; // Return an empty array on error
     }
 }
-
-
 function parseGeneXML(xmlString) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "application/xml");
