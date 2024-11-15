@@ -14,9 +14,12 @@
 <body class="bg-gray-100 font-sans leading-normal tracking-normal flex flex-col space-y-4 min-h-screen">
 
     <!-- Header -->
-    <header class="bg-gray-800 py-4 ml">
-        <div class=" flex justify-between px-4 items-c--enter">
-            <h1 class="text-5xl font-bold text-white ">PubMatcher</h1>
+    <header class="bg-gray-800 py-4">
+        <div class="flex justify-between px-4 items-center">
+            <div class="flex items-baseline space-x-2">
+                <h1 class="text-5xl font-bold text-white">PubMatcher</h1>
+                <h1 class="text-sm font-bold text-white">2.0</h1>
+            </div>
             <nav>
                 <a href="#" class="text-white hover:text-blue-200 mx-2">Home</a>
                 <a href="#" class="text-white hover:text-blue-200 mx-2">About</a>
@@ -24,6 +27,7 @@
             </nav>
         </div>
     </header>
+    
 
     <!-- Main Content -->
     <main class="container mx-auto my-10 p-5 bg-white rounded-lg shadow-sm flex-grow flex-col">
@@ -34,7 +38,7 @@
             <span class="relative z-10 bg-white px-6 font-bold font-nono text-gray-700 text-5xl ">SEARCH ENGINE</span>
         </span>     
         <!-- SEARCH CONTAINER -->
-        <div class="flex items-center justify-center border-l border-r  border-gray-400 "></divclass>
+        <div class="flex items-center justify-center border-l border-r  border-gray-300 "></divclass>
             <!-- Extractor Container -->
             <div class="flex-row flex-grow overflow-hidden border-green-500"> 
                 <!-- GENE EXTRACTION TITLE -->
@@ -190,13 +194,13 @@
         </div>
         
     </main>
-    <main id="searchResults" class=" hidden container mx-auto my-10 p-5  border-red-500 bg-transparent rounded-lg  flex-grow flex-col">
+    <main id="searchResults" class=" hidden container mx-auto my-10  w-full  border-red-500 bg-transparent rounded-lg  flex-grow flex-col">
         <div class="flex justify-center">
-            <h2 class="text-bold text-2xl font-mono font-bold text-gray-700">RESULTS</h2>
+            <h2 class="text-bold text-3xl font-mono font-bold text-gray-700">RESULTS</h2>
         </div>
         <div class="block">
             <div class="relative overflow-visible shadow-md sm:rounded-lg">
-                <table id="resultsTable" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <table id="resultsTable" class="w-full text-sm text-left rtl:text-right text-gray-500 border border-gray-400 rounded-3xl dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700  dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">
@@ -210,7 +214,7 @@
                                     </svg></a>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-3 ">
                                 <div class="flex items-center">
                                     FUNCTION
                                     <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -218,7 +222,7 @@
                                     </svg></a>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap border border-red-500">
                                 <div class="flex items-center">
                                     PHENOTYPE KO
                                     <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -226,7 +230,7 @@
                                     </svg></a>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-3 whitespace-nowrap">
                                 <div class="flex items-center">
                                     PANEL APP
                                     <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
