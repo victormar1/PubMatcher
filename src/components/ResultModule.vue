@@ -65,6 +65,9 @@ export default {
     watch: {
     results(newResults) {
         console.log("Results received in ResultModule:", newResults);
+        if (newResults && newResults.length > 0) {
+            this.scrollToResults();
+        }
     },
     },
     data() {
@@ -82,6 +85,15 @@ export default {
             details.showTooltip = true;
             details.tooltipX = 0; // Correct calculation for x, considering scroll
             details.tooltipY = 0;
+        },
+        scrollToResults() {
+        const resultsElement = document.getElementById("searchResults");
+        if (resultsElement) {
+            resultsElement.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+        }
         },
 
 
