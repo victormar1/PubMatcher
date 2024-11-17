@@ -1,4 +1,3 @@
-// app.js
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -7,29 +6,33 @@ const bodyParser = require('body-parser');
 const { configureServer } = require('./config/server');
 const configureNodemailer = require('./config/nodemailer');
 
-// Initialiser l'application Express
+// Initialize the Express app
 const app = express();
 
-// Configuration des middleware
+// Middleware configuration
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // Static files
+app.use(express.static(path.join(__dirname, 'dist'))); // Serve Vue's built files
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-// Configurer Nodemailer
+// Configure Nodemailer
 configureNodemailer(app);
 
-// Configurer le démarrage du serveur
+// Configure server startup
 configureServer(app);
 
-// Charger les routes
+// Handle API routes
 const router = require('./routes/router');
-// Utiliser les routes
-app.use('/', router);
+app.use('/api', router); // Prefix API routes with '/api'
+
+// Handle SPA routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html')); // Always serve the Vue SPA
+});
 
 
-// Exporter l'application pour les tests ou autres utilisations
+
+
+// Export the app for tests or other uses
 module.exports = app;

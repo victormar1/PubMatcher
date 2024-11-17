@@ -4,6 +4,8 @@
   "description": "A web app to search PubMed based on genes and phenotypes",
   "main": "app.js",
   "dependencies": {
+    "@vueuse/core": "^11.2.0",
+    "autoprefixer": "^10.4.20",
     "axios": "^0.24.0",
     "cheerio": "^1.0.0-rc.10",
     "csv-parser": "^3.0.0",
@@ -17,11 +19,20 @@
     "nodemailer": "^6.9.16",
     "path": "^0.12.7",
     "pdfmake": "^0.2.15",
+    "postcss": "^8.4.49",
     "serve-favicon": "^2.5.0",
+    "tailwindcss": "^3.4.15",
+    "vue": "^3.5.13",
     "xlsx": "^0.18.5",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
+    "@vue/cli-service": "^5.0.8",
     "cross-env": "^7.0.3"
+  },
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   }
 }
