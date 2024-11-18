@@ -28,7 +28,7 @@ app.use('/api', router); // Prefix API routes with '/api'
 
 // Handle SPA routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html')); // Always serve the Vue SPA
+  res.sendFile(path.join(__dirname, 'dist', 'homepage.html')); // Always serve the Vue SPA
 });
 
 

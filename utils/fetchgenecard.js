@@ -68,41 +68,7 @@ async function fetchGeneCARD(gene) {
     }
 }
 
-/**
- * Extrait la valeur d'une propriété spécifique d'un document XML
- * @param {Object} doc - Document XML parsé
- * @param {String} key - Clé de la propriété à extraire
- * @returns {String} - Valeur extraite ou "No match"
- */
-function getValue(doc, key) {
-    return doc.str?.find(item => item.$.name === key)?._ || "No match";
-}
 
-/**
- * Extrait la première valeur d'un tableau pour une propriété spécifique
- * @param {Object} doc - Document XML parsé
- * @param {String} key - Clé de la propriété à extraire
- * @returns {String} - Première valeur extraite ou "No match"
- */
-function getArrayValue(doc, key) {
-    return doc.arr?.find(item => item.$.name === key)?.str?.[0] || "No match";
-}
-
-/**
- * Extrait l'ensemble des valeurs d'un tableau pour une propriété spécifique
- * @param {Object} doc - Document XML parsé
- * @param {String} key - Clé de la propriété à extraire
- * @returns {Array|String} - Tableau de valeurs ou "No match"
- */
-function getArray(doc, key) {
-    return doc.arr?.find(item => item.$.name === key)?.str || "No match";
-}
-
-/**
- * Parse une chaîne XML en un objet JavaScript
- * @param {String} xml - Chaîne XML à parser
- * @returns {Object} - Objet JavaScript résultant du parsing
- */
 function parseXML(xml) {
     return new Promise((resolve, reject) => {
         xml2js.parseString(xml, (err, result) => {

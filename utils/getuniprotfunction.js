@@ -31,6 +31,7 @@ async function getUniProtFunction(uniprotId) {
                         for (let i = 0; i < Object.keys(data.keywords).length; i++){
                             functionKeywords.push(data.keywords[i].value)
                         }
+                        console.log("Keywords " + functionKeywords)
                         // ADD HERE: Process each function keyword
                         functionKeywords.forEach(keyword => {
                             // Search for the keyword in keywordsCSV by matching the ID line
@@ -60,13 +61,13 @@ async function getUniProtFunction(uniprotId) {
                 });
             }
             //Add keywords to proteinMatch
+            
             proteinMatch = proteinMatch 
             keywordsMatch = biologicalProcessKeywords;
             const result = {
                 proteinMatch: proteinMatch,
                 keywordsMatch: biologicalProcessKeywords
             };
-            console.log(biologicalProcessKeywords)
             return result
 
         } else {

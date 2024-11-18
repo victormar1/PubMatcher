@@ -3,6 +3,7 @@
         <AppHeader />
         <SearchModule @results-fetched="handleResults" />
         <ResultModule :results="results" />
+        <AppFooter />
     </div>
 </template>
 
@@ -11,7 +12,7 @@
 <script>
 import AppHeader from './components/AppHeader';
 import SearchModule from './components/SearchModule';
-
+import AppFooter from './components/AppFooter.vue'; 
 
 
 export default {
@@ -19,6 +20,7 @@ export default {
     components: {
         AppHeader,
         SearchModule,
+        AppFooter,
     },
     
 };

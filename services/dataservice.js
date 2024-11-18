@@ -139,33 +139,26 @@ async function getData(req) {
             try {
                 const mouseResponse = await axios.get(mouseUrl);
             
-                // Step 1: Populate matchingPhenotypes with phenotype data
                 mouseResponse.data.response.docs.forEach(doc => {
                     const phenotype = {
                         phenotypeName: doc.mp_term_name, // Set the phenotype name
-                        //Initialize the category while removing special char and replacing them by underscore 
-                    //Clean the phenotype name by removing special characters and replacing them with underscores
                         phenotypeCategory: doc.top_level_mp_term_name[0].replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() // Set the phenotype category
                     };
                     
                     matchingPhenotypes.push(phenotype); // Add to the list of matching phenotypes
                 });
             
-                // Step 2: Remove duplicates by phenotypeName
                 const matchingPhenotypesNoDuplicates = [...new Map(matchingPhenotypes.map(item => [item.phenotypeName, item])).values()];
             
-                // Step 3: Group phenotypes by category and find corresponding SVG icons
                 matchingPhenotypesNoDuplicates.forEach(item => {
                     const { phenotypeCategory, phenotypeName } = item;
             
-                    // Initialize the category array if it doesn't exist
                     if (!groupedPhenotypes[phenotypeCategory]) {
                         groupedPhenotypes[phenotypeCategory] = {
                             names: [],
                             icon: null
                         };
                     }
-                    // Add the phenotype name to the array for this category
                     groupedPhenotypes[phenotypeCategory].names.push(phenotypeName);
                     let matchingIcon = "NoICONFOUND";
 
@@ -177,7 +170,7 @@ async function getData(req) {
                                 break;
                             }
                         }
-                    //make a try catch
+                    
                     } catch (error) {
                         console.error("Error finding SVG icon for category:", phenotypeCategory, error);
                     }
@@ -206,7 +199,7 @@ async function getData(req) {
                 function: uniProtFunction.proteinMatch || "No match", // Fonction
                 mousePhenotype: groupedPhenotypes, // <- Categories to display
                 url, // Pubmed
-                functionKeywords : uniProtFunction.keywordsMatch || "No match",
+                functionKeywords : uniProtFunction.keywordsMatch,
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
