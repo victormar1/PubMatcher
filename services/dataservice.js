@@ -101,7 +101,7 @@ async function getData(req) {
 
         let combinedQuery = ''; // Initialize as empty string
         if (phenotypes.length > 0) {
-            const queries = phenotypes.map(phenotype => `${gene} AND ${phenotype}`);
+            const queries = phenotypes.map(phenotype => `(${gene} AND ${phenotype})`);
             combinedQuery = queries.join(' OR ');
         } else {
             combinedQuery = gene;
