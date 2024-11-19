@@ -9,22 +9,117 @@
             <thead>
             <tr>
                 <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">GENE</th>
-                <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">PUBMED</th>
+                <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 cursor-pointer" @click="sortByPubMedCount">
+                    PUBMATCH
+                    <span>
+                        <svg
+                            v-if="sortDirection === 'asc'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 inline-block"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                        </svg>
+                        <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 inline-block"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </span>
+                </th>
+
                 <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">FUNCTION</th>
                 <th scope="col" class="px-6 py-3 text-nowrap border-r border-gray-300">PHENOTYPE KO</th>
                 <th scope="col" class="px-6 py-3 text-nowrap ">PANEL APP</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
                 <!-- GENE -->
                 <td class="px-6 py-4 text-lg font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
                 <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline">
                     {{ result.gene }}
                 </a>
                 </td>
+
+
+
+
+
+                
                 <!-- PubMed Article --> 
-                <td class="px-24 py-4 border-r border-gray-200">{{ result.title || 'N/A' }}</td>
+                <td class="flex w-96 py-4 pr-3 items-center border-r border-gray-200 ">
+                    <div class="w-32 h-32 flex items-center justify-center  border-green-500">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <!-- Background Circle -->
+                            <circle
+                                class="text-gray-300"
+                                cx="50"
+                                cy="50"
+                                r="25"
+                                stroke-width="6"
+                                stroke="lightgray"
+                                fill="none"
+                            />
+                            <!-- Progress -->
+                            <circle
+                                class="text-blue-500"
+                                cx="50"
+                                cy="50"
+                                r="25"
+                                stroke-width="10"
+                                :stroke="getColor(result.count)"
+                                stroke-dasharray="157" 
+                                :stroke-dashoffset="getDashOffset(result.count)"
+                                stroke-linecap="round"
+                                fill="none"
+                            />
+                            <text
+                                x="50"
+                                y="50"
+                                fill="lightgray"
+                                font-size="12"
+                                font-weight="bold"
+                                font-family="Arial, sans-serif"
+                                text-anchor="middle"
+                                dominant-baseline="middle"
+                                transform="rotate(90, 50, 50)">
+                                {{ result.count || 0 }}
+                            </text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col flex-grow items-center justify-center  border-red-700 w-32">
+                        <div class="flex items-center justify-center">
+                            <a :href="result.url" target="_blank" class="font-medium underline text-blue-600">
+                                {{ result.title || 'N/A' }} 
+                            </a>
+
+                        </div>
+                    </div>
+                </td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <td class="px-6 py-4 border-r border-gray-200">
                 <div v-if="result.functionKeywords && result.functionKeywords.length > 0" class="mb-2 flex flex-wrap gap-2">
                     <span v-for="keyword in result.functionKeywords" :key="keyword" class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
@@ -52,7 +147,15 @@
                     </div>
                 </td>
 
-                <td class="px-6 py-4">{{ `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}` }}</td>
+
+
+                <td class="px-6 py-4 text-center">{{ `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}` }}</td>
+
+
+
+
+
+                
             </tr>
             </tbody>
         </table>
@@ -74,7 +177,9 @@ export default {
     },
     data() {
     return {
-        showTooltipData: { names: [], category: null, x: 0, y: 0 }, // Store tooltip data, x, and y coordinates
+        showTooltipData: { names: [], category: null, x: 0, y: 0 }, // Store tooltip data ?
+        sortDirection: 'asc', // Default sort direction
+
 
     };
     },
@@ -96,6 +201,35 @@ export default {
                 block: "start",
             });
         }
+        },
+
+        getDashOffset(count) {
+        const maxCount = 30000; 
+        const progress = Math.min(count / maxCount, 1); 
+        const circumference = 2 * Math.PI * 25;
+        return circumference * (1 - progress); 
+        },
+
+        getColor(count) {
+            if (count < 100) {
+                return "red";
+            } else if (count < 1000) {
+                return "orange	";
+            } else if (count < 5000) {
+                return "Yellow";
+            } else {
+                return "Lime";
+            }
+        },
+        sortByPubMedCount() {
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle sort direction
+            this.results.sort((a, b) => {
+                if (this.sortDirection === 'asc') {
+                    return a.count - b.count; // Ascending order
+                } else {
+                    return b.count - a.count; // Descending order
+                }
+            });
         },
 
 
