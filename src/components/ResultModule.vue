@@ -222,12 +222,12 @@ export default {
             }
         },
         sortByPubMedCount() {
-            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle sort direction
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'; 
             this.results.sort((a, b) => {
                 if (this.sortDirection === 'asc') {
-                    return a.count - b.count; // Ascending order
+                    return a.count - b.count; 
                 } else {
-                    return b.count - a.count; // Descending order
+                    return b.count - a.count;
                 }
             });
         },
