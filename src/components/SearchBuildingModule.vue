@@ -1,7 +1,7 @@
 <template>
-    <div @click.capture="hideSuggestions('geneSuggestions')" class="flex mx-4 h-96 flex-row  border-blue-600">
+    <div @click.capture="hideSuggestions('geneSuggestions')" class="flex mx-4 h-60 flex-row  border-blue-600">
         <div class="flex flex-col items-center w-7/12 space-y-4 rounded min-h-72 overflow-auto  border-red-600  p-4">
-            <form class="w-full max-w-md">
+            <form @submit.prevent class="w-full max-w-md">
                 <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                 <div class="relative">
                     <!-- Search logo -->
@@ -12,17 +12,17 @@
                     </div>
                     
                     <!-- Search input -->
-                    <input type="search" ref="geneInput" id="geneInput" class="block w-full h-full p-4 pl-10 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none" placeholder="Add Genes..." @input="() => showSuggestions('gene')" autocomplete="off" required />
+                    <input type="search" ref="geneInput" id="geneInput" class="block w-full h-full p-4 pl-10 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none" placeholder="Add Genes..." @input="() => showSuggestions('gene')" @keydown.enter.prevent="addFreeGene"
+                    autocomplete="off" required />
                     
                     <!-- Search button -->
-                    <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
+                    <button type="button" id="addPhenotypeButton" @click="addFreeGene()  "
                         class="text-white absolute right-2 bottom-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <p class="text-white">Add</p>
                     </button>
             
                     <!-- Suggestion dropdown -->
                     <ul id="geneSuggestions" class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-                        <!-- Suggestions will be dynamically generated here -->
                     </ul>
                 </div>
             </form>
