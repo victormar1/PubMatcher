@@ -173,12 +173,16 @@ export default {
         if (newResults && newResults.length > 0) {
             this.scrollToResults();
         }
+        if (this.originalResults.length === 0) {
+            this.originalResults = [...newResults];
+        }
     },
     },
     data() {
     return {
         showTooltipData: { names: [], category: null, x: 0, y: 0 }, // Store tooltip data ?
-        sortDirection: 'asc', // Default sort direction
+        originalResults: [], // Store the original order
+        sortDirection: 'default', // Start with 'default'
 
 
     };
@@ -222,14 +226,16 @@ export default {
             }
         },
         sortByPubMedCount() {
-            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'; 
-            this.results.sort((a, b) => {
-                if (this.sortDirection === 'asc') {
-                    return a.count - b.count; 
-                } else {
-                    return b.count - a.count;
-                }
-            });
+            this.sortDirection =
+                this.sortDirection === 'default' ? 'asc' :
+                this.sortDirection === 'asc' ? 'desc' : 'default'; 
+            if (this.sortDirection === 'default') {
+                this.results.splice(0, this.results.length, ...this.originalResults);
+            } else if (this.sortDirection === 'asc') {
+                this.results.sort((a, b) => a.count - b.count);
+            } else if (this.sortDirection === 'desc') {
+                this.results.sort((a, b) => b.count - a.count);
+            };
         },
 
 
