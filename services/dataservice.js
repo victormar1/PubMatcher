@@ -7,7 +7,6 @@ const xml2js = require('xml2js');
 const path = require('path');
 const fs = require('fs');
 const csv = require('csv-parser');
-const XLSX = require('xlsx');
 
 let constraints = {};
 let svgIcons = [];
@@ -72,15 +71,6 @@ function loadSVGIcons() {
 // Initialiser les contraintes
 loadConstraints();
 loadSVGIcons();
-
-// Charger les bases de données Excel
-const mouseDBPath = path.join(__dirname, '..', 'BDD', 'Mouse.xlsx');
-const proteinDBPath = path.join(__dirname, '..', 'BDD', 'Protein.xlsx');
-
-const mouseDB = XLSX.readFile(mouseDBPath);
-const proteinDB = XLSX.readFile(proteinDBPath);
-const mouseData = XLSX.utils.sheet_to_json(mouseDB.Sheets[mouseDB.SheetNames[0]]);
-const proteinData = XLSX.utils.sheet_to_json(proteinDB.Sheets[proteinDB.SheetNames[0]]);
 
 /**
  * getData traite les requêtes de recherche en récupérant et en compilant les données nécessaires
