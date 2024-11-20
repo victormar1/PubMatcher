@@ -23,7 +23,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
                         </svg>
                         <svg
-                            v-else
+                            v-else-if="sortDirection === 'desc'"
                             xmlns="http://www.w3.org/2000/svg"
                             class="h-4 w-4 inline-block"
                             fill="none"
@@ -31,6 +31,17 @@
                             stroke="currentColor"
                             stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                        <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 inline-block"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="10" x2="19" y2="10" stroke-linecap="round" />
+                            <line x1="5" y1="14" x2="19" y2="14" stroke-linecap="round" />
                         </svg>
                     </span>
                 </th>
@@ -169,7 +180,6 @@ export default {
     name: "ResultModule",
     watch: {
     results(newResults) {
-        console.log("Results received in ResultModule:", newResults);
         if (newResults && newResults.length > 0) {
             this.scrollToResults();
         }
@@ -215,14 +225,14 @@ export default {
         },
 
         getColor(count) {
-            if (count < 100) {
-                return "red";
-            } else if (count < 1000) {
-                return "orange	";
-            } else if (count < 5000) {
-                return "Yellow";
-            } else {
+            if (count < 5) {
                 return "Lime";
+            } else if (count < 100) {
+                return "yellow";
+            } else if (count < 1000) {
+                return "orange";
+            } else {
+                return "red";
             }
         },
         sortByPubMedCount() {
