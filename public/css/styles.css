@@ -270,6 +270,7 @@ footer {
     box-sizing: border-box;
 }
 
+
 .modal-content button {
     background-color: #4CAF50;
     color: white;
@@ -283,4 +284,29 @@ footer {
 
 .modal-content button:hover {
     background-color: #45a049;
+}
+
+
+/* loader */
+.loader {
+    border: 8px solid #f3f3f3; /*  fond */
+    border-top: 8px solid #3498db; /* Couleur principale */
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    animation: spin 1s linear infinite;
+    display: none; /* Caché par défaut */
+}
+
+/* rotation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.search-container {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 20px;
 }

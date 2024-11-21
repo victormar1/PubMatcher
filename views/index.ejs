@@ -24,12 +24,17 @@
             <button id="seqOneSubmit">Enter</button>
         </div>
     </div>
+    
     <form action="/search" method="post" id="searchForm">
         <label for="genes">Genes:</label>
         <input type="text" name="genes" id="genesInput" placeholder="Enter one or more genes separated by commas">
         <label for="phenotypes">Phenotypes:</label>
         <input type="text" name="phenotypes" placeholder="Enter one or more phenotypes separated by commas">
-        <button type="submit">Search</button>
+        <div class="search-container" id="sc">
+            <button type="submit">Search</button>
+            <div class="loader" id="loader"></div>
+        </div>
+
     </form>
     <h1 style="font-size: 20px; margin-top: 30px; text-align: center;">Alternative gene input</h1>
     <button id="textFreeInputBtn" style="display: block; margin: 1% auto; background-color: #7ecf7e;">Batch Input</button>
@@ -46,6 +51,7 @@
                 <label for="message">Description:</label>
                 <textarea id="message" name="message" rows="5" required></textarea>
                 <button type="submit">Send</button>
+                
             </form>
         </div>
     </div>
@@ -60,6 +66,7 @@
             <h2>Batch input</h2>
             <textarea id="textFreeInput" rows="10" style="width: 100%;" placeholder="Paste your raw input containing gene(s) name(s)"></textarea>
             <button id="textFreeSubmit">Enter</button>
+            
         </div>
     </div>
 </body>

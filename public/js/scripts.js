@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const seqOnePopin = document.getElementById('seqOnePopin');
     const seqOneInput = document.getElementById('seqOneInput');
     const seqOneSubmit = document.getElementById('seqOneSubmit');
+    const loader = document.getElementById('loader');
+
 
     btn.onclick = function() {
         modal.style.display = 'block';
@@ -79,10 +81,17 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
         });
     });
-
+    
     seqOneBtn.addEventListener('click', () => {
         seqOnePopin.style.display = 'block';
     });
+
+
+    searchForm.addEventListener('submit', function() {
+        loader.style.display = 'block'; // OBSCURE LOADER BUSINESS
+    });
+
+
 
     seqOneSubmit.addEventListener('click', () => {
         const text = seqOneInput.value;

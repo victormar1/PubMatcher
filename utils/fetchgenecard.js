@@ -53,7 +53,6 @@ async function fetchGeneCARD(gene) {
                 );
 
 
-                console.log("Gene found:", validatedGene);
                 return validatedGene;
             } else {
                 console.log("No gene found");
