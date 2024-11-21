@@ -52,14 +52,78 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
-                <!-- GENE -->
-                <td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
-                    <div class="flex flex-col items-center justify-center">
-                        <p>{{ result.gene }}</p>
-                        <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p>
-                    </div>
-                </td>
+                <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
+ <!-- GENE -->
+ <td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
+    <div class="flex flex-col items-center justify-center">
+        <!-- Gene Name -->
+        <p>{{ result.gene }}</p>
+        <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p>
+
+        <!-- Table for contraintes -->
+        <div class="mt-1 p-1 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm w-full text-xs">
+            <div class="grid grid-cols-2 gap-1 text-center">
+                <!-- pLi -->
+                <div class="flex flex-col items-center">
+                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">pLi</span>
+                    <span
+                        class="text-[0.5rem] font-medium"
+                        :style="{ color: result.constraints.pLI && parseFloat(result.constraints.pLI.replace(',', '.')) >= 0.95 ? 'red' : 'black' }"
+                    >
+                        {{ result.constraints.pLI || 'N/A' }}
+                    </span>
+                </div>
+
+
+
+
+                <!-- LOEUF -->
+                <div class="flex flex-col items-center">
+                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">LOEUF</span>
+                    <span
+                        class="text-[0.5rem] font-medium"
+                        :style="{ color: formatConstraint(result.constraints.oe_lof_upper, [
+                            { max: 0.26, color: 'red' },
+                            { max: 0.41, color: 'darkred' },
+                            { max: 0.48, color: 'orange' },
+                            { max: 0.55, color: 'yellow' },
+                        ]) }"
+                    >
+                        {{ result.constraints.oe_lof_upper || 'N/A' }}
+                    </span>
+                </div>
+                <!-- Z_score -->
+                <div class="flex flex-col items-center">
+                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">Z_score</span>
+                    <span
+                        class="text-[0.5rem] font-medium"
+                        :style="{ color: formatConstraint(result.constraints.mis_z, [
+                            { max: 3, color: 'black' },
+                            { max: Infinity, color: 'red' },
+                        ]) }"
+                    >
+                        {{ result.constraints.mis_z || 'N/A' }}
+                    </span>
+                </div>
+                <!-- MOEUF -->
+                <div class="flex flex-col items-center">
+                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">MOEUF</span>
+                    <span
+                        class="text-[0.5rem] font-medium"
+                        :style="{ color: formatConstraint(result.constraints.oe_mis_upper, [
+                            { max: 0.58, color: 'red' },
+                            { max: 0.70, color: 'darkred' },
+                            { max: 0.73, color: 'orange' },
+                            { max: 0.77, color: 'yellow' },
+                        ]) }"
+                    >
+                        {{ result.constraints.oe_mis_upper || 'N/A' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</td>
 
 
 
@@ -310,7 +374,15 @@ export default {
         },
 
 
-
+        formatConstraint(value, thresholds) {
+            const numericValue = parseFloat(value.replace(",", "."));
+            for (const { max, color } of thresholds) {
+                if (numericValue <= max) {
+                    return color;
+                }
+            }
+            return "black";
+        },
 
         hideTooltip(details) {
             // Reset tooltip state
