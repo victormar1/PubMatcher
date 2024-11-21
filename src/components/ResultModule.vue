@@ -54,10 +54,8 @@
             <tbody>
             <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
                 <!-- GENE -->
-                <td class="px-6 py-4 text-lg font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
-                <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline">
+                <td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
                     {{ result.gene }}
-                </a>
                 </td>
 
 
@@ -161,9 +159,13 @@
 
 
                 <td class="px-6 py-4 text-center">
-                    <div class="bg-green-500 rounded-full text-white font-bold py-1 px-2">{{ result.geneValidity }}</div>
-                    
-                    
+                    <div class="bg-green-500 rounded-full text-white font-bold py-1 px-2">
+                        <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-white hover:underline">
+                            {{ result.geneValidity }}
+                        </a>
+
+                    </div>
+
                     
                     {{ `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}` }}
 

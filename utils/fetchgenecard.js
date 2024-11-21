@@ -89,6 +89,7 @@ async function fetchGeneCARD(gene) {
                 const dateApprovedReserved = doc.date?.find(item => item.$.name === "date_approved_reserved")?._ || "No match";
 
                 const validityMarker = validityMap.get(hgncId) || "NotReviewed";
+                console.log(hgncId + " " + validityMarker)
 
                 const validatedGene = new Gene(
                     geneName,
