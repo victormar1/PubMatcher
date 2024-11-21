@@ -48,7 +48,7 @@
 
                 <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">FUNCTION</th>
                 <th scope="col" class="px-6 py-3 text-nowrap border-r border-gray-300">PHENOTYPE KO</th>
-                <th scope="col" class="px-6 py-3 text-nowrap ">PANEL APP</th>
+                <th scope="col" class="px-6 py-3 text-nowrap text-center">STATUS</th>
             </tr>
             </thead>
             <tbody>
@@ -159,16 +159,39 @@
 
 
                 <td class="px-6 py-4 text-center">
-                    <div class="bg-green-500 rounded-full text-white font-bold py-1 px-2">
+                    <div :class="[getValidityColor(result.geneValidity)]" class="rounded-full text-white font-bold py-1 px-2">
                         <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-white hover:underline">
                             {{ result.geneValidity }}
                         </a>
 
                     </div>
-
-                    
-                    {{ `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}` }}
-
+                    <!-- ATTRIBUTION !!! -->
+                    <div class="flex flex-row justify-center gap-2">
+                        <a :href="result.gene ? `https://panelapp.genomicsengland.co.uk/panels/entities/${result.gene}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
+                            <div class="relative">
+                                <img src="/images/england.png" alt="England Flag" style="cursor: pointer;" width="50" />
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
+                                        <p class="text-gray-700 font-bold text-sm">
+                                            {{ result.panelAppEnglandCount || 0 }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a :href="result.gene ? `https://panelapp.agha.umccr.org/panels/entities/${result.gene}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
+                            <div class="relative">
+                                <img src="/images/australia.png" alt="Aussie Flag" style="cursor: pointer;" width="50" />
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
+                                        <p class="text-gray-700 font-bold text-sm">
+                                            {{ result.panelAppAustraliaCount || 0 }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </td>
 
 
@@ -244,6 +267,32 @@ export default {
                 return "red";
             }
         },
+        getValidityColor(valid){
+            if(valid==='Definitive'){
+                return "bg-green-700"
+            }else if(valid==='Strong'){
+                return "bg-green-500"
+            }else if(valid==='Moderate'){
+                return "bg-green-400"
+            }else if(valid==='Supportive'){
+                return "bg-blue-300"
+            }else if(valid==='Limited'){
+                return "bg-red-500"
+            }else if(valid==='Disputed'){
+                return "bg-red-600"
+            }else if(valid==='Refuted'){
+                return "bg-red-900"
+            }else if(valid==='Animal'){
+                return "bg-orange-300"
+            }else if(valid==='No Known'){
+                return "bg-gray-500"
+            }
+        },
+
+
+
+
+
         sortByPubMedCount() {
             this.sortDirection =
                 this.sortDirection === 'default' ? 'asc' :

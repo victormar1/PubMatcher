@@ -15,23 +15,15 @@ function loadCSV() {
     const csvFilePath = path.join(__dirname, '../BDD/gene_validity.csv');
 
     return new Promise((resolve, reject) => {
-        const start = Date.now(); // Track time
-        const headers = [
-            "GENE_SYMBOL", "GENE_ID_HGNC", "DISEASE_LABEL", "DISEASE_ID_MONDO",
-            "MOI", "SOP", "CLASSIFICATION", "ONLINE_REPORT", "CLASSIFICATION_DATE", "GCEP"
-        ];
-
-        let isHeaderSet = false;
-
         fs.createReadStream(csvFilePath)
-            .pipe(csvParser({ skipLines: 4, headers })) 
+            .pipe(csvParser()) 
             .on('data', (row) => {
 
-                const hgncId = row["GENE_ID_HGNC"]?.trim();
-                const classification = row["CLASSIFICATION"]?.trim();
+                const hgncId = row["gene_curie"]?.trim();
+                const classification = row["classification_title"]?.trim();
 
 
-                if (hgncId && classification) {
+                if (hgncId && classification && !validityMap.has(hgncId)) {
                     validityMap.set(hgncId, classification);
                 }
             })
@@ -88,7 +80,7 @@ async function fetchGeneCARD(gene) {
                 const dateModified = doc.date?.find(item => item.$.name === "date_modified")?._ || "No match";
                 const dateApprovedReserved = doc.date?.find(item => item.$.name === "date_approved_reserved")?._ || "No match";
 
-                const validityMarker = validityMap.get(hgncId) || "NotReviewed";
+                const validityMarker = validityMap.get(hgncId) || "No Known";
                 console.log(hgncId + " " + validityMarker)
 
                 const validatedGene = new Gene(
