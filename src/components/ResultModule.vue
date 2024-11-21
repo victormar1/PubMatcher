@@ -160,7 +160,14 @@
 
 
 
-                <td class="px-6 py-4 text-center">{{ `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}` }}</td>
+                <td class="px-6 py-4 text-center">
+                    <div class="bg-green-500 rounded-full text-white font-bold py-1 px-2">{{ result.geneValidity }}</div>
+                    
+                    
+                    
+                    {{ `${result.panelAppEnglandCount || 0} / ${result.panelAppAustraliaCount || 0}` }}
+
+                </td>
 
 
 

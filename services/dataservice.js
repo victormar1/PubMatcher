@@ -193,7 +193,8 @@ async function getData(req) {
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
-                geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : "" // URL vers HGNC
+                geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : "", // URL vers HGNC
+                geneValidity: validatedGene.validityMarker || "No validity found"
             };
 
             if (!requestPath.includes("term")) {

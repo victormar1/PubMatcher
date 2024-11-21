@@ -2,6 +2,58 @@
 const axios = require('axios');
 const xml2js = require('xml2js');
 const Gene = require('../models/gene.js'); // Import the Gene model
+const fs = require('fs');
+const path = require('path');
+const csvParser = require('csv-parser');
+
+
+
+// Load CSV data with correct headers and rows
+const validityMap = new Map();
+
+function loadCSV() {
+    const csvFilePath = path.join(__dirname, '../BDD/gene_validity.csv');
+
+    return new Promise((resolve, reject) => {
+        const start = Date.now(); // Track time
+        const headers = [
+            "GENE_SYMBOL", "GENE_ID_HGNC", "DISEASE_LABEL", "DISEASE_ID_MONDO",
+            "MOI", "SOP", "CLASSIFICATION", "ONLINE_REPORT", "CLASSIFICATION_DATE", "GCEP"
+        ];
+
+        let isHeaderSet = false;
+
+        fs.createReadStream(csvFilePath)
+            .pipe(csvParser({ skipLines: 4, headers })) 
+            .on('data', (row) => {
+
+                const hgncId = row["GENE_ID_HGNC"]?.trim();
+                const classification = row["CLASSIFICATION"]?.trim();
+
+
+                if (hgncId && classification) {
+                    validityMap.set(hgncId, classification);
+                }
+            })
+            .on('end', () => {
+                resolve();
+            })
+            .on('error', (error) => {
+                reject(error);
+            });
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Récupère et valide les informations d'un gène depuis l'API GeneCARD
@@ -35,7 +87,9 @@ async function fetchGeneCARD(gene) {
                 const orphanet = doc.int?.find(item => item.$.name === "orphanet")?._ || "No match";
                 const dateModified = doc.date?.find(item => item.$.name === "date_modified")?._ || "No match";
                 const dateApprovedReserved = doc.date?.find(item => item.$.name === "date_approved_reserved")?._ || "No match";
-                
+
+                const validityMarker = validityMap.get(hgncId) || "NotReviewed";
+
                 const validatedGene = new Gene(
                     geneName,
                     aliasName,
@@ -49,7 +103,8 @@ async function fetchGeneCARD(gene) {
                     ensemblGeneId,
                     orphanet,
                     dateModified,
-                    dateApprovedReserved
+                    dateApprovedReserved,
+                    validityMarker,
                 );
 
 
@@ -81,5 +136,17 @@ function parseXML(xml) {
         });
     });
 }
+
+(async () => { //IIAFE
+    try {
+        await loadCSV();
+        console.log('Gene validity CSV loaded successfully.');
+    } catch (error) {
+        console.error('Error loading CSV:', error);
+    }
+})();
+
+
+
 
 module.exports = fetchGeneCARD;
