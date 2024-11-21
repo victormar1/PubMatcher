@@ -26,7 +26,7 @@ export default {
         ResultModule,
     },
     mounted() {
-    const savedResults = localStorage.getItem('results');
+    const savedResults = sessionStorage.getItem('results');
     if (savedResults) {
         try {
             const parsedResults = JSON.parse(savedResults);
@@ -46,7 +46,7 @@ export default {
     methods: {
         handleSearchComplete(results) {
             this.searchResults = results;
-            localStorage.setItem('results', JSON.stringify(results));
+            sessionStorage.setItem('results', JSON.stringify(results));
         },
     },
     };

@@ -103,9 +103,9 @@ import SearchBuildingModule from "./SearchBuildingModule";
 export default {
     name: "SearchBuildingModule",
     mounted() {  
-        // Initialize localStorage
-        if (!localStorage.getItem('data')) {
-            localStorage.setItem('data', JSON.stringify([{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }]));
+        // Initialize sessionStorage
+        if (!sessionStorage.getItem('data')) {
+            sessionStorage.setItem('data', JSON.stringify([{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }]));
         }
 
         this.displayItems('gene'); 
@@ -195,12 +195,12 @@ export default {
             suggestions.classList.add("hidden");  
         },
         addGene(gene) { // Modified to accept the gene as an argument
-            let data = JSON.parse(localStorage.getItem('data')) || [{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }];
+            let data = JSON.parse(sessionStorage.getItem('data')) || [{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }];
             const genes = data.find(item => item.type === 'gene');
 
             if (!genes.items.includes(gene) && gene !== '') {
                 genes.items.push(gene);
-                localStorage.setItem('data', JSON.stringify(data));
+                sessionStorage.setItem('data', JSON.stringify(data));
                 this.$refs.geneInput.value = ''; // Clear input field *after* adding
                 this.displayItems('gene');
             }
@@ -208,19 +208,19 @@ export default {
             this.hideSuggestions('geneSuggestions');
         },
         addPhenotype(phenotype) {
-            let data = JSON.parse(localStorage.getItem('data')) || [{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }];
+            let data = JSON.parse(sessionStorage.getItem('data')) || [{ type: 'gene', items: [] }, { type: 'phenotype', items: [] }];
             const phenotypes = data.find(item => item.type === 'phenotype');
 
             if (!phenotypes.items.includes(phenotype) && phenotype !== '') {
                 phenotypes.items.push(phenotype);
-                localStorage.setItem('data', JSON.stringify(data));
+                sessionStorage.setItem('data', JSON.stringify(data));
                 this.$refs.phenotypeInput.value = ''; // Clear input field after adding
                 this.displayItems('phenotype');
             }
             this.hideSuggestions('phenotypeSuggestions');
         },
         getItems(type) {
-            const data = JSON.parse(localStorage.getItem('data'));
+            const data = JSON.parse(sessionStorage.getItem('data'));
             const typeObject = data.find(item => item.type === type); 
             return typeObject ? typeObject.items : []; // Return empty array if type not found
         }, 
@@ -269,20 +269,20 @@ export default {
             return svgIcon;
         },
         removeItem(type, itemToRemove) {
-            const data = JSON.parse(localStorage.getItem('data'));
+            const data = JSON.parse(sessionStorage.getItem('data'));
             const items = data.find(item => item.type === type).items;
             const updatedItems = items.filter(item => item !== itemToRemove);
             data.find(item => item.type === type).items = updatedItems;
-            localStorage.setItem('data', JSON.stringify(data));
+            sessionStorage.setItem('data', JSON.stringify(data));
             console.log("Item removed:", itemToRemove);
             this.displayItems(type) // Refresh the display
         },
         clearList(type) {
             console.log("List cleared:", type);
-            const data = JSON.parse(localStorage.getItem('data'));
+            const data = JSON.parse(sessionStorage.getItem('data'));
             const items = data.find(item => item.type === type);
             items.items = []; // Clear the list of items
-            localStorage.setItem('data', JSON.stringify(data));
+            sessionStorage.setItem('data', JSON.stringify(data));
             this.displayItems(type) // Refresh the display
         },
         hideSuggestions(suggestionId) { 
@@ -353,7 +353,7 @@ export default {
                         this.stopLoader()
                     }else if (jsonData && jsonData.results) {
                         this.$emit('search-complete', jsonData.results); // Emit event with results
-                        localStorage.setItem("results", JSON.stringify(jsonData)); // Save results to localStorage
+                        sessionStorage.setItem("results", JSON.stringify(jsonData)); // Save results to sessionStorage
                         this.stopLoader()
                     }
                 })

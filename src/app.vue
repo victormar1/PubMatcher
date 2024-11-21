@@ -1,8 +1,10 @@
 <template>
-    <div>
+    <div class="flex flex-col min-h-screen">  
         <AppHeader />
+        <div class="flex-grow">  
         <SearchModule @results-fetched="handleResults" />
         <ResultModule :results="results" />
+        </div>
         <AppFooter />
     </div>
 </template>
