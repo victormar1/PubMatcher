@@ -55,7 +55,10 @@
             <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
                 <!-- GENE -->
                 <td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
-                    {{ result.gene }}
+                    <div class="flex flex-col items-center justify-center">
+                        <p>{{ result.gene }}</p>
+                        <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p>
+                    </div>
                 </td>
 
 
@@ -159,7 +162,7 @@
 
 
                 <td class="px-6 py-4 text-center">
-                    <div :class="[getValidityColor(result.geneValidity)]" class="rounded-full text-white font-bold py-1 px-2">
+                    <div :class="[getValidityColor(result.geneValidity)]" class="rounded-full text-white font-bold py-1 px-2 text-nowrap">
                         <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-white hover:underline">
                             {{ result.geneValidity }}
                         </a>
@@ -278,7 +281,7 @@ export default {
                 return "bg-blue-300"
             }else if(valid==='Limited'){
                 return "bg-red-500"
-            }else if(valid==='Disputed'){
+            }else if(valid==='Disputed Evidence'){
                 return "bg-red-600"
             }else if(valid==='Refuted'){
                 return "bg-red-900"

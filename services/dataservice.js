@@ -194,7 +194,8 @@ async function getData(req) {
                 panelAppAustraliaCount: 0, // Valeur par défaut
                 urlAccession: `https://www.uniprot.org/uniprotkb/${validatedGene.uniprotIds}/entry`, // URL vers UniProt
                 geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : "", // URL vers HGNC
-                geneValidity: validatedGene.validityMarker || "No validity found"
+                geneValidity: validatedGene.validityMarker || "No validity found",
+                hgncId: validatedGene.hgncId || "No HGNC ID",
             };
 
             if (!requestPath.includes("term")) {

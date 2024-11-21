@@ -49,7 +49,7 @@
                     </div>
                     
                     <!-- Search input -->
-                    <input type="search" id="phenotypeInput" ref="phenotypeInput" class="block w-full p-4 pl-10 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none" placeholder="Add phenotypes..."  @input="() => showSuggestions('phenotype')" autocomplete="off" required />
+                    <input type="search" id="phenotypeInput" ref="phenotypeInput" class="block w-full p-4 pl-10 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none" placeholder="Add phenotypes..."  @input="() => showSuggestions('phenotype')" autocomplete="off" @keydown.enter.prevent="addFreePhenotype" required />
                     <!-- Search button -->
                     <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()" class="text-white absolute right-2 bottom-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <p class="text-white">Add</p>

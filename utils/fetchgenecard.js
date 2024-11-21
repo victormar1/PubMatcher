@@ -8,7 +8,9 @@ const csvParser = require('csv-parser');
 
 
 
-// Load CSV data with correct headers and rows
+// ranking
+const classificationRanking = ["Definitive", "Strong", "Moderate", "Supportive", "Limited", "Disputed Evidence", "Refuted", "Animal", "No Known"]; // Ordered by importance
+
 const validityMap = new Map();
 
 function loadCSV() {
@@ -16,19 +18,30 @@ function loadCSV() {
 
     return new Promise((resolve, reject) => {
         fs.createReadStream(csvFilePath)
-            .pipe(csvParser()) 
+            .pipe(csvParser())
             .on('data', (row) => {
-
                 const hgncId = row["gene_curie"]?.trim();
                 const classification = row["classification_title"]?.trim();
 
+                if (hgncId && classification) {
+                    if (validityMap.has(hgncId)) {
+                        const existingClassification = validityMap.get(hgncId);
 
-                if (hgncId && classification && !validityMap.has(hgncId)) {
-                    validityMap.set(hgncId, classification);
+                        // Compare, if more important replace
+                        if (
+                            classificationRanking.indexOf(classification) <
+                            classificationRanking.indexOf(existingClassification)
+                        ) {
+                            validityMap.set(hgncId, classification);
+                        }
+                    } else {
+                        // Add
+                        validityMap.set(hgncId, classification);
+                    }
                 }
             })
             .on('end', () => {
-                resolve();
+                resolve(validityMap); // Resolve with the map for further use
             })
             .on('error', (error) => {
                 reject(error);
