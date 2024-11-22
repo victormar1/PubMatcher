@@ -19,7 +19,7 @@
         <div class="flex flex-row mx-2">
             <!-- BATCH INPUT | EXTRACT BUTTONS -->
             <div class="relative w-full overflow-auto h-56">
-                <textarea id="bacthInput" v-model="batchInput"    rows="4" class="block p-2.5 pb-12 w-full h-full resize-none text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Paste your genes here..."></textarea>
+                <textarea id="batchInput" v-model="batchInput"    rows="4" class="block p-2.5 pb-12 w-full h-full resize-none text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Paste your genes here..."></textarea>
                     <div class="absolute bottom-2 right-4 flex space-x-2">
                         <button id="submitTextArea" @click="extractGeneFromBatch" type="button" class="flex items-center px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white font-medium rounded-md space-x-2">
                             <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@
                             </svg>
                             <span>Extract Genes</span>
                         </button>
-                        <button id="clearTextArea" type="button" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md">
+                        <button id="clearTextArea" @click="clearBatchInput" type="button"  class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md">
                             Clear
                         </button>
                     </div>
@@ -522,6 +522,12 @@ export default {
             for(const gene of genes){
                 this.addGene(gene)
             }
+        },
+        clearBatchInput() {
+            console.log("clearing")
+            this.batchInput = ''; 
+            document.getElementById('batchInput').value = ''; 
+
         },
 
 
