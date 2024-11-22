@@ -94,6 +94,16 @@ import SearchBuildingModule from "./SearchBuildingModule";
 
 export default {
     name: "SearchBuildingModule",
+    props: {
+        genes: { type: Array, default: () => [] },
+        phenotypes: { type: Array, default: () => [] },
+    },
+    data() {
+        return {
+            genesInput: this.genes.join(', '), 
+            phenotypesInput: this.phenotypes.join(', '), 
+        };
+    },
     mounted() {  
         // Initialize sessionStorage
         if (!sessionStorage.getItem('data')) {
@@ -102,11 +112,56 @@ export default {
 
         this.displayItems('gene'); 
         this.displayItems('phenotype');
+
+        
+        if (this.genes.length || this.phenotypes.length) {
+            this.performSearch();
+        }
     },
     created() {
     this.debouncedShowSuggestions = this.debounce(this.showSuggestions, 300);
     },
     methods: {
+        async performSearch() {
+            const queryData = {
+                genes: this.genesInput.split(',').map(g => g.trim()),
+                phenotypes: this.phenotypesInput.split(',').map(p => p.trim()),
+            };
+
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(queryData),
+                });
+
+                const data = await response.json();
+                this.$emit('search-complete', data.results || []);
+            } catch (error) {
+                console.error("Error during search:", error);
+            }
+        },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         async showSuggestions(type) {
             const inputField = document.getElementById(type === 'gene' ? "geneInput" : "phenotypeInput");
             const suggestionsContainer = document.getElementById(type === 'gene' ? "geneSuggestions" : "phenotypeSuggestions");

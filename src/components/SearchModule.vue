@@ -7,7 +7,9 @@
         <ExtractionModule />
     </div>
     <div>
-        <SearchBuildingModule @search-complete="handleSearchComplete" />
+        <SearchBuildingModule @search-complete="handleSearchComplete"
+        :genes="genes" 
+        :phenotypes="phenotypes" />
     </div>
     <ResultModule :results="searchResults" />  
 </template>
@@ -37,6 +39,10 @@ export default {
             console.error("Error parsing saved results:", error);
         }
     }
+    },
+    props: {
+        genes: { type: Array, default: () => [] },
+        phenotypes: { type: Array, default: () => [] },
     },
     data() {
         return {
