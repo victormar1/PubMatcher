@@ -1,29 +1,25 @@
 <template>
-    <div class="flex flex-col min-h-screen">  
-        <AppHeader />
-        <div class="flex-grow">  
-        <SearchModule @results-fetched="handleResults" />
-        <ResultModule :results="results" />
-        </div>
-        <AppFooter />
+    <div id="app">
+      <AppHeader />
+      <router-view></router-view>
+      <AppFooter />
     </div>
-</template>
-
-
-
-<script>
-import AppHeader from './components/AppHeader';
-import SearchModule from './components/SearchModule';
-import AppFooter from './components/AppFooter.vue'; 
-
-
-export default {
-    name: "App",
+  </template>
+  
+  <script>
+  import AppHeader from './components/AppHeader.vue';
+  import AppFooter from './components/AppFooter.vue';
+  
+  export default {
+    name: 'App',
     components: {
-        AppHeader,
-        SearchModule,
-        AppFooter,
+      AppHeader,
+      AppFooter,
     },
-    
-};
-</script>
+  };
+  </script>
+  
+  <style>
+  /* Vos styles globaux */
+  </style>
+  
