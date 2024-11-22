@@ -1,10 +1,12 @@
 <template>
-    <div id="app">
+    <div id="app" class="flex flex-col min-h-screen">
       <AppHeader />
+      <main class="flex-grow">
       <router-view></router-view>
+      </main>
       <AppFooter />
     </div>
-  </template>
+</template>
   
   <script>
   import AppHeader from './components/AppHeader.vue';
