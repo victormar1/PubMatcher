@@ -115,20 +115,26 @@ export default {
 
         
         if (this.genes.length || this.phenotypes.length) {
-            this.performSearch();
+            this.searchFromUrl();
         }
     },
     created() {
     this.debouncedShowSuggestions = this.debounce(this.showSuggestions, 300);
     },
     methods: {
-        async performSearch() {
+        async searchFromUrl() {
             const queryData = {
                 genes: this.genesInput.split(',').map(g => g.trim()),
                 phenotypes: this.phenotypesInput.split(',').map(p => p.trim()),
             };
+            let count = 0
+            for(const i in this.genes){
+                count++
+            }
+            document.querySelector('.genes-count').textContent = `RESEARCH ${count} GENES`;
 
             try {
+                this.startLoader()
                 const response = await fetch('/api/search', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -137,6 +143,7 @@ export default {
 
                 const data = await response.json();
                 this.$emit('search-complete', data.results || []);
+                this.stopLoader()
             } catch (error) {
                 console.error("Error during search:", error);
             }
