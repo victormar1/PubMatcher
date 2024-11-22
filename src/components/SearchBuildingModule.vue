@@ -15,6 +15,11 @@
                     Extract genes from raw text, file or URL.
                 </span>
             </div>
+            <button 
+                class="ml-auto px-4 py-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600" @click="clearWholeResearch"
+            >
+                Clear Research
+            </button>
         </div>
         <div class="flex flex-row mx-2">
             <!-- BATCH INPUT | EXTRACT BUTTONS -->
@@ -33,19 +38,33 @@
                     </div>
             </div>
             <!-- DRAG FILE ZONE -->
-            <div>
-                <label for="dropzone-file" class="flex flex-col items-center justify-center h-56 mb-3 ml-3 max-w-lg text-center bg-gray-50  border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-900 dark:border-gray-700 rounded-xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500 dark:text-gray-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-                    </svg>
-            
-                    <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">Drop File Here</h2>
-            
-                    <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">Upload or drag & drop your file TXT, CSV or XML. </p>
-            
-                    <input id="dropzone-file" type="file" class="hidden" />
-                </label>
-            </div>
+            <div 
+    class="flex flex-col items-center justify-center h-56 mb-3 ml-3 max-w-lg text-center bg-gray-50 border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-900 dark:border-gray-700 rounded-xl"
+    @dragover.prevent
+    @dragenter.prevent
+    @drop.prevent="handleFileDrop"
+>
+    <!-- Clickable Label for File Input -->
+    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+        <!-- SVG Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500 dark:text-gray-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+        </svg>
+
+        <!-- Text Content -->
+        <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">Drop File Here</h2>
+        <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">Upload or drag & drop your file TXT, CSV or XML.</p>
+    </label>
+
+    <!-- Hidden File Input -->
+    <input 
+        id="dropzone-file" 
+        type="file" 
+        class="hidden" 
+        @change="handleFileUpload"
+    />
+</div>
+
         </div>
     </div>
 
@@ -531,8 +550,43 @@ export default {
             document.getElementById('batchInput').value = ''; 
 
         },
+        readFileContent(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            this.batchInput = content; // Populate batchInput with file content
+            this.extractGeneFromBatch(); // Extract genes from the file content
+        };
+        reader.onerror = (error) => {
+            console.error("Error reading file:", error);
+        };
+        reader.readAsText(file); // Read file content as text
+        },
+
+        handleFileDrop(event) {
+        const file = event.dataTransfer.files[0];
+        if (file) {
+            this.readFileContent(file);
+        }
+        },
+        handleFileUpload(event) {
+        const file = event.target.files[0]; // Get the manually selected file
+        if (file) {
+            this.readFileContent(file); // Process the file
+        }
+        },
+        clearWholeResearch(){
+            if (confirm("Are you sure you want to clear the entire research box?")) {
+                this.clearList('gene');
+                this.clearList('phenotype');
+                this.batchInput = '';
+                this.extractedGenes = [];
+            }
+        },
 
 
-    }      
+
+
+        }   
 };
 </script>
