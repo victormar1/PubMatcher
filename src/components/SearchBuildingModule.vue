@@ -296,7 +296,6 @@ export default {
                     throw new Error('Failed to fetch data from OLS API');
                 }
                 const data = await response.json();
-                console.log(data.terms)
                 return data.terms;
             } catch (error) {
                 console.error("Fetch error:", error);
@@ -399,11 +398,9 @@ export default {
             const updatedItems = items.filter(item => item !== itemToRemove);
             data.find(item => item.type === type).items = updatedItems;
             sessionStorage.setItem('data', JSON.stringify(data));
-            console.log("Item removed:", itemToRemove);
             this.displayItems(type) // Refresh the display
         },
         clearList(type) {
-            console.log("List cleared:", type);
             const data = JSON.parse(sessionStorage.getItem('data'));
             const items = data.find(item => item.type === type);
             items.items = []; // Clear the list of items
@@ -458,7 +455,6 @@ export default {
             const phenotypes = this.getItems('phenotype');
             if (genes.length > 0 || phenotypes.length > 0) {
                 const data = { genes, phenotypes };
-                console.log(data)
                 fetch('api/search', {
                     method: 'POST',
                     headers: {
@@ -473,7 +469,6 @@ export default {
                     return response.json(); // Parse the response as JSON
                 })
                 .then(jsonData => { // jsonData now holds the parsed JSON
-                    console.log(jsonData)
                     if (!jsonData || !jsonData.results || jsonData.results.length === 0) {
                         this.stopLoader()
                     }else if (jsonData && jsonData.results) {
@@ -518,8 +513,6 @@ export default {
         },
 
         extractGeneFromBatch(){
-            console.log("extracting")
-            console.log(this.batchInput)
             if (!this.batchInput.trim() || this.genesList.length === 0) {
             this.extractedGenes = [];
             return;
@@ -534,10 +527,8 @@ export default {
             foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
             this.extractedGenes = foundGenes;
             this.populateSearchWithExtraction(foundGenes)
-            console.log(this.extractedGenes)
         },
         async populateSearchWithExtraction(genes){
-            console.log("adding genes")
             for(const gene of genes){
                 this.addGene(gene)
                 await new Promise(resolve => setTimeout(resolve, 100)); // test                                                 REMOVE BEFORE PROD
@@ -545,7 +536,6 @@ export default {
             }
         },
         clearBatchInput() {
-            console.log("clearing")
             this.batchInput = ''; 
             document.getElementById('batchInput').value = ''; 
 

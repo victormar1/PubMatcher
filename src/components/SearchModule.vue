@@ -31,7 +31,6 @@ export default {
             const parsedResults = JSON.parse(savedResults);
             // Extract the array if the data is wrapped in an object
             this.searchResults = parsedResults.results || [];
-            console.log("Search results loaded:", this.searchResults);
         } catch (error) {
             console.error("Error parsing saved results:", error);
         }

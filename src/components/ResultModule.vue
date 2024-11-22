@@ -301,7 +301,6 @@ export default {
     methods: {
         showTooltip(details, event) {
             const rect = event.target.getBoundingClientRect();
-            console.log("Element rect:", rect);
 
             // Set tooltip state for the hovered item
             details.showTooltip = true;
