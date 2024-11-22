@@ -517,10 +517,12 @@ export default {
             this.populateSearchWithExtraction(foundGenes)
             console.log(this.extractedGenes)
         },
-        populateSearchWithExtraction(genes){
+        async populateSearchWithExtraction(genes){
             console.log("adding genes")
             for(const gene of genes){
                 this.addGene(gene)
+                await new Promise(resolve => setTimeout(resolve, 100)); // test                                                 REMOVE BEFORE PROD
+
             }
         },
         clearBatchInput() {

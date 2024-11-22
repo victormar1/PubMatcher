@@ -57,7 +57,9 @@
  <td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
     <div class="flex flex-col items-center justify-center">
         <!-- Gene Name -->
-        <p>{{ result.gene }}</p>
+        <a :href="result.gene ? `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${result.hgncId}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
+            <p>{{ result.gene }}</p>
+        </a>
         <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p>
 
         <!-- Table for contraintes -->
