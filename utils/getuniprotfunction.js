@@ -9,7 +9,6 @@ const axios = require('axios');
 async function getUniProtFunction(uniprotId) {
     try {
         const uniProtApiUrl = `https://www.ebi.ac.uk/proteins/api/proteins/${uniprotId}.xml`;
-        console.log(`Fetching UniProt data for ID: ${uniprotId} from URL: ${uniProtApiUrl}`);
         const response = await axios.get(uniProtApiUrl, { headers: { 'Accept': 'application/json' } });
         const getKeywordsCSV = await axios.get('https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/docs/keywlist.txt')
         const keywordsCSV = getKeywordsCSV.data
@@ -19,7 +18,6 @@ async function getUniProtFunction(uniprotId) {
         let functionKeywords = [];
 
         if (response.status === 200) {
-            console.log(`Successfully fetched data for ${uniprotId}`);
             const data = response.data;
             let proteinMatch = null;
 
@@ -48,6 +46,7 @@ async function getUniProtFunction(uniprotId) {
                                 if (isBiologicalProcess) {
                                     biologicalProcessKeywords.push(keyword);
                                 }
+                                
                             }
                         });
 
@@ -58,25 +57,23 @@ async function getUniProtFunction(uniprotId) {
                     }
                 });
             }
-            //ADD keywords to proteinMatch
+            //Add keywords to proteinMatch
+            
             proteinMatch = proteinMatch 
-            // "Keywords: " + biologicalProcessKeywords.join(", ").toUpperCase()
+            keywordsMatch = biologicalProcessKeywords;
+            const result = {
+                proteinMatch: proteinMatch,
+                keywordsMatch: biologicalProcessKeywords
+            };
+            return result
 
-            return proteinMatch || "No match";
         } else {
             console.error(`UniProt API responded with status: ${response.status}`);
             return "No match";
         }
-        
-
-        
-
-
-
-
     } catch (error) {
         console.error("Error fetching UniProt data:", error.message);
-        return "No UniProt match";
+        return "No Function Found";
     }
 }
 

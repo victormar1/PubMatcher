@@ -20,7 +20,7 @@ exports.reportBug = (req, res) => {
 
     console.log('Mail Options:', mailOptions);
 
-    // Accéder au transporteur depuis les locals de l'application
+    // Accéder au transporteur depuis les locals de l'application                                        <- A VOIR
     const transporter = req.app.locals.transporter;
 
     transporter.sendMail(mailOptions, (error, info) => {

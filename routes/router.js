@@ -23,7 +23,7 @@ router.post('/reportbug', reportbugController.reportBug);
 router.post('/exportpdf', exportpdfController.exportPdf);
 
 // Route pour l'extraction de gènes
-router.post('/extract-genes', extractgenesController.extractGenes);
+router.get('/geneslist', extractgenesController.getGenesList);
 
 // Route pour api
 router.get('/api/search', apiController.searchApi);
@@ -34,6 +34,10 @@ router.get('/', (req, res) => {
     res.render('index', { results: [], phenotypes: '' });
 });
 
+// Route root
+router.get('/home', (req, res) => {
+    res.render('homepage', { results: [], phenotypes: '' });
+});
 
 
 module.exports = router;

@@ -1,0 +1,109 @@
+<template >
+    <div class="bg-gray-800">
+        <footer class="flex flex-row text-white justify-between  h-16 py-4 mx-4">
+            <div>
+                <img class="h-full w-auto max-w-xs md:max-w-sm pr-4" src="/logoCHU.jpg" alt="Clinic Logo">
+            </div>
+            <div class="flex items-center">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" class="h-full w-auto max-w-xs md:max-w-sm" style="fill: currentColor; color: white;" viewBox="0 0 198.000000 167.000000" preserveAspectRatio="xMidYMid meet">
+<g transform="translate(0.000000,167.000000) scale(0.050000,-0.050000)" fill="currentColor" stroke="none">
+<path d="M1003 3180 l-706 -10 -69 -75 -68 -74 0 -1373 c0 -1538 -6 -1474 144
+-1526 106 -37 2742 -30 2815 8 102 52 141 122 141 253 0 146 11 146 144 -6
+102 -115 115 -123 213 -132 167 -16 301 153 242 306 -18 50 -586 650 -724 766
+l-55 47 -160 -144 c-199 -179 -201 -162 43 -401 225 -221 250 -281 198 -474
+-41 -152 31 -145 -1477 -145 l-1337 0 -44 46 -43 47 0 1352 0 1352 53 42 c53
+42 845 64 1024 29 l61 -13 -114 -84 c-296 -218 -437 -528 -419 -924 l10 -226
+-69 -22 c-381 -126 -575 -1034 -281 -1313 155 -147 262 -163 891 -128 988 55
+1201 164 1238 632 23 290 -152 229 -181 -63 -29 -284 -240 -373 -986 -417
+-618 -36 -745 -20 -854 110 -186 221 -71 860 175 979 117 57 117 57 219 -86
+347 -486 916 -618 1428 -332 133 75 152 74 216 -11 l53 -69 153 149 153 149
+-48 87 -47 86 45 88 c25 48 78 137 117 197 l73 110 6 -307 c5 -303 17 -360 76
+-360 47 0 39 1644 -8 1740 -71 147 -391 167 -2241 140z m2071 -121 c159 -55
+146 -603 -22 -948 l-69 -141 -2 110 c-6 360 -212 730 -531 956 l-60 43 312 0
+c172 1 339 -8 372 -20z m-859 -311 c132 -59 106 -68 -194 -68 -266 0 -279 2
+-292 42 -8 27 -3 50 14 61 46 32 377 6 472 -35z m-603 -161 c33 -162 80 -296
+146 -420 l56 -102 -116 -114 c-107 -104 -238 -317 -238 -385 0 -48 -91 28
+-168 140 -219 320 -145 725 175 957 103 75 115 69 145 -76z m688 38 c-3 -84
+-69 -106 -301 -101 l-229 6 -6 55 -7 55 272 0 c149 0 271 -7 271 -15z m219
+-107 c218 -275 180 -691 -83 -928 -111 -100 -119 -99 -156 20 -37 115 -107
+250 -185 352 -37 48 -74 99 -82 113 -10 17 22 68 91 143 58 65 147 182 196
+259 108 169 117 171 219 41z m-379 -118 c-82 -115 -340 -76 -340 51 0 5 86 9
+191 9 l192 0 -43 -60z m-153 -171 c-14 -35 -70 -31 -82 6 -5 16 11 25 43 25
+38 0 48 -8 39 -31z m-29 -359 l64 -90 -153 0 -154 0 77 88 c97 110 89 110 166
+2z m136 -210 l25 -50 -242 -6 c-270 -6 -273 -5 -240 67 35 77 417 68 457 -11z
+m62 -187 l7 -56 -269 6 c-274 7 -344 27 -320 89 9 24 61 28 293 24 l283 -6 6
+-57z"/>
+</g>
+</svg>
+            </div>
+            <div class="container flex flex-col mx-auto text-center justify-center">
+                <p>&copy; 2024 PubMatcher. All rights reserved.</p>
+                <p class="text-sm">Made by Victor Marin</p>
+            </div>
+            <div class="flex items-center">
+                <button class="bg-red-500 rounded-md px-4 py-2 text-nowrap font-bold" @click="openModal()">
+                    REPORT A BUG
+                </button>
+            </div>
+        </footer>
+
+        <!-- Modal -->
+        <div v-if="isModalOpen" class="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white p-6 rounded-md w-96">
+            <h2 class="text-lg font-bold mb-4">Report a Bug</h2>
+            <label class="block mb-2">
+            Name:
+            <input v-model="bugReport.name" type="text" class="border p-2 w-full rounded" />
+            </label>
+            <label class="block mb-4">
+            Description:
+            <textarea v-model="bugReport.description" class="border p-2 w-full rounded"></textarea>
+            </label>
+            <div class="flex justify-end space-x-4">
+            <button @click="closeModal" class="bg-gray-500 text-white rounded-md px-4 py-2">
+                Cancel
+            </button>
+            <button @click="submitBugReport" class="bg-blue-500 text-white rounded-md px-4 py-2">
+                Submit
+            </button>
+            </div>
+        </div>
+        </div>
+
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    data() {
+    return {
+        isModalOpen: false,
+        bugReport: {
+        name: '',
+        description: '',
+        },
+    };
+    },
+    methods: {
+    openModal() {
+        this.isModalOpen = true;
+    },
+    closeModal() {
+        this.isModalOpen = false;
+    },
+    async submitBugReport() {
+        try {
+        const response = await axios.post('api/reportbug', this.bugReport);
+        alert('Bug report submitted successfully!');
+        this.closeModal();
+        this.bugReport = { name: '', description: '' }; // Clear the form
+        } catch (error) {
+        console.error('Error submitting bug report:', error);
+        alert('Failed to submit the bug report.');
+        }
+    },
+    },
+};
+</script>

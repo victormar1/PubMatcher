@@ -13,7 +13,7 @@ function loadGenesFromFile(filePath) {
         fs.createReadStream(filePath)
             .pipe(csv())
             .on('data', (row) => {
-                genes.push(row.geneName); // Assurez-vous que 'geneName' correspond à la clé de votre fichier CSV
+                genes.push(row.geneName); 
             })
             .on('end', () => {
                 console.log('Genes CSV file successfully processed');
