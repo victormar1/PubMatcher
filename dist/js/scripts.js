@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
     //LISTENERS VARIABLES
     const addGeneButton = document.getElementById('addGeneButton');
     const addGeneInput = document.getElementById('geneInput'); 
@@ -137,8 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
     seqOneBtn.addEventListener('click', () => {
         seqOnePopin.style.display = 'block';
     });
-    
-    seqOneSubmit.addEventListener('click', () => {
+
+  seqOneSubmit.addEventListener('click', () => {
         const text = seqOneInput.value;
         const lines = text.split('\n');
         let genes = [];
