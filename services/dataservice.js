@@ -11,15 +11,22 @@ const csv = require('csv-parser');
 let constraints = {};
 let svgIcons = [];
 
+
 /**
  * Charge les contraintes depuis le fichier CSV une seule fois au démarrage
  */
-function loadConstraints() {
-    const constraintsPath = path.join(__dirname, '..', 'BDD', 'constraints.csv');
+function loadConstraints(datasetKey, fileName) {
+    const constraintsPath = path.join(__dirname, '..', 'BDD', fileName);
+
+    // Ensure constraints container for the datasetKey exists
+    if (!constraints[datasetKey]) {
+        constraints[datasetKey] = {};
+    }
+
     fs.createReadStream(constraintsPath)
         .pipe(csv({ separator: ';' }))
         .on('data', (row) => {
-            constraints[row.gene] = {
+            constraints[datasetKey][row.gene] = {
                 pLI: row.pLI,
                 oe_mis_upper: row.oe_mis_upper,
                 oe_lof_upper: row.oe_lof_upper,
@@ -27,12 +34,14 @@ function loadConstraints() {
             };
         })
         .on('end', () => {
-            console.log('Constraints CSV file successfully processed');
+            console.log(`Constraints CSV file (${datasetKey}) successfully processed`);
         })
         .on('error', (error) => {
-            console.error('Error reading constraints CSV:', error);
+            console.error(`Error reading constraints CSV (${datasetKey}):`, error);
         });
 }
+
+
 
 //load the svgData.json 
 
@@ -69,7 +78,10 @@ function loadSVGIcons() {
 
 
 // Initialiser les contraintes
-loadConstraints();
+loadConstraints('v2', 'constraints_v2.csv'); // Load v2 constraints
+loadConstraints('v4', 'constraints_v4.csv'); // Load v4 constraints
+const constraints_v2 = constraints.v2 || {};
+const constraints_v4 = constraints.v4 || {};
 loadSVGIcons();
 
 /**
@@ -206,14 +218,81 @@ async function getData(req) {
                 result.count = isNaN(count) ? 0 : count;
             }
 
-            if (constraints[gene]) {
-                result.constraints = constraints[gene];
+            if (constraints_v2[gene]) {
+                result.constraints_v2 = constraints_v2[gene];
             } else {
-                result.constraints = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+                result.constraints_v2 = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+                result.constraintsDelta = true //if NA in one of the set -> Flag cause difference
             }
 
-            return result;
+            if (constraints_v4[gene]) {
+                result.constraints_v4 = constraints_v4[gene];
+            } else {
+                result.constraints_v4 = { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' };
+                result.constraintsDelta = true
+            }
 
+
+            if(JSON.stringify(result.constraints_v2) === JSON.stringify(result.constraints_v4)) {
+                result.constraintsDelta = false //If both na dnt flag
+            }
+            
+            
+
+            const perc = 1.2//20perc
+            if (constraints_v2[gene] && constraints_v4[gene]) {
+                const parseValue = (value) => parseFloat(value.toString().replace(',', '.'));
+            
+                const v2 = {
+                    oe_mis_upper: parseValue(constraints_v2[gene].oe_mis_upper),
+                    oe_lof_upper: parseValue(constraints_v2[gene].oe_lof_upper),
+                    pLI: parseValue(constraints_v2[gene].pLI),
+                    mis_z: parseValue(constraints_v2[gene].mis_z),
+                };
+            
+                const v4 = {
+                    oe_mis_upper: parseValue(constraints_v4[gene].oe_mis_upper),
+                    oe_lof_upper: parseValue(constraints_v4[gene].oe_lof_upper),
+                    pLI: parseValue(constraints_v4[gene].pLI),
+                    mis_z: parseValue(constraints_v4[gene].mis_z),
+                };
+                const condition1 =
+                    v2.oe_mis_upper !== 0 &&
+                    v4.oe_mis_upper !== 0 &&
+                    v4.oe_mis_upper >= v2.oe_mis_upper * perc;
+            
+                const condition2 =
+                    v2.oe_lof_upper !== 0 &&
+                    v4.oe_lof_upper !== 0 &&
+                    v4.oe_lof_upper >= v2.oe_lof_upper * perc;
+            
+                const condition3 =
+                    v2.pLI !== 0 &&
+                    v4.pLI !== 0 &&
+                    v4.pLI >= v2.pLI * perc;
+            
+                const condition4 =
+                    v2.mis_z !== 0 &&
+                    v4.mis_z !== 0 &&
+                    v4.mis_z >= v2.mis_z * perc;
+            
+                if (condition1 || condition2 || condition3 || condition4) {
+                    result.constraintsDelta = true;
+                } else {
+                    result.constraintsDelta = false;
+                }
+
+                console.log(v2, v4)
+                
+            
+            
+            }
+            
+
+
+            
+
+            return result
         } catch (error) {
             console.error(`Erreur lors de la recherche PubMed pour ${combinedQuery}:`, error);
             return null;
@@ -240,6 +319,7 @@ async function getData(req) {
     }));
 
     return validResults;
+    console.log(validResults)
 }
 
 module.exports = getData;

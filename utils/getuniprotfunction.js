@@ -9,7 +9,6 @@ const axios = require('axios');
 async function getUniProtFunction(uniprotId) {
     try {
         const uniProtApiUrl = `https://www.ebi.ac.uk/proteins/api/proteins/${uniprotId}.xml`;
-        console.log(`Fetching UniProt data for ID: ${uniprotId} from URL: ${uniProtApiUrl}`);
         const response = await axios.get(uniProtApiUrl, { headers: { 'Accept': 'application/json' } });
         const getKeywordsCSV = await axios.get('https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/docs/keywlist.txt')
         const keywordsCSV = getKeywordsCSV.data
@@ -19,7 +18,6 @@ async function getUniProtFunction(uniprotId) {
         let functionKeywords = [];
 
         if (response.status === 200) {
-            console.log(`Successfully fetched data for ${uniprotId}`);
             const data = response.data;
             let proteinMatch = null;
 
@@ -31,7 +29,6 @@ async function getUniProtFunction(uniprotId) {
                         for (let i = 0; i < Object.keys(data.keywords).length; i++){
                             functionKeywords.push(data.keywords[i].value)
                         }
-                        console.log("Keywords " + functionKeywords)
                         // ADD HERE: Process each function keyword
                         functionKeywords.forEach(keyword => {
                             // Search for the keyword in keywordsCSV by matching the ID line
