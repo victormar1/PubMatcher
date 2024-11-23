@@ -6,51 +6,94 @@
         <div class="block">
             <div class="relative overflow-visible shadow-lg sm:rounded-lg">
             <table id="resultsTable" class="w-full text-sm text-left rtl:text-right text-gray-500  rounded-3xl dark:text-gray-400 bg-gray-200">
-                <thead>
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">GENE</th>
-                    <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 cursor-pointer" @click="sortByPubMedCount">
-                        PUBMATCH
-                        <span>
-                            <svg
-                                v-if="sortDirection === 'asc'"
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4 inline-block"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-                            </svg>
-                            <svg
-                                v-else-if="sortDirection === 'desc'"
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4 inline-block"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                            <svg
-                                v-else
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4 inline-block"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="5" y1="10" x2="19" y2="10" stroke-linecap="round" />
-                                <line x1="5" y1="14" x2="19" y2="14" stroke-linecap="round" />
-                            </svg>
-                        </span>
-                    </th>
+<thead>
+<tr>
+    <!-- Gene -->
+    <th scope="col" 
+        class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
+        GENE
+        <div 
+            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+            Gene name and GnomAd constraints
+        </div>
+    </th>
 
-                <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">FUNCTION</th>
-                <th scope="col" class="px-6 py-3 text-nowrap border-r border-gray-300">PHENOTYPE KO</th>
-                <th scope="col" class="px-6 py-3 text-nowrap text-center">STATUS</th>
-            </tr>
-            </thead>
+    <!-- PubMatch -->
+    <th scope="col" 
+        class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer" 
+        @click="sortByPubMedCount">
+        PUBMATCH
+        <span>
+            <svg
+                v-if="sortDirection === 'asc'"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 inline-block"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            <svg
+                v-else-if="sortDirection === 'desc'"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 inline-block"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+            <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 inline-block"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+                <line x1="5" y1="10" x2="19" y2="10" stroke-linecap="round" />
+                <line x1="5" y1="14" x2="19" y2="14" stroke-linecap="round" />
+            </svg>
+        </span>
+        <div 
+            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+            Number of article for the Match & Name of First Publication
+        </div>
+    </th>
+
+    <!-- Function -->
+    <th scope="col" 
+        class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
+        FUNCTION
+        <div 
+            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+            Uniprot keywords , function & link
+        </div>
+    </th>
+
+    <!-- Phenotype KO -->
+    <th scope="col" 
+        class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
+        PHENOTYPE KO
+        <div 
+            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+            IMPC Signficant Phenotype on KO Mice
+        </div>
+    </th>
+
+    <!-- Status -->
+    <th scope="col" 
+        class="px-6 py-3 text-center relative group cursor-pointer">
+        STATUS
+        <div 
+            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+            Status on GeneCC & PanelApp Data 
+        </div>
+    </th>
+</tr>
+</thead>
+
             <tbody>
                 <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
 <!-- GENE -->
@@ -112,8 +155,8 @@
 
                 
                 <!-- PubMed Article --> 
-                <td class="flex w-96 py-4 pr-3 items-center border-r border-gray-200 ">
-                    <div class="w-32 h-32 flex items-center justify-center  border-green-500">
+                <td class="flex w-96 py-4 pr-3 items-center border-r border-gray-200 hover:bg-blue-50 ">
+                    <div class="w-32 h-32 flex items-center justify-center  border-green-500 hover:bg-blue-50">
                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                             <!-- Background Circle -->
                             <circle
@@ -129,7 +172,7 @@
                                 x="50"
                                 y="50"
                                 fill="black"
-                                font-size="12"
+                                font-size="14"
                                 font-weight="bold"
                                 font-family="Arial, sans-serif"
                                 text-anchor="middle"
@@ -139,14 +182,19 @@
                             </text>
                         </svg>
                     </div>
-                    <div class="flex flex-col flex-grow items-center justify-center  border-red-700 w-32">
-                        <div class="flex items-center justify-center">
-                            <a :href="result.url" target="_blank" class="font-medium underline text-blue-600">
-                                {{ result.title || 'N/A' }} 
-                            </a>
-
-                            </div>
-                        </div>
+                    
+                    <div class="flex flex-col flex-grow items-center justify-center border-red-700 w-32 ">
+                    <div class="flex items-center justify-center">
+                        <a 
+                            :href="result.url" 
+                            target="_blank" 
+                            class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800"
+                        >
+                            {{ result.title || 'N/A' }}
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </a>
+                    </div>
+                </div>
                     </td>
 
 
