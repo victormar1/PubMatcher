@@ -1,14 +1,17 @@
 <template>
-  <div class="about">
-    <p>
-      PubMatcher 2.0 is an automated genomic search tool that integrates
-      biological databases and APIs to facilitate genetic interpretation. It allows users to:
+  <div class="about py-10 text-center">
+    <p class="text-gray-700 text-lg mb-5">
+      PubMatcher is an automated genomic search tool that integrates
+      biological databases and APIs to facilitate genetic interpretation.
     </p>
-    <div class="features">
-      <div class="feature-item" v-for="feature in features" :key="feature.title">
-        <i :class="feature.icon"></i>
-        <h3>{{ feature.title }}</h3>
-        <p>{{ feature.description }}</p>
+    <p class="text-gray-800 text-xl font-semibold mb-2 ">
+It allows users to:
+    </p>
+    <div class="features flex flex-wrap justify-center mb-12">
+      <div class="feature-item w-64 m-4 text-center" v-for="feature in features" :key="feature.title">
+        <i :class="feature.icon" class="text-5xl text-blue-600 mb-2"></i>
+        <h3 class="text-gray-800 text-xl font-semibold mb-2">{{ feature.title }}</h3>
+        <p class="text-gray-600">{{ feature.description }}</p>
       </div>
     </div>
   </div>
@@ -47,48 +50,5 @@ export default {
 </script>
 
 <style scoped>
-.about {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-
-.about h2 {
-  color: #333;
-  margin-bottom: 30px;
-}
-
-.about p {
-  color: #555;
-  font-size: 1.1em;
-  margin-bottom: 20px;
-}
-
-.features {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 50px;
-}
-
-.feature-item {
-  width: 250px;
-  margin: 15px;
-  text-align: center;
-}
-
-.feature-item i {
-  font-size: 3em;
-  color: #0077b5;
-  margin-bottom: 10px;
-}
-
-.feature-item h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.feature-item p {
-  color: #555;
-}
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
 </style>
