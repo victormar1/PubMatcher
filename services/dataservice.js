@@ -239,7 +239,7 @@ async function getData(req) {
             
             
 
-            const perc = 1.2//20perc
+            const perc = 1.5//perc
             if (constraints_v2[gene] && constraints_v4[gene]) {
                 const parseValue = (value) => parseFloat(value.toString().replace(',', '.'));
             
@@ -276,7 +276,7 @@ async function getData(req) {
                     v4.mis_z !== 0 &&
                     v4.mis_z >= v2.mis_z * perc;
             
-                if (condition1 || condition2 || condition3 || condition4) {
+                if (condition3 ) {
                     result.constraintsDelta = true;
                 } else {
                     result.constraintsDelta = false;

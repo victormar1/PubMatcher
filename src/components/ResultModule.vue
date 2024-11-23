@@ -1,5 +1,5 @@
 <template>
-    <main id="searchResults" class="flex px-4 my-10 w-full border border-red-500 bg-transparent rounded-lg flex-grow flex-col" :class="{ 'hidden': !results || results.length === 0 }">
+    <main id="searchResults" class="flex px-4 my-10 w-full  border-red-500 bg-transparent rounded-lg flex-grow flex-col" :class="{ 'hidden': !results || results.length === 0 }">
         <div class="flex justify-center">
             <h2 class="text-bold text-3xl font-mono font-bold text-gray-700">RESULTS</h2>
         </div>
@@ -106,33 +106,35 @@
         <!--  <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p> -->
 
             <!-- Table for contraintes -->
-        <div class="relative flex h-full items-center justify-center  gap-2"   @click="toggleVersion">
-                <div class="flex w-56 justify-center items-center ">
-                    <div class="relative p-1 w-full  ">
+        <div class="relative flex h-full items-center justify-center  "   @click="toggleVersion">
+                <div class="flex w-32 h-24 justify-center items-center ">
+                    <div class="relative  w-full  ">
                         <!-- Top-Right Indicator -->
                         <div
                             v-if="result.constraintsDelta"
-                            v-tooltip="'Notable differences exist between V2 and V4 constraints'"
-                            class="absolute z-20 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900 cursor-pointer"
+                            v-tooltip="{content:'Notable differences exist between V2 and V4 constraints <br/> Click to swap versions', html:true}"
+                            class="absolute z-20 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full dark:border-gray-900 cursor-pointer"
+                            style="top: 50%; left: 90%; transform: translateY(-50%);"
                         >
                             !
                         </div>
+
                         <!-- Grid for Constraints -->
-                        <div class="grid grid-cols-2 h-32 text-center text-xs grid-rows-[4rem] border-blue-600 bg-gray-100 rounded-lg">
-                            <div class="flex flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400">
-                                <p>pLI</p>
+                        <div class="grid grid-cols-2  text-center text-xs  border-blue-600 bg-gray-100 rounded-lg">
+                            <div class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400">
+                                <p class="font-bold ">pLI</p>
                                 <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI : result.constraints_v4.pLI }}</p>
                             </div>
-                            <div class="flex flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400">
-                                <p>pLI</p>
+                            <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400">
+                                <p class="font-bold ">LOEUF</p>
                                 <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_mis_upper : result.constraints_v4.oe_mis_upper }}</p>
                             </div>
-                            <div class="flex flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
-                                <p>pLI</p>
+                            <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
+                                <p class="font-bold ">Z_score</p>
                                 <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_lof_upper : result.constraints_v4.oe_lof_upper }}</p>
                             </div>
-                            <div class="flex flex-col items-center justify-center border border-gray-400 rounded-br-lg">
-                                <p>pLI</p>
+                            <div class="flex py-1.5 flex-col  items-center justify-center border border-gray-400 rounded-br-lg">
+                                <p class="font-bold ">MOEUF</p>
                                 <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z : result.constraints_v4.mis_z }}</p>
                             </div>
                             <div class="absolute inset-0 flex items-center justify-center select-none">
