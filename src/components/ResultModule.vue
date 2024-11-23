@@ -87,7 +87,7 @@
         class="px-6 py-3 text-center relative group cursor-pointer">
         STATUS
         <div 
-            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+            class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-2 transform -translate-x-1/2">
             Status on GeneCC & PanelApp Data 
         </div>
     </th>
