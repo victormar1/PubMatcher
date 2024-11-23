@@ -48,6 +48,7 @@ export default {
     methods: {
         handleSearchComplete(results) {
             this.searchResults = results;
+            console.log(results)
             sessionStorage.setItem('results', JSON.stringify(results));
         },
     },

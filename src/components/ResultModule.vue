@@ -1,50 +1,50 @@
 <template>
-    <main id="searchResults" class="container mx-auto my-10 w-full border-red-500 bg-transparent rounded-lg flex-grow flex-col" :class="{ 'hidden': !results || results.length === 0 }">
-    <div class="flex justify-center">
-        <h2 class="text-bold text-3xl font-mono font-bold text-gray-700">RESULTS</h2>
-    </div>
-    <div class="block">
-        <div class="relative overflow-visible shadow-lg sm:rounded-lg">
-        <table id="resultsTable" class="w-full text-sm text-left rtl:text-right text-gray-500  rounded-3xl dark:text-gray-400 bg-gray-200">
-            <thead>
-            <tr>
-                <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">GENE</th>
-                <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 cursor-pointer" @click="sortByPubMedCount">
-                    PUBMATCH
-                    <span>
-                        <svg
-                            v-if="sortDirection === 'asc'"
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 inline-block"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                        <svg
-                            v-else-if="sortDirection === 'desc'"
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 inline-block"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                        <svg
-                            v-else
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 inline-block"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="5" y1="10" x2="19" y2="10" stroke-linecap="round" />
-                            <line x1="5" y1="14" x2="19" y2="14" stroke-linecap="round" />
-                        </svg>
-                    </span>
-                </th>
+    <main id="searchResults" class="flex px-4 my-10 w-full border border-red-500 bg-transparent rounded-lg flex-grow flex-col" :class="{ 'hidden': !results || results.length === 0 }">
+        <div class="flex justify-center">
+            <h2 class="text-bold text-3xl font-mono font-bold text-gray-700">RESULTS</h2>
+        </div>
+        <div class="block">
+            <div class="relative overflow-visible shadow-lg sm:rounded-lg">
+            <table id="resultsTable" class="w-full text-sm text-left rtl:text-right text-gray-500  rounded-3xl dark:text-gray-400 bg-gray-200">
+                <thead>
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">GENE</th>
+                    <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 cursor-pointer" @click="sortByPubMedCount">
+                        PUBMATCH
+                        <span>
+                            <svg
+                                v-if="sortDirection === 'asc'"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 inline-block"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+                            </svg>
+                            <svg
+                                v-else-if="sortDirection === 'desc'"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 inline-block"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                            <svg
+                                v-else
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 inline-block"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="10" x2="19" y2="10" stroke-linecap="round" />
+                                <line x1="5" y1="14" x2="19" y2="14" stroke-linecap="round" />
+                            </svg>
+                        </span>
+                    </th>
 
                 <th scope="col" class="px-6 py-3 text-center border-r border-gray-300">FUNCTION</th>
                 <th scope="col" class="px-6 py-3 text-nowrap border-r border-gray-300">PHENOTYPE KO</th>
@@ -53,76 +53,55 @@
             </thead>
             <tbody>
                 <tr v-for="result in results" :key="result.gene" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
- <!-- GENE -->
- <td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
+<!-- GENE -->
+<td class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
     <div class="flex flex-col items-center justify-center">
         <!-- Gene Name -->
         <a :href="result.gene ? `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${result.hgncId}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
             <p><em>{{ result.gene }}</em></p>
         </a>
-       <!--  <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p> -->
+        <!--  <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p> -->
 
-        <!-- Table for contraintes -->
-        <div class="mt-1 p-1 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm w-full text-xs">
-            <div class="grid grid-cols-2 gap-1 text-center">
-                <!-- pLi -->
-                <div class="flex flex-col items-center">
-                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">pLi</span>
-                    <span
-                        class="text-[0.5rem] font-medium"
-                        :style="{ color: result.constraints.pLI && parseFloat(result.constraints.pLI.replace(',', '.')) >= 0.95 ? 'red' : 'black' }"
-                    >
-                        {{ result.constraints.pLI || 'N/A' }}
-                    </span>
+            <!-- Table for contraintes -->
+        <div class="relative flex h-full items-center justify-center  gap-2"   @click="toggleVersion">
+                <div class="flex w-56 justify-center items-center ">
+                    <div class="relative p-1 w-full  ">
+                        <!-- Top-Right Indicator -->
+                        <div
+                            v-if="result.constraintsDelta"
+                            v-tooltip="'Notable differences exist between V2 and V4 constraints'"
+                            class="absolute z-20 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900 cursor-pointer"
+                        >
+                            !
+                        </div>
+                        <!-- Grid for Constraints -->
+                        <div class="grid grid-cols-2 h-32 text-center text-xs grid-rows-[4rem] border-blue-600 bg-gray-100 rounded-lg">
+                            <div class="flex flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400">
+                                <p>pLI</p>
+                                <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI : result.constraints_v4.pLI }}</p>
+                            </div>
+                            <div class="flex flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400">
+                                <p>pLI</p>
+                                <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_mis_upper : result.constraints_v4.oe_mis_upper }}</p>
+                            </div>
+                            <div class="flex flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
+                                <p>pLI</p>
+                                <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_lof_upper : result.constraints_v4.oe_lof_upper }}</p>
+                            </div>
+                            <div class="flex flex-col items-center justify-center border border-gray-400 rounded-br-lg">
+                                <p>pLI</p>
+                                <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z : result.constraints_v4.mis_z }}</p>
+                            </div>
+                            <div class="absolute inset-0 flex items-center justify-center select-none">
+                                <div class="flex items-center justify-center">
+                                    <div class="bg-white border border-gray-300 rounded-full w-10 h-5 flex items-center justify-center">
+                                        <p class="text-gray-700 font-bold text-sm">{{ displayVersion }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
-
-
-                <!-- LOEUF -->
-                <div class="flex flex-col items-center">
-                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">LOEUF</span>
-                    <span
-                        class="text-[0.5rem] font-medium"
-                        :style="{ color: formatConstraint(result.constraints.oe_lof_upper, [
-                            { max: 0.26, color: 'red' },
-                            { max: 0.41, color: 'darkred' },
-                            { max: 0.48, color: 'orange' },
-                            { max: 0.55, color: 'yellow' },
-                        ]) }"
-                    >
-                        {{ result.constraints.oe_lof_upper || 'N/A' }}
-                    </span>
-                </div>
-                <!-- Z_score -->
-                <div class="flex flex-col items-center">
-                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">Z_score</span>
-                    <span
-                        class="text-[0.5rem] font-medium"
-                        :style="{ color: formatConstraint(result.constraints.mis_z, [
-                            { max: 3, color: 'black' },
-                            { max: Infinity, color: 'red' },
-                        ]) }"
-                    >
-                        {{ result.constraints.mis_z || 'N/A' }}
-                    </span>
-                </div>
-                <!-- MOEUF -->
-                <div class="flex flex-col items-center">
-                    <span class="font-bold text-[0.5rem] text-gray-600 dark:text-gray-300">MOEUF</span>
-                    <span
-                        class="text-[0.5rem] font-medium"
-                        :style="{ color: formatConstraint(result.constraints.oe_mis_upper, [
-                            { max: 0.58, color: 'red' },
-                            { max: 0.70, color: 'darkred' },
-                            { max: 0.73, color: 'orange' },
-                            { max: 0.77, color: 'yellow' },
-                        ]) }"
-                    >
-                        {{ result.constraints.oe_mis_upper || 'N/A' }}
-                    </span>
-                </div>
-            </div>
         </div>
     </div>
 </td>
@@ -166,100 +145,100 @@
                                 {{ result.title || 'N/A' }} 
                             </a>
 
-                        </div>
-                    </div>
-                </td>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <td class="px-6 py-4 border-r border-gray-200">
-                <div v-if="result.functionKeywords && result.functionKeywords.length > 0" class="mb-2 flex flex-wrap gap-2">
-                    <span v-for="keyword in result.functionKeywords" :key="keyword" class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
-                    {{ keyword }}
-                    </span>
-                </div>
-                {{ result.function || 'N/A' }} <a :href="result.urlAccession" target="_blank" class="font-bold text-blue-600">[...]</a>
-                </td>
-                <td class="px-6 py-4 border-r border-gray-200">
-                    <div v-if="result.mousePhenotype && Object.keys(result.mousePhenotype).length > 0" class="flex flex-wrap gap-2 justify-center">
-                        <div v-for="(details, category) in result.mousePhenotype" :key="category" class="relative flex items-center gap-2">
-                            <!-- Tooltip Trigger -->
-                            <span v-html="details.icon" class="w-6 h-6 cursor-pointer" 
-                                @mouseenter="showTooltip(details, $event)" 
-                                @mouseleave="hideTooltip(details)">
-                            </span>
-                            
-                            <!-- Tooltip -->
-                            <div v-if="details.showTooltip" 
-                                :style="{ top: `${details.tooltipY}px`, left: `${details.tooltipX}px`,transform: 'translate(-100%, 30%)' }"
-                                class="absolute whitespace-nowrap bg-gray-800  text-white text-sm pointer-events-none font-bold rounded px-3 py-1 z-50 shadow-lg">
-                                <span v-for="name in details.names" :key="name" class="block">{{ name }}</span>
                             </div>
                         </div>
+                    </td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <td class="px-6 py-4 border-r border-gray-200">
+                    <div v-if="result.functionKeywords && result.functionKeywords.length > 0" class="mb-2 flex flex-wrap gap-2">
+                        <span v-for="keyword in result.functionKeywords" :key="keyword" class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
+                        {{ keyword }}
+                        </span>
                     </div>
-                </td>
-
-
-
-                <td class="px-6 py-4 text-center">
-                    <div :class="[getValidityColor(result.geneValidity)]" class="rounded-full text-white font-bold py-1 px-2 text-nowrap">
-                        <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-white hover:underline">
-                            {{ result.geneValidity }}
-                        </a>
-
-                    </div>
-                    <!-- ATTRIBUTION !!! -->
-                    <div class="flex flex-row justify-center gap-2">
-                        <a :href="result.gene ? `https://panelapp.genomicsengland.co.uk/panels/entities/${result.gene}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
-                            <div class="relative">
-                                <img src="/images/england.png" alt="England Flag" style="cursor: pointer;" width="50" />
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
-                                        <p class="text-gray-700 font-bold text-sm">
-                                            {{ result.panelAppEnglandCount || 0 }}
-                                        </p>
-                                    </div>
+                    {{ result.function || 'N/A' }} <a :href="result.urlAccession" target="_blank" class="font-bold text-blue-600">[...]</a>
+                    </td>
+                    <td class="px-6 py-4 border-r border-gray-200">
+                        <div v-if="result.mousePhenotype && Object.keys(result.mousePhenotype).length > 0" class="flex flex-wrap gap-2 justify-center">
+                            <div v-for="(details, category) in result.mousePhenotype" :key="category" class="relative flex items-center gap-2">
+                                <!-- Tooltip Trigger -->
+                                <span v-html="details.icon" class="w-6 h-6 cursor-pointer" 
+                                    @mouseenter="showTooltip(details, $event)" 
+                                    @mouseleave="hideTooltip(details)">
+                                </span>
+                                
+                                <!-- Tooltip -->
+                                <div v-if="details.showTooltip" 
+                                    :style="{ top: `${details.tooltipY}px`, left: `${details.tooltipX}px`,transform: 'translate(-100%, 30%)' }"
+                                    class="absolute whitespace-nowrap bg-gray-800  text-white text-sm pointer-events-none font-bold rounded px-3 py-1 z-50 shadow-lg">
+                                    <span v-for="name in details.names" :key="name" class="block">{{ name }}</span>
                                 </div>
                             </div>
-                        </a>
-                        <a :href="result.gene ? `https://panelapp.agha.umccr.org/panels/entities/${result.gene}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
-                            <div class="relative">
-                                <img src="/images/australia.png" alt="Aussie Flag" style="cursor: pointer;" width="50" />
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
-                                        <p class="text-gray-700 font-bold text-sm">
-                                            {{ result.panelAppAustraliaCount || 0 }}
-                                        </p>
+                        </div>
+                    </td>
+
+
+
+                    <td class="px-6 py-4 text-center">
+                        <div :class="[getValidityColor(result.geneValidity)]" class="rounded-full text-white font-bold py-1 px-2 text-nowrap">
+                            <a :href="result.geneLink" target="_blank" rel="noopener noreferrer" class="text-white hover:underline">
+                                {{ result.geneValidity }}
+                            </a>
+
+                        </div>
+                        <!-- ATTRIBUTION !!! -->
+                        <div class="flex flex-row justify-center gap-2">
+                            <a :href="result.gene ? `https://panelapp.genomicsengland.co.uk/panels/entities/${result.gene}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
+                                <div class="relative">
+                                    <img src="/images/england.png" alt="England Flag" style="cursor: pointer;" width="50" />
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
+                                            <p class="text-gray-700 font-bold text-sm">
+                                                {{ result.panelAppEnglandCount || 0 }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                </td>
+                            </a>
+                            <a :href="result.gene ? `https://panelapp.agha.umccr.org/panels/entities/${result.gene}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
+                                <div class="relative">
+                                    <img src="/images/australia.png" alt="Aussie Flag" style="cursor: pointer;" width="50" />
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
+                                            <p class="text-gray-700 font-bold text-sm">
+                                                {{ result.panelAppAustraliaCount || 0 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </td>
 
 
 
 
 
-                
-            </tr>
-            </tbody>
-        </table>
+                    
+                </tr>
+                </tbody>
+            </table>
+            </div>
         </div>
-    </div>
     </main>
 </template>
 
@@ -281,11 +260,24 @@ export default {
         showTooltipData: { names: [], category: null, x: 0, y: 0 }, // Store tooltip data ?
         originalResults: [], // Store the original order
         sortDirection: 'default', // Start with 'default'
+        displayVersion: "v2", // Default version
+
+        deltaTooltip: {
+                visible: false,
+                text: '',
+                x: 0,
+                y: 0,
+            },
 
 
     };
     },
     methods: {
+
+        toggleVersion() {
+            console.log("toggleVersion")
+            this.displayVersion = this.displayVersion === "v2" ? "v4" : "v2";
+        },
         showTooltip(details, event) {
             const rect = event.target.getBoundingClientRect();
 
