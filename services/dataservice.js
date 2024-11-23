@@ -239,7 +239,7 @@ async function getData(req) {
             
             
 
-            const perc = 1.2//20perc
+            const perc = 1.5//perc
             if (constraints_v2[gene] && constraints_v4[gene]) {
                 const parseValue = (value) => parseFloat(value.toString().replace(',', '.'));
             
