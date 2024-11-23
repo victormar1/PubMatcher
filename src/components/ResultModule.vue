@@ -58,9 +58,9 @@
     <div class="flex flex-col items-center justify-center">
         <!-- Gene Name -->
         <a :href="result.gene ? `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${result.hgncId}` : '#'" target="_blank" rel="noopener noreferrer" class="relative">
-            <p>{{ result.gene }}</p>
+            <p><em>{{ result.gene }}</em></p>
         </a>
-        <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p>
+       <!--  <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p> -->
 
         <!-- Table for contraintes -->
         <div class="mt-1 p-1 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm w-full text-xs">
@@ -142,27 +142,14 @@
                                 cx="50"
                                 cy="50"
                                 r="25"
-                                stroke-width="6"
-                                stroke="lightgray"
-                                fill="none"
-                            />
-                            <!-- Progress -->
-                            <circle
-                                class="text-blue-500"
-                                cx="50"
-                                cy="50"
-                                r="25"
-                                stroke-width="10"
+                                stroke-width="5"
                                 :stroke="getColor(result.count)"
-                                stroke-dasharray="157" 
-                                :stroke-dashoffset="getDashOffset(result.count)"
-                                stroke-linecap="round"
                                 fill="none"
                             />
                             <text
                                 x="50"
                                 y="50"
-                                fill="lightgray"
+                                fill="black"
                                 font-size="12"
                                 font-weight="bold"
                                 font-family="Arial, sans-serif"
@@ -325,12 +312,14 @@ export default {
         },
 
         getColor(count) {
-            if (count < 5) {
-                return "Lime";
+            if (count < 1) {
+                return "lightGrey";
+            } else if (count < 10) {
+                return "rgb(251 147 147)";
             } else if (count < 100) {
-                return "yellow";
-            } else if (count < 1000) {
-                return "orange";
+                return "rgb(128 166 243)";
+            } else if (count > 100) {
+                return "grey";
             } else {
                 return "red";
             }
