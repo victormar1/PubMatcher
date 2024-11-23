@@ -183,6 +183,7 @@ async function getData(req) {
             } catch (error) {
                 console.error("Error fetching phenotypes from IMPC:", error);
             }
+
             //GOOFY ASS
             if (Object.keys(groupedPhenotypes).length === 0) {
                 groupedPhenotypes["noMatch"] = {
@@ -190,6 +191,7 @@ async function getData(req) {
                     icon: svgIcons.find(icon => icon.name === "noMatch")?.path.replace(/^"|"$/g, '') || '' // Add the SVG icon
                 };
             }
+
 
 
             // Obtenir le chemin de la requête
@@ -209,6 +211,11 @@ async function getData(req) {
                 geneValidity: validatedGene.validityMarker || "No validity found",
                 hgncId: validatedGene.hgncId || "No HGNC ID",
             };
+
+            //NoMatch icon
+            if(Object.keys(groupedPhenotypes).length===0){
+                result.mousePhenotype = "No match";
+            }
 
             if (!requestPath.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
