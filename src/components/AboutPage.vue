@@ -1,22 +1,48 @@
-
 <template>
   <div class="about">
-    <h2>À propos de PubMatcher</h2>
-    <p>PubMatcher 2.0 est un outil automatisé de recherche génomique qui intègre des bases de données biologiques et des APIs pour faciliter l'interprétation génétique. Il permet aux utilisateurs de :</p>
-    <ul>
-      <li>Vérifier les contraintes des gènes.</li>
-      <li>Rechercher des publications scientifiques pertinentes.</li>
-      <li>Extraire des informations sur les fonctions protéiques.</li>
-      <li>Vérifier les phénotypes chez la souris.</li>
-      <li>Accéder aux données de GenCC et PanelApp.</li>
-    </ul>
-    <p>Pensé et développé par Victor Marin, Victor Dumont, Hugo Lannes et Louis Lebreton.</p>
+    <p>
+      PubMatcher 2.0 is an automated genomic search tool that integrates
+      biological databases and APIs to facilitate genetic interpretation. It allows users to:
+    </p>
+    <div class="features">
+      <div class="feature-item" v-for="feature in features" :key="feature.title">
+        <i :class="feature.icon"></i>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'AboutPage',
+  data() {
+    return {
+      features: [
+        {
+          title: 'Gene Constraint Verification',
+          icon: 'fas fa-dna',
+        },
+        {
+          title: 'Search for Scientific Publications',
+          icon: 'fas fa-book',
+        },
+        {
+          title: 'Extraction of Protein Functions',
+          icon: 'fas fa-flask',
+        },
+        {
+          title: 'Mouse Phenotype Verification',
+          icon: 'fas fa-mouse',
+        },
+        {
+          title: 'Access to GenCC and PanelApp',
+          icon: 'fas fa-database',
+        },
+      ],
+    };
+  },
 };
 </script>
 
@@ -24,18 +50,45 @@ export default {
 .about {
   padding: 20px;
   font-family: Arial, sans-serif;
+  text-align: center;
 }
 
 .about h2 {
   color: #333;
+  margin-bottom: 30px;
 }
 
-.about ul {
-  list-style-type: disc;
-  margin-left: 20px;
+.about p {
+  color: #555;
+  font-size: 1.1em;
+  margin-bottom: 20px;
 }
 
-.about p, .about li {
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.feature-item {
+  width: 250px;
+  margin: 15px;
+  text-align: center;
+}
+
+.feature-item i {
+  font-size: 3em;
+  color: #0077b5;
+  margin-bottom: 10px;
+}
+
+.feature-item h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.feature-item p {
   color: #555;
 }
 </style>
