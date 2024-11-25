@@ -4,6 +4,7 @@ import HomePage from './components/HomePage.vue';
 import AboutPage from './components/AboutPage.vue';
 import ContactPage from './components/ContactPage.vue';
 import SearchModule from './components/SearchModule.vue';
+import PageNotFound from './components/PageNotFound.vue';
 
 
 const routes = [
@@ -17,6 +18,13 @@ const routes = [
         genes: route.query.genes ? route.query.genes.split(',') : [],
         phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : [],
     }),
+    
+},
+
+//Route de secours
+{
+  path: '/:pathMatch(.*)*',
+  component: PageNotFound,
 },
 ];
 
