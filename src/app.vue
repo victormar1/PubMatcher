@@ -18,7 +18,25 @@
       AppHeader,
       AppFooter,
     },
+    mounted() {
+      this.applyDarkModePreference();
+    },
+    methods: {
+      applyDarkModePreference() {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches; //os theme remove if conflicting
+        const storedTheme = localStorage.getItem('color-theme');
+
+        if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      },
+    }
   };
+
+
+  
 </script>
 
 <style>
