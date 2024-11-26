@@ -1,190 +1,197 @@
 <template>
-  <div>
+  <div class="flex flex-col gap-3 justify-center "
+    @click.capture="hideSuggestions('geneSuggestions'); hideSuggestions('phenotypeSuggestions')">
     <!-- EXTRACTION -->
-    <div class="flex flex-row items-center border-blue-600">
-      <label for="batch" class="block text-3xl ml-16 font-mono font-bold text-gray-700">
-        EXTRACT FROM TEXT
-      </label>
-      <!-- TOOLTIP CONT -->
-      <div class="group flex z-10 relative ml-3">
-        <button
-          class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-            class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-          </svg>
-        </button>
-        <!-- Tooltip -->
-        <span
-          class="group-hover:opacity-100 transition-opacity duration-300 bg-gray-700 text-white text-1xl font-mono italic font-medium rounded-lg px-3 py-2 shadow-lg ml-4 absolute left-1/2 -translate-x-1/2 translate-y-full opacity-0 mt-2 whitespace-nowrap">
-          Extract genes from raw text, file or URL.
-        </span>
-      </div>
-      <button class="ml-auto px-4 py-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
-        @click="clearWholeResearch">
-        Clear Research
-      </button>
-    </div>
-    <div class="flex flex-row mx-2">
-      <!-- BATCH INPUT | EXTRACT BUTTONS -->
-      <div class="relative w-full overflow-auto h-56">
-        <textarea id="batchInput" v-model="batchInput" rows="4"
-          class="block p-2.5 pb-12 w-full h-full resize-none text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Paste your genes here..."></textarea>
-        <div class="absolute bottom-2 right-4 flex space-x-2">
-          <button id="submitTextArea" @click="extractGeneFromBatch" type="button"
-            class="flex items-center px-4 py-2 bg-gray-800 hover:bg-blue-600 text-white font-medium rounded-md space-x-2">
-            <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-              width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-              <path fill-rule="evenodd"
-                d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2.002 2.002 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2.002 2.002 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414ZM8 12a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
-                clip-rule="evenodd" />
-            </svg>
-            <span>Extract Genes</span>
-          </button>
-          <button id="clearTextArea" @click="clearBatchInput" type="button"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md">
-            Clear
-          </button>
-        </div>
-      </div>
-      <!-- DRAG FILE ZONE -->
-      <div
-        class="flex flex-col items-center justify-center h-56 mb-3 ml-3 max-w-lg text-center bg-gray-50 border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-900 dark:border-gray-700 rounded-xl"
-        @dragover.prevent @dragenter.prevent @drop.prevent="handleFileDrop">
-        <!-- Clickable Label for File Input -->
-        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-          <!-- SVG Icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-8 h-8 text-gray-500 dark:text-gray-400">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-          </svg>
-
-          <!-- Text Content -->
-          <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">
-            Drop File Here
-          </h2>
-          <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">
-            Upload or drag & drop your file TXT, CSV or XML.
-          </p>
+    <div>
+      <!-- EXTRACTION -->
+      <div class="flex flex-row items-center border-blue-600">
+        <label for="batch" class="block text-3xl ml-10  font-bold text-gray-700">
+          EXTRACT FROM TEXT
         </label>
+        <!-- TOOLTIP CONT -->
+        <div class="group flex z-10 relative ml-3">
+          <button
+            class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+            </svg>
+          </button>
+          <!-- Tooltip -->
+          <span
+            class="group-hover:opacity-100 transition-opacity duration-300 bg-gray-700 text-white text-1xl font-sans italic font-medium rounded-lg px-3 py-2 shadow-lg ml-4 absolute left-1/2 translate-x-3 -translate-y-5 opacity-0 mt-2 whitespace-nowrap">
+            Extract genes from raw text, file, url, webpage or SeqOne.
+          </span>
+        </div>
+        <button class="ml-auto px-4 py-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
+          @click="clearWholeResearch">
+          Clear Research
+        </button>
+      </div>
+      <div class="flex flex-row mx-2">
+        <!-- BATCH INPUT | EXTRACT BUTTONS -->
+        <div class="relative w-full overflow-auto h-56">
+          <textarea id="batchInput" v-model="batchInput" rows="4"
+            class="block p-2.5 pb-12 w-full h-full resize-none text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Paste your genes here..."></textarea>
+          <div class="absolute bottom-2 right-4 flex space-x-2">
+            <button id="submitTextArea" @click="extractGeneFromBatch" type="button"
+              class="flex items-center px-4 py-2 bg-gray-800 hover:bg-blue-600 text-white font-medium rounded-md space-x-2">
+              <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd"
+                  d="M9.586 2.586A2 2 0 0 1 11 2h2a2 2 0 0 1 2 2v.089l.473.196.063-.063a2.002 2.002 0 0 1 2.828 0l1.414 1.414a2 2 0 0 1 0 2.827l-.063.064.196.473H20a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-.089l-.196.473.063.063a2.002 2.002 0 0 1 0 2.828l-1.414 1.414a2 2 0 0 1-2.828 0l-.063-.063-.473.196V20a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-.089l-.473-.196-.063.063a2.002 2.002 0 0 1-2.828 0l-1.414-1.414a2 2 0 0 1 0-2.827l.063-.064L4.089 15H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.09l.195-.473-.063-.063a2 2 0 0 1 0-2.828l1.414-1.414a2 2 0 0 1 2.827 0l.064.063L9 4.089V4a2 2 0 0 1 .586-1.414ZM8 12a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span>Extract Genes</span>
+            </button>
+            <button id="clearTextArea" @click="clearBatchInput" type="button"
+              class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md">
+              Clear
+            </button>
+          </div>
+        </div>
+        <!-- DRAG FILE ZONE -->
+        <div
+          class="flex flex-col items-center justify-center h-56 mb-3 ml-3 max-w-lg text-center bg-gray-50 border-2 border-gray-300 border-dashed cursor-pointer dark:bg-gray-900 dark:border-gray-700 rounded-xl"
+          @dragover.prevent @dragenter.prevent @drop.prevent="handleFileDrop">
+          <!-- Clickable Label for File Input -->
+          <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+            <!-- SVG Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-8 h-8 text-gray-500 dark:text-gray-400">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+            </svg>
 
-        <!-- Hidden File Input -->
-        <input id="dropzone-file" type="file" class="hidden" @change="handleFileUpload" />
+            <!-- Text Content -->
+            <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">
+              Drop File Here
+            </h2>
+            <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">
+              Upload or drag & drop your file TXT, CSV or XML.
+            </p>
+          </label>
+
+          <!-- Hidden File Input -->
+          <input id="dropzone-file" type="file" class="hidden" @change="handleFileUpload" />
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- GENES AND PHENOTYPES -->
-  <div @click.capture="hideSuggestions('geneSuggestions')" class="flex mx-4 h-60 flex-row border-blue-600">
-    <div class="flex flex-col items-center w-7/12 space-y-4 rounded min-h-72 overflow-auto border-red-600 p-4">
-      <form @submit.prevent class="w-full max-w-md">
-        <label for="default-search"
-          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-        <div class="relative">
-          <!-- Search logo -->
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-              fill="none" viewBox="0 0 20 20">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-            </svg>
+    <!-- GENES AND PHENOTYPES -->
+    <div class="flex flex-row h-full min-h-72">
+      <!-- GENES -->
+      <div class="flex flex-col w-1/2 justify-start items-center bg-gray-100 border border-gray-300 rounded-lg p-4 ">
+        <form @submit.prevent class="w-full max-w-md pb-2">
+          <label for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
+          <div class="relative">
+            <!-- Search logo -->
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
+            </div>
+  
+            <!-- Search input -->
+            <input type="search" ref="geneInput" id="geneInput"
+              class="block w-full h-full p-4 pl-10 text-base text-gray-900 border shadow-inner border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
+              placeholder="Add Genes..." @input="debouncedShowSuggestions('gene')" @keydown.enter.prevent="addFreeGene"
+              autocomplete="off" required />
+  
+            <!-- Search button -->
+            <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
+              class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <p class="text-white">Add</p>
+            </button>
+  
+            <!-- Suggestion dropdown -->
+            <ul id="geneSuggestions"
+              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
+            </ul>
           </div>
-
-          <!-- Search input -->
-          <input type="search" ref="geneInput" id="geneInput"
-            class="block w-full h-full p-4 pl-10 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-            placeholder="Add Genes..." @input="debouncedShowSuggestions('gene')" @keydown.enter.prevent="addFreeGene"
-            autocomplete="off" required />
-
-          <!-- Search button -->
-          <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
-            class="text-white absolute right-2 bottom-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <p class="text-white">Add</p>
-          </button>
-
-          <!-- Suggestion dropdown -->
-          <ul id="geneSuggestions"
-            class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-          </ul>
+        </form>
+        <div class="flex flex-col items-center  space-y-4 rounded max-h-48 overflow-auto  p-4">
+          <!-- GENES PLACEHOLDERS -->
+          <div class="flex flex-wrap gap-2 p-4 gene-items ">
+            <!-- GENES POPULATE HERE -->
+          </div>
         </div>
-      </form>
-      <!-- GENES PLACEHOLDERS -->
-      <div class="flex flex-wrap gap-2 p-4 gene-items">
-        <!-- GENES POPULATE HERE -->
+      </div>
+      <!-- DIVIDER -->
+      <div class="w-0.5 h-full bg-gray-300"></div>
+
+      <!-- PHENOTYPES -->
+      <div class="flex flex-col w-1/2  justify-start items-center bg-gray-100 border border-gray-300 rounded-lg p-4 ">
+        <form class="w-full max-w-md pb-2">
+          <label for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+          <div class="relative">
+            <!-- Search logo -->
+            <div class="absolute inset-y-0 left-0 flex  items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
+            </div>
+
+            <!-- Search input -->
+            <input type="search" id="phenotypeInput" ref="phenotypeInput"
+              class="block w-full h-full p-4 pl-10 text-base shadow-inner text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
+              placeholder="Add phenotypes..." @input="debouncedShowSuggestions('phenotype')" autocomplete="off"
+              @keydown.enter.prevent="addFreePhenotype" required />
+            <!-- Search button -->
+            <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
+              class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <p class="text-white">Add</p>
+            </button>
+            <ul id="phenotypeSuggestions"
+              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
+            </ul>
+
+            <!-- Suggestion dropdown -->
+            <ul id="suggestions"
+              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10">
+              <!-- Suggestions will be dynamically generated here -->
+            </ul>
+          </div>
+        </form>
+        <div class="flex flex-col items-center space-y-4 rounded max-h-48  overflow-auto  p-4">
+          <!-- PHENOTYPES PLACEHOLDERS -->
+          <div class="flex flex-wrap gap-2 p-4 phenotype-items ">
+            <!-- PHENOTYPES POPULATE HERE -->
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="w-0.5 h-full bg-gray-300"></div>
-
-    <div class="flex flex-col items-center w-7/12 space-y-4 rounded min-h-72 overflow-auto border-red-600 p-4">
-      <!-- Form for Adding Phenotypes -->
-      <form class="w-full max-w-md">
-        <label for="default-search"
-          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-        <div class="relative">
-          <!-- Search logo -->
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-              fill="none" viewBox="0 0 20 20">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-            </svg>
-          </div>
-
-          <!-- Search input -->
-          <input type="search" id="phenotypeInput" ref="phenotypeInput"
-            class="block w-full h-full p-4 pl-10 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-            placeholder="Add phenotypes..." @input="debouncedShowSuggestions('phenotype')" autocomplete="off"
-            @keydown.enter.prevent="addFreePhenotype" required />
-          <!-- Search button -->
-          <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
-            class="text-white absolute right-2 bottom-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <p class="text-white">Add</p>
-          </button>
-          <ul id="phenotypeSuggestions"
-            class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-          </ul>
-
-          <!-- Suggestion dropdown -->
-          <ul id="suggestions"
-            class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10">
-            <!-- Suggestions will be dynamically generated here -->
-          </ul>
-        </div>
-      </form>
-
-      <!-- Conteneur pour les phénotypes -->
-      <div class="flex flex-wrap overflow-auto gap-2 p-4 phenotype-items"></div>
-    </div>
-  </div>
-
-  <!-- RESEARCHED BUTTON -->
-  <div class="flex justify-center mt-3">
-    <button type="button" id="researchButton" @click="reasearch"
-      class="text-white justify-center bg-gray-800 hover:bg-blue-800 w-full mx-10 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-      <svg class="loader w-12 h-12 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-        width="24" height="24" fill="none" viewBox="0 0 24 24">
-        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-          d="M8.737 8.737a21.49 21.49 0 0 1 3.308-2.724m0 0c3.063-2.026 5.99-2.641 7.331-1.3 1.827 1.828.026 6.591-4.023 10.64-4.049 4.049-8.812 5.85-10.64 4.023-1.33-1.33-.736-4.218 1.249-7.253m6.083-6.11c-3.063-2.026-5.99-2.641-7.331-1.3-1.827 1.828-.026 6.591 4.023 10.64m3.308-9.34a21.497 21.497 0 0 1 3.308 2.724m2.775 3.386c1.985 3.035 2.579 5.923 1.248 7.253-1.336 1.337-4.245.732-7.295-1.275M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
-      </svg>
-      <p class="text-white text-3xl genes-count">RESEARCH 0 GENES</p>
-      <div role="status" class="flex items-center">
+    <!-- RESEARCHED BUTTON -->
+    <div class="">
+      <button type="button" id="researchButton" @click="reasearch"
+        class="text-white justify-center bg-gray-800 hover:bg-blue-800 w-full focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         <svg class="loader w-12 h-12 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
           width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
             d="M8.737 8.737a21.49 21.49 0 0 1 3.308-2.724m0 0c3.063-2.026 5.99-2.641 7.331-1.3 1.827 1.828.026 6.591-4.023 10.64-4.049 4.049-8.812 5.85-10.64 4.023-1.33-1.33-.736-4.218 1.249-7.253m6.083-6.11c-3.063-2.026-5.99-2.641-7.331-1.3-1.827 1.828-.026 6.591 4.023 10.64m3.308-9.34a21.497 21.497 0 0 1 3.308 2.724m2.775 3.386c1.985 3.035 2.579 5.923 1.248 7.253-1.336 1.337-4.245.732-7.295-1.275M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
         </svg>
-        <span class="sr-only">Loading...</span>
-      </div>
-    </button>
+        <p class="text-white text-3xl genes-count">RESEARCH 0 GENES</p>
+        <div role="status" class="flex items-center">
+          <svg class="loader w-12 h-12 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+              d="M8.737 8.737a21.49 21.49 0 0 1 3.308-2.724m0 0c3.063-2.026 5.99-2.641 7.331-1.3 1.827 1.828.026 6.591-4.023 10.64-4.049 4.049-8.812 5.85-10.64 4.023-1.33-1.33-.736-4.218 1.249-7.253m6.083-6.11c-3.063-2.026-5.99-2.641-7.331-1.3-1.827 1.828-.026 6.591 4.023 10.64m3.308-9.34a21.497 21.497 0 0 1 3.308 2.724m2.775 3.386c1.985 3.035 2.579 5.923 1.248 7.253-1.336 1.337-4.245.732-7.295-1.275M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
+          </svg>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-import SearchBuildingModule from './SearchBuildingModule';
 
 export default {
   name: 'SearchBuildingModule',

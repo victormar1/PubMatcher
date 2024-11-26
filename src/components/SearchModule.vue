@@ -1,11 +1,5 @@
 <template>
-  <span class="relative flex mt-3 justify-center mb-20">
-    <div
-      class="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75">
-    </div>
-    <span class="relative z-10 bg-white px-6 font-bold font-nono text-gray-700 text-5xl">SEARCH ENGINE</span>
-  </span>
-  <div>
+  <div class="my-12">
     <SearchBuildingModule @search-complete="handleSearchComplete" :genes="genes" :phenotypes="phenotypes" />
   </div>
   <ResultModule :results="searchResults" />

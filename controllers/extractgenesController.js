@@ -39,6 +39,5 @@ loadGenesFromFile(csvPath)
  * @param {Response} res - Express response object
  */
 exports.getGenesList = (req, res) => {
-    console.log('Received /geneslist request');
     res.json({ genes: genesList });
 };
