@@ -1,17 +1,17 @@
 <template>
-    <div id="app" class="flex flex-col min-h-screen">
-      <AppHeader />
-      <main class="flex-grow">
+  <div id="app" class="flex flex-col min-h-screen">
+    <AppHeader />
+    <main class="flex-grow">
       <router-view></router-view>
-      </main>
-      <AppFooter />
-    </div>
+    </main>
+    <AppFooter />
+  </div>
 </template>
-  
-  <script>
+
+<script>
   import AppHeader from './components/AppHeader.vue';
   import AppFooter from './components/AppFooter.vue';
-  
+
   export default {
     name: 'App',
     components: {
@@ -19,9 +19,8 @@
       AppFooter,
     },
   };
-  </script>
-  
-  <style>
+</script>
+
+<style>
   /* Vos styles globaux */
-  </style>
-  
+</style>

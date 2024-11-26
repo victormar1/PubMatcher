@@ -1,13 +1,11 @@
 <template>
-    <section class="bg-white dark:bg-gray-900 ">
-        <div class="container flex items-center px-6 py-12 mt-24 mx-auto">
-            <div class="flex flex-col items-center max-w-sm mx-auto text-center">
-                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" 
-                    width="300" height="300" viewBox="0 0 795.000000 900.000000"
-                    preserveAspectRatio="xMidYMid meet">
-                    <g transform="translate(0.000000,900.000000) scale(0.100000,-0.100000)"
-                    fill="#1F2937" stroke="none">
-                    <path d="M3375 8510 c-60 -4 -141 -13 -180 -20 -163 -28 -472 -118 -600 -175
+  <section class="bg-white dark:bg-gray-900">
+    <div class="container flex items-center px-6 py-12 mt-24 mx-auto">
+      <div class="flex flex-col items-center max-w-sm mx-auto text-center">
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="300" height="300"
+          viewBox="0 0 795.000000 900.000000" preserveAspectRatio="xMidYMid meet">
+          <g transform="translate(0.000000,900.000000) scale(0.100000,-0.100000)" fill="#1F2937" stroke="none">
+            <path d="M3375 8510 c-60 -4 -141 -13 -180 -20 -163 -28 -472 -118 -600 -175
                     -352 -154 -580 -310 -840 -570 -252 -252 -343 -378 -479 -660 -79 -162 -127
                     -289 -160 -420 -8 -33 -22 -87 -30 -120 -32 -127 -47 -275 -53 -505 -8 -332
                     14 -522 84 -745 56 -177 147 -393 212 -500 17 -27 38 -63 47 -80 88 -157 304
@@ -58,11 +56,11 @@
                     -17 74 -18 681 -18 484 0 659 3 678 12 15 7 33 25 42 41 8 17 18 26 23 21 20
                     -20 40 -134 40 -226 0 -115 -6 -122 -73 -89 -43 21 -53 21 -714 21 -369 0
                     -679 -3 -688 -6 -9 -4 -25 -24 -36 -46 -35 -69 -44 -46 -47 126 -2 142 -1 161
-                    19 204 l21 47 12 -35 c7 -19 26 -42 42 -52z"/>
-                    <path d="M3419 8086 c-2 -2 -74 -9 -159 -16 -155 -12 -200 -24 -200 -54 0 -36
+                    19 204 l21 47 12 -35 c7 -19 26 -42 42 -52z" />
+            <path d="M3419 8086 c-2 -2 -74 -9 -159 -16 -155 -12 -200 -24 -200 -54 0 -36
                     52 -40 560 -44 l496 -3 19 21 c19 22 19 22 0 36 -10 8 -28 14 -39 14 -21 0
-                    -97 13 -210 36 -63 13 -455 21 -467 10z"/>
-                    <path d="M4460 7883 c0 -9 10 -45 22 -80 12 -38 17 -67 12 -73 -5 -4 -147 -4
+                    -97 13 -210 36 -63 13 -455 21 -467 10z" />
+            <path d="M4460 7883 c0 -9 10 -45 22 -80 12 -38 17 -67 12 -73 -5 -4 -147 -4
                     -319 2 -170 5 -581 8 -913 6 l-602 -3 0 25 c0 14 11 42 25 62 34 50 33 69 -2
                     58 -175 -55 -292 -133 -335 -220 -42 -85 -56 -259 -34 -414 26 -176 52 -270
                     112 -394 88 -181 221 -354 452 -589 174 -177 220 -201 275 -144 15 16 49 37
@@ -92,51 +90,50 @@
                     -35 -34 -13 44 c-24 81 -12 439 16 439 2 0 16 -20 30 -45z m944 -595 l852 0 0
                     -23 c0 -30 -99 -188 -171 -275 -68 -82 -98 -96 -182 -82 -103 17 -883 25
                     -1019 11 -140 -15 -132 -18 -234 111 -77 97 -143 211 -144 247 0 19 4 22 23
-                    17 12 -3 406 -6 875 -6z"/>
-                    <path d="M1644 6641 c-47 -29 -64 -59 -64 -112 0 -59 31 -106 84 -127 34 -14
-                    43 -13 91 2 58 18 110 66 121 113 22 87 -147 178 -232 124z"/>
-                    <path d="M5456 5969 c-40 -31 -69 -95 -63 -138 5 -43 61 -165 88 -194 17 -19
+                    17 12 -3 406 -6 875 -6z" />
+            <path d="M1644 6641 c-47 -29 -64 -59 -64 -112 0 -59 31 -106 84 -127 34 -14
+                    43 -13 91 2 58 18 110 66 121 113 22 87 -147 178 -232 124z" />
+            <path d="M5456 5969 c-40 -31 -69 -95 -63 -138 5 -43 61 -165 88 -194 17 -19
                     20 -19 36 -5 10 9 37 24 60 33 23 9 50 29 60 43 63 95 71 159 26 213 -54 64
-                    -156 88 -207 48z"/>
-                    <path d="M4438 1292 c-55 -36 -68 -61 -68 -127 0 -53 4 -68 29 -102 50 -69 86
+                    -156 88 -207 48z" />
+            <path d="M4438 1292 c-55 -36 -68 -61 -68 -127 0 -53 4 -68 29 -102 50 -69 86
                     -88 163 -87 79 0 104 17 144 96 40 80 29 123 -50 196 -45 41 -47 42 -118 42
                     -53 0 -80 -5 -100 -18z m147 -88 c33 -36 34 -96 3 -118 -29 -21 -47 -20 -77 3
-                    -31 24 -41 99 -16 124 24 25 62 21 90 -9z"/>
-                    </g>
-                </svg>
+                    -31 24 -41 99 -16 124 24 25 62 21 90 -9z" />
+          </g>
+        </svg>
 
-                <h1 class="mt-3 text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">Page not found</h1>
-                <p class="mt-4 text-gray-500 dark:text-gray-400">The page you are looking for doesn't exist. Here are some helpful links:</p>
+        <h1 class="mt-3 text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">
+          Page not found
+        </h1>
+        <p class="mt-4 text-gray-500 dark:text-gray-400">
+          The page you are looking for doesn't exist. Here are some helpful
+          links:
+        </p>
 
-                <div class="flex items-center w-full mt-6 gap-x-3 shrink-0 sm:w-auto">
-                    <button @click="goHome" class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 rtl:rotate-180">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                        </svg>
+        <div class="flex items-center w-full mt-6 gap-x-3 shrink-0 sm:w-auto">
+          <button @click="goHome"
+            class="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 rtl:rotate-180">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+            </svg>
 
-
-                        <span>Go back Home</span>
-                    </button>
-
-                </div>
-            </div>
+            <span>Go back Home</span>
+          </button>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </template>
-
-
-
 
 <script>
 export default {
-    name: 'PageNotFound',
-    methods:{
-        goHome(){
-            this.$router.push({ path: '/' }); // Replace 'Home' with your route name
-        }
-    }
+  name: 'PageNotFound',
+  methods: {
+    goHome() {
+      this.$router.push({ path: '/' }); // Replace 'Home' with your route name
+    },
+  },
 };
-
 </script>
-
-
