@@ -120,6 +120,9 @@ async function getData(req) {
             const title = $(titleSelector).text().trim();
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
+            const firstArticleId = $(titleSelector).attr('href').match(/\/(\d+)\//)?.[1];
+            const firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${firstArticleId}/`;
+
 
 
             // Fetch UniProt function
@@ -202,6 +205,7 @@ async function getData(req) {
                 function: uniProtFunction.proteinMatch || "No match", // Fonction
                 mousePhenotype: groupedPhenotypes, // <- Categories to display
                 url, // Pubmed
+                firstArticleUrl,
                 functionKeywords : uniProtFunction.keywordsMatch,
                 panelAppEnglandCount: 0,  // Valeur par défaut
                 panelAppAustraliaCount: 0, // Valeur par défaut

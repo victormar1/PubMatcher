@@ -191,7 +191,7 @@
 
                                 <div class="flex flex-col flex-grow items-center justify-center border-red-700 w-32 ">
                                     <div class="flex items-center justify-center">
-                                        <a :href="result.url" target="_blank"
+                                        <a :href="result.firstArticleUrl" target="_blank"
                                             class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800">
                                             {{ result.title || 'N/A' }}
                                             <i class="fas fa-external-link-alt ml-2 text-xs"></i>
