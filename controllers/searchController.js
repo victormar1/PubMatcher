@@ -12,7 +12,6 @@ exports.search = async (req, res) => {
 
         const queryParams = { body: { genes, phenotypes } };
         const results = await getData(queryParams);
-        console.log(results)
 
         res.json({ results });
         } catch (error) {

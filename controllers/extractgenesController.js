@@ -27,7 +27,6 @@ const csvPath = path.join(__dirname, '..', 'BDD', 'genes.csv');
 loadGenesFromFile(csvPath)
     .then((genes) => {
         genesList = genes; // Cache the loaded genes in memory
-        console.log('Genes loaded successfully.');
     })
     .catch((error) => {
         console.error('Error loading genes during startup:', error);

@@ -91,7 +91,6 @@ loadSVGIcons();
  */
 async function getData(req) {
     // Extraire et nettoyer les entrées
-    console.log(req)
     const genes = req.body.genes || [];
     const phenotypes = req.body.phenotypes || [];
     
@@ -289,7 +288,6 @@ async function getData(req) {
                     result.constraintsDelta = false;
                 }
 
-                console.log(v2, v4)
                 
             
             
