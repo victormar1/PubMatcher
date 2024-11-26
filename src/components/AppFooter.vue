@@ -2,7 +2,7 @@
   <div class="bg-gray-800">
     <footer class="flex flex-row text-white justify-between h-16 py-4 mx-4">
       <div>
-        <img class="h-full w-auto max-w-xs md:max-w-sm pr-4" src="/logoCHU.jpg" alt="Clinic Logo" />
+        <img class="h-full w-auto max-w-xs md:max-w-sm pr-4" src="images/logoCHU.jpg" alt="Clinic Logo" />
       </div>
       <div class="flex items-center">
         <svg version="1.0" xmlns="http://www.w3.org/2000/svg" class="h-full w-auto max-w-xs md:max-w-sm"

@@ -3,10 +3,10 @@
     <div class="flex justify-between px-4 items-center">
       <div class="flex items-center">
         <router-link to="/" class="flex items-center">
-          <img class="max-h-12 w-auto object-cover" src="/PM4.svg" alt="Clinic Logo" />
+          <img class="max-h-12 w-auto object-cover" src="images/pmlogo.svg" alt="PubMatcher Logo" />
           <!-- Titre principal -->
           <div class="flex flex-row items-baseline space-x-1">
-            <h1 class="text-5xl font-bold text-white">PubMatcher</h1>
+            <h1 class="text-5xl font-bold  text-white">PubMatcher</h1>
             <svg width="50" height="20" viewBox="0 0 350 163" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 81.0262C0 36.2767 36.2767 0 81.0262 0H268.099C312.848 0 349.125 36.2767 349.125 81.0262C349.125 125.776 312.848 162.052 268.099 162.052H81.0262C36.2767 162.052 0 125.776 0 81.0262Z" fill="url(#paint0_linear_0_1)"/>
               <path d="M237.058 115.825C232.641 115.825 229.869 113.241 229.869 109.153C229.869 107.978 230.198 106.381 230.809 104.642L249.322 54.2243C251.295 48.7268 254.632 46.1895 259.988 46.1895C265.533 46.1895 268.822 48.6328 270.842 54.1773L289.449 104.642C290.107 106.475 290.342 107.743 290.342 109.153C290.342 113.053 287.382 115.825 283.247 115.825C279.253 115.825 277.139 113.993 275.87 109.576L272.299 98.8626H247.818L244.247 109.435C242.932 113.946 240.817 115.825 237.058 115.825ZM250.92 87.8675H269.01L260.035 60.0978H259.706L250.92 87.8675Z" fill="url(#paint1_linear_0_1)"/>
