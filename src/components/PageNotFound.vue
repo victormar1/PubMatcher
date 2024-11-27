@@ -2,7 +2,7 @@
   <section class="bg-white dark:bg-gray-900">
     <div class="container flex items-center px-6 py-12 mt-24 mx-auto">
       <div class="flex flex-col items-center max-w-sm mx-auto text-center">
-        <img class="imgLogo" src="/pmlogo.svg" alt="" />
+        <img class="imgLogo" src="images/pmlogo.svg" alt="" />
 
 
         <h1 class="mt-3 text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">
@@ -43,6 +43,6 @@ export default {
 
 <style>
 .imgLogo {
-  filter: invert(83.4%) saturate(429.69%) hue-rotate(-145.5deg);
+  filter: invert(30%) saturate(429.69%) hue-rotate(-145.5deg);
 }
 </style>
