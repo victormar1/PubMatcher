@@ -171,9 +171,9 @@
       </div>
     </div>
     <!-- RESEARCHED BUTTON -->
-    <div class="">
+    <div class="flex flex-row justify-center mx-2 ">
       <button type="button" id="researchButton" @click="reasearch"
-        class="text-white justify-center bg-gray-800 hover:bg-blue-800 w-full focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        class="text-white  bg-gray-800 hover:bg-blue-800 w-full justify-center  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         <svg class="loader w-12 h-12 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
           width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
@@ -581,7 +581,6 @@ export default {
       }
 
     },
-
     extractGeneFromBatch() {
       if (!this.batchInput.trim() || this.genesList.length === 0) {
         this.extractedGenes = [];
@@ -620,7 +619,6 @@ export default {
       };
       reader.readAsText(file); // Read file content as text
     },
-
     handleFileDrop(event) {
       const file = event.dataTransfer.files[0];
       if (file) {

@@ -1,5 +1,5 @@
-<template>
-  <div class="my-12">
+<template class="">
+  <div class="my-12 px-4">
     <SearchBuildingModule @search-complete="handleSearchComplete" :genes="genes" :phenotypes="phenotypes" />
   </div>
   <ResultModule :results="searchResults" />
