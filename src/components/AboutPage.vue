@@ -1,16 +1,16 @@
 <template>
-  <div class="about py-10 text-center">
+  <div class="mt-40 about py-10 text-center ">
     <p class="text-gray-700 text-lg mb-5">
-      PubMatcher is an automated genomic search tool that integrates
-      biological databases and APIs to facilitate genetic interpretation.
+      PubMatcher is an automated genomic search tool that integrates biological
+      databases and APIs to facilitate genetic interpretation.
     </p>
-    <p class="text-gray-800 text-xl font-semibold mb-2 ">
-It allows users to:
-    </p>
+    <p class="text-gray-800 text-xl font-semibold mb-2">It allows users to:</p>
     <div class="features flex flex-wrap justify-center mb-12">
       <div class="feature-item w-64 m-4 text-center" v-for="feature in features" :key="feature.title">
         <i :class="feature.icon" class="text-5xl text-blue-600 mb-2"></i>
-        <h3 class="text-gray-800 text-xl font-semibold mb-2">{{ feature.title }}</h3>
+        <h3 class="text-gray-800 text-xl font-semibold mb-2">
+          {{ feature.title }}
+        </h3>
         <p class="text-gray-600">{{ feature.description }}</p>
       </div>
     </div>

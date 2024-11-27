@@ -94,7 +94,6 @@ async function fetchGeneCARD(gene) {
                 const dateApprovedReserved = doc.date?.find(item => item.$.name === "date_approved_reserved")?._ || "No match";
 
                 const validityMarker = validityMap.get(hgncId) || "No Known";
-                console.log(hgncId + " " + validityMarker)
 
                 const validatedGene = new Gene(
                     geneName,
@@ -146,7 +145,7 @@ function parseXML(xml) {
 (async () => { //IIAFE
     try {
         await loadCSV();
-        console.log('Gene validity CSV loaded successfully.');
+        console.log('Gene validity CSV file loaded successfully.');
     } catch (error) {
         console.error('Error loading CSV:', error);
     }

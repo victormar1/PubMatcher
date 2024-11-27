@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
     <SearchModule />
   </div>
 </template>
@@ -12,20 +12,8 @@ export default {
   components: {
     SearchModule,
   },
+  
 };
 </script>
 
-<style scoped>
-.home {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
 
-.home h2 {
-  color: #333;
-}
-
-.home p {
-  color: #555;
-}
-</style>
