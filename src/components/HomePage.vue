@@ -12,6 +12,7 @@ export default {
   components: {
     SearchModule,
   },
+  
 };
 </script>
 

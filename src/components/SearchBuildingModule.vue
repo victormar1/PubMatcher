@@ -194,6 +194,7 @@
 </template>
 
 <script>
+import { event } from 'vue-gtag';
 
 export default {
   name: 'SearchBuildingModule',
@@ -210,7 +211,9 @@ export default {
       extractedGenes: [],
     };
   },
+  
   mounted() {
+    
     // Initialize sessionStorage
     if (!sessionStorage.getItem('data')) {
       sessionStorage.setItem(
@@ -514,6 +517,12 @@ export default {
       });
     },
     async reasearch() {
+      event('research_clicked', { //Test event
+        category: 'Debug',
+        label: 'Test depuis localhost',
+        value: 1,
+        debug_mode: true,
+      });
       this.startLoader();
       const genes = this.getItems('gene');
       const phenotypes = this.getItems('phenotype');
