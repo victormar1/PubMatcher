@@ -80,9 +80,9 @@
       </div>
     </div>
     <!-- GENES AND PHENOTYPES -->
-    <div class="flex flex-row h-full min-h-72">
+    <div class="flex flex-row h-full gap-2 min-h-72 mx-2">
       <!-- GENES -->
-      <div class="flex flex-col w-1/2 justify-start items-center bg-gray-100 border border-gray-300 rounded-lg p-4 ">
+      <div class="flex flex-col w-1/2 justify-start items-center bg-gray-50 shadow border border-gray-300 rounded-lg p-4 ">
         <form @submit.prevent class="w-full max-w-md pb-2">
           <label for="default-search"
             class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
@@ -122,10 +122,12 @@
         </div>
       </div>
       <!-- DIVIDER -->
-      <div class="w-0.5 h-full bg-gray-300"></div>
+      
+      <div class=" bg-gray-300 w-0.5">
+      </div>
 
       <!-- PHENOTYPES -->
-      <div class="flex flex-col w-1/2  justify-start items-center bg-gray-100 border border-gray-300 rounded-lg p-4 ">
+      <div class="flex flex-col w-1/2  justify-start items-center bg-gray-50 border border-gray-300 rounded-lg p-4 ">
         <form class="w-full max-w-md pb-2">
           <label for="default-search"
             class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
