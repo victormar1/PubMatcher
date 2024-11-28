@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import { login, logout } from '../authStateManager'; // Import the login function from authStateManager
+
 export default {
     name: 'AccountPage',
     data() {
@@ -94,8 +96,7 @@ export default {
     },
     methods: {
         logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            logout()
             alert('You have been logged out.');
             this.$router.push('/login'); 
         },

@@ -40,12 +40,46 @@
 
         </router-link>
       </div>
-      <nav>
+      <nav class="flex space-x-4">
         <router-link to="/" class="text-white hover:text-blue-200 mx-2">Home</router-link>
         <router-link to="/about" class="text-white hover:text-blue-200 mx-2">About</router-link>
         <router-link to="/contact" class="text-white hover:text-blue-200 mx-2">Contact</router-link>
-        <router-link to="/login" class="text-white font-bold hover:text-blue-200 mx-2">Log In</router-link>
+
+        <!-- Conditional Rendering -->
+        <div v-if="!authState.isAuthenticated">
+          <router-link to="/login" class="text-white font-bold hover:text-blue-200 mx-2">Log In</router-link>
+        </div>
+        <div v-else class="relative group">
+          <button @click="goToAccount" class="text-white font-bold hover:text-blue-200 mx-2">
+            {{ authState.username }}
+          </button>
+          <div class="absolute hidden group-hover:block bg-white text-black py-2 rounded shadow-lg">
+            <button @click="goToAccount" class="block px-4 py-2 hover:bg-gray-200">Account</button>
+            <button @click="logout" class="block px-4 py-2 hover:bg-gray-200">Logout</button>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
 </template>
+
+<script>
+import { authState, logout } from '../authStateManager.js';
+
+export default {
+    data() {
+        return {
+          authState, // Use the reactive global auth state
+          logout,
+
+        };
+    },
+    
+    methods: {
+        goToAccount() {
+            this.$router.push('/account');
+
+        },
+    },
+};
+</script>

@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import { login } from '../authStateManager'; // Import the login function from authStateManager
+
 export default {
 name: 'LoginPage',
 data() {
@@ -46,6 +48,12 @@ data() {
             },
         };
     },
+mounted() {
+    const token = localStorage.getItem('token'); // Check if token exists
+    if (token) {
+        this.$router.push('/account'); // Redirect to account page
+    }
+},
 methods:{
         SendToRegister(){
             this.$router.push('/register')
@@ -62,8 +70,7 @@ methods:{
 
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    login(data.user.username, data.token);
                     alert('Login successful!'); //change this
                     this.$router.push('/account'); 
                 } else {
