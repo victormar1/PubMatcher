@@ -115,14 +115,47 @@ async function getData(req) {
             const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`;
             const response = await axios.get(url);
             const $ = cheerio.load(response.data);
-            const titleSelector = "#search-results > section > div.search-results-chunks > div > article:nth-child(2) > div.docsum-wrap > div.docsum-content > a";
+
+            //  selectors
+            const spellCheckWarningSelector = "#spell-check-warning"; //Check if there is a spellchekc warning 
+            const articles = $("#search-results > section > div.search-results-chunks > div > article");
             const countSelector = "#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span";
-            const title = $(titleSelector).text().trim();
+            
+            //  count
             const countText = $(countSelector).text().trim().replace(',', '');
             const count = parseInt(countText, 10);
-            const firstArticleId = $(titleSelector).attr('href').match(/\/(\d+)\//)?.[1];
-            const firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${firstArticleId}/`;
 
+            // find the first VALID article (bypass header and other non relevant elem)
+            let firstArticleTitle = "No articles found";
+            let firstArticleId = null;
+            let firstArticleUrl = null;
+
+              // Check for the autocorrect banner
+            const isAutocorrected = $(spellCheckWarningSelector).length > 0;
+            if(!isAutocorrected){ //Find article only if no spellcheck warning ?
+                articles.each((index, article) => {
+                    const titleElement = $(article).find(".docsum-wrap > .docsum-content > a");
+                    const title = titleElement.text().trim();
+                    const href = titleElement.attr("href");
+    
+                    if (title && href) {
+                        firstArticleTitle = title;
+                        const match = href.match(/\/(\d+)\//);
+                        if (match) {
+                            firstArticleId = match[1];
+                            firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${firstArticleId}/`;
+                        }
+                        return false; 
+                    }
+                });
+            }
+
+            console.log("Title:", firstArticleTitle);
+            console.log("Count:", count);
+            console.log("First Article ID:", firstArticleId);
+            console.log("First Article URL:", firstArticleUrl);
+            
+            
 
 
             // Fetch UniProt function
@@ -220,13 +253,17 @@ async function getData(req) {
                 result.mousePhenotype = "No match";
             }
 
+
+            result.count = count
+            result.title = firstArticleTitle
+            /*
             if (!requestPath.includes("term")) {
                 result.title = $("#full-view-heading > h1.heading-title").text().trim();
                 result.count = 1;
             } else {
                 result.title = title || "No PubMed Articles";
                 result.count = isNaN(count) ? 0 : count;
-            }
+            }*/
 
             if (constraints_v2[gene]) {
                 result.constraints_v2 = constraints_v2[gene];
