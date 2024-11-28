@@ -130,8 +130,11 @@ async function getData(req) {
             let firstArticleId = null;
             let firstArticleUrl = null;
 
-              // Check for the autocorrect banner
-            const isAutocorrected = $(spellCheckWarningSelector).length > 0;
+            //if warning is about spellcheck
+            const spellCheckOnly = "Showing results for";
+            const warningText = $(spellCheckWarningSelector).text().trim();
+            const isAutocorrected = warningText.includes(spellCheckOnly);
+
             if(!isAutocorrected){ //Find article only if no spellcheck warning ?
                 articles.each((index, article) => {
                     const titleElement = $(article).find(".docsum-wrap > .docsum-content > a");
