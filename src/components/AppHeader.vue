@@ -36,7 +36,6 @@
               </linearGradient>
               </defs>
             </svg>
-
           </div>
 
         </router-link>
@@ -45,6 +44,7 @@
         <router-link to="/" class="text-white hover:text-blue-200 mx-2">Home</router-link>
         <router-link to="/about" class="text-white hover:text-blue-200 mx-2">About</router-link>
         <router-link to="/contact" class="text-white hover:text-blue-200 mx-2">Contact</router-link>
+        <router-link to="/login" class="text-white font-bold hover:text-blue-200 mx-2">Log In</router-link>
       </nav>
     </div>
   </header>

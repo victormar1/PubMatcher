@@ -17,10 +17,3 @@ createApp(App)
   }, router)
   .use(FloatingVue)
   .mount('#app');
-
-  event('test_event', {
-    category: 'Debug',
-    label: 'Test depuis localhost',
-    value: 1,
-    debug_mode: true,
-  });

@@ -5,27 +5,28 @@ import AboutPage from './components/AboutPage.vue';
 import ContactPage from './components/ContactPage.vue';
 import SearchModule from './components/SearchModule.vue';
 import PageNotFound from './components/PageNotFound.vue';
+import LoginPage from './components/LoginPage.vue';
+import RegisterPage from './components/RegisterPage.vue';
 
 
 const routes = [
   { path: '/', component: HomePage },
   { path: '/about', component: AboutPage },
   { path: '/contact', component: ContactPage },
-  {
-    path: '/search',
+  {path: '/search',
     component: SearchModule, //enfer
     props: route => ({
         genes: route.query.genes ? route.query.genes.split(',') : [],
-        phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : [],
-    }),
-    
-},
+        phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : [],}),},
+  {path: '/login', component: LoginPage},
+  {path: '/register', component: RegisterPage},
 
-//Route de secours
-{
-  path: '/:pathMatch(.*)*',
-  component: PageNotFound,
-},
+
+  //Route de secours
+  {
+    path: '/:pathMatch(.*)*',
+    component: PageNotFound,
+  },
 ];
 
 const router = createRouter({
