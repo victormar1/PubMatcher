@@ -72,33 +72,40 @@
 </template>
 
 <script>
-import { login, logout } from '../authStateManager'; // Import the login function from authStateManager
+import { logout, authState  } from '../authStateManager'; // Import the login function from authStateManager
 
 export default {
     name: 'AccountPage',
-    data() {
-        return {
-            username: '',
-            email: '',
-            institute: '', 
-        };
-    },
-    mounted() {
+    mounted(){
+        console.log(authState)
+
         const user = JSON.parse(localStorage.getItem('user'));
-        if (user && user.username) {
-            this.username = user.username;
-            this.email = user.email;
-            this.institute = user.institute;
-        } else {
-            alert('You are not logged in.');
-            this.$router.push('/login');
-        }
+            if (user && user.username) {
+                this.username = user.username;
+                this.email = user.email;
+                this.institute = user.institute;
+            } else {
+                alert('You are not logged in.');
+                this.$router.push('/login');
+            }
+        console.log(user)
+    },
+    computed: {
+        username() {
+            return authState.username;
+        },
+        email() {
+            return authState.email;
+        },
+        institute() {
+            return authState.institute;
+        },
     },
     methods: {
         logout() {
-            logout()
+            logout();
             alert('You have been logged out.');
-            this.$router.push('/login'); 
+            this.$router.push('/login');
         },
     },
 };
