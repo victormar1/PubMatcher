@@ -11,13 +11,19 @@
                             <div>
                                 <h2
                                     class="text-xl font-bold leading-none text-gray-900 dark:text-white sm:text-2xl">
-                                    Victor Marin 
+                                    {{ username }}
                                 </h2>
                             </div>
                         </div>
+                        <button
+                            @click="logout"
+                            class="w-full text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                        >
+                            Logout
+                        </button>
                         <dl class="">
                             <dt class="font-semibold text-gray-900 dark:text-white">Email Address</dt>
-                            <dd class="text-gray-500 dark:text-gray-400">marivic@chu-bordeaux.com</dd>
+                            <dd class="text-gray-500 dark:text-gray-400">{{ email }}</dd>
                         </dl>
                     </div>
                     <div class="space-y-4">
@@ -31,7 +37,7 @@
                                         stroke-width="2"
                                         d="M6 12c.263 0 .524-.06.767-.175a2 2 0 0 0 .65-.491c.186-.21.333-.46.433-.734.1-.274.15-.568.15-.864a2.4 2.4 0 0 0 .586 1.591c.375.422.884.659 1.414.659.53 0 1.04-.237 1.414-.659A2.4 2.4 0 0 0 12 9.736a2.4 2.4 0 0 0 .586 1.591c.375.422.884.659 1.414.659.53 0 1.04-.237 1.414-.659A2.4 2.4 0 0 0 16 9.736c0 .295.052.588.152.861s.248.521.434.73a2 2 0 0 0 .649.488 1.809 1.809 0 0 0 1.53 0 2.03 2.03 0 0 0 .65-.488c.185-.209.332-.457.433-.73.1-.273.152-.566.152-.861 0-.974-1.108-3.85-1.618-5.121A.983.983 0 0 0 17.466 4H6.456a.986.986 0 0 0-.93.645C5.045 5.962 4 8.905 4 9.736c.023.59.241 1.148.611 1.567.37.418.865.667 1.389.697Zm0 0c.328 0 .651-.091.94-.266A2.1 2.1 0 0 0 7.66 11h.681a2.1 2.1 0 0 0 .718.734c.29.175.613.266.942.266.328 0 .651-.091.94-.266.29-.174.537-.427.719-.734h.681a2.1 2.1 0 0 0 .719.734c.289.175.612.266.94.266.329 0 .652-.091.942-.266.29-.174.536-.427.718-.734h.681c.183.307.43.56.719.734.29.174.613.266.941.266a1.819 1.819 0 0 0 1.06-.351M6 12a1.766 1.766 0 0 1-1.163-.476M5 12v7a1 1 0 0 0 1 1h2v-5h3v5h7a1 1 0 0 0 1-1v-7m-5 3v2h2v-2h-2Z" />
                                 </svg>
-                                CHU Bordeaux
+                                {{institute}}
                             </dd>
                         </dl>
                         <dl>
@@ -66,4 +72,33 @@
 </template>
 
 <script>
+export default {
+    name: 'AccountPage',
+    data() {
+        return {
+            username: '',
+            email: '',
+            institute: '', 
+        };
+    },
+    mounted() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.username) {
+            this.username = user.username;
+            this.email = user.email;
+            this.institute = user.institute;
+        } else {
+            alert('You are not logged in.');
+            this.$router.push('/login');
+        }
+    },
+    methods: {
+        logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            alert('You have been logged out.');
+            this.$router.push('/login'); 
+        },
+    },
+};
 </script>

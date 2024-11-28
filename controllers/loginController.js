@@ -1,5 +1,8 @@
 const pool = require('../models/db.js');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = 'changeThisBeforeProd'; // Replace with a secure key
+
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
@@ -11,7 +14,7 @@ exports.login = async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         if (result.rows.length === 0) {
-            return res.status(401).json({ error: 'Invalid username or password.' });
+            return res.status(401).json({ error: 'Invalid username or password.' });q
         }
         const user = result.rows[0];
 
@@ -21,14 +24,20 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: 'Invalid username or password.' });
         }
 
-        // Respond with user data (excluding password)
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { id: user.id, username: user.username },
+            SECRET_KEY,
+            { expiresIn: '1h' } // Token expires in 1 hour
+        );
+
         res.status(200).json({
             message: 'Login successful',
-            user: {
-                id: user.id,
-                username: user.username,
-            },
+            token,
+            user: { id: user.id, username: user.username, email:user.email, institute:user.institute },
         });
+
     } catch (error) {
         res.status(500).json({ error: 'An error occurred during login.' });
     }

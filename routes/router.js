@@ -9,7 +9,7 @@ const exportpdfController = require('../controllers/exportpdfController');
 const extractgenesController = require('../controllers/extractgenesController');
 const registerController = require('../controllers/registerController');
 const loginController = require('../controllers/loginController');
-
+const authenticateToken = require('../src/authentication'); // Adjust the path as needed
 
 // Route pour la recherche
 router.post('/search', searchController.search);
@@ -27,7 +27,13 @@ router.post('/exportpdf', exportpdfController.exportPdf);
 router.get('/geneslist', extractgenesController.getGenesList);
 
 router.post('/register', registerController.register);
+
 router.post('/login', loginController.login);
+
+router.get('/account', authenticateToken, (req, res) => {
+    res.json({ message: 'Welcome to your account page!', user: req.user });
+});
+
 
 
 // Route root

@@ -62,9 +62,10 @@ methods:{
 
                 if (response.ok) {
                     const data = await response.json();
-                    //Handle session token plus tard
-                    alert('Login successful!');
-                    this.$router.push('/account'); // Redirect to account page
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    alert('Login successful!'); //change this
+                    this.$router.push('/account'); 
                 } else {
                     const errorData = await response.json();
                     alert('Error logging in: ' + (errorData.error || 'Unknown error'));

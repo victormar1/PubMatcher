@@ -9,6 +9,10 @@ import LoginPage from './components/LoginPage.vue';
 import RegisterPage from './components/RegisterPage.vue';
 import AccountPage from './components/AccountPage.vue';
 
+function isAuthenticated() {
+  const token = localStorage.getItem('token'); 
+  return !!token; 
+}
 
 const routes = [
   { path: '/', component: HomePage },
@@ -21,7 +25,11 @@ const routes = [
         phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : [],}),},
   {path: '/login', component: LoginPage},
   {path: '/register', component: RegisterPage},
-  {path: '/account', component: AccountPage},
+  {
+    path: '/account',
+    component: AccountPage,
+    meta: { requiresAuth: true }, 
+  },
 
   //Route de secours
   {
@@ -33,6 +41,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !isAuthenticated()) {
+    // If route requires auth and user is not authenticated, redirect to login
+    return next('/login');
+  }
+  next(); // Otherwise, allow access
 });
 
 export default router;
