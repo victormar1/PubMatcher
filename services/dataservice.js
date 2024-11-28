@@ -151,6 +151,8 @@ async function getData(req) {
                         return false; 
                     }
                 });
+            }else{
+                firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${combinedQuery}/`;
             }
 
             console.log("Title:", firstArticleTitle);
