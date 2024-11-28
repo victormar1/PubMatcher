@@ -8,6 +8,7 @@ const reportbugController = require('../controllers/reportbugController');
 const exportpdfController = require('../controllers/exportpdfController');
 const extractgenesController = require('../controllers/extractgenesController');
 const registerController = require('../controllers/registerController');
+const loginController = require('../controllers/loginController');
 
 
 // Route pour la recherche
@@ -24,6 +25,10 @@ router.post('/exportpdf', exportpdfController.exportPdf);
 
 // Route pour l'extraction de gènes
 router.get('/geneslist', extractgenesController.getGenesList);
+
+router.post('/register', registerController.register);
+router.post('/login', loginController.login);
+
 
 // Route root
 router.get('/', (req, res) => {
