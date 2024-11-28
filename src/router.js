@@ -7,6 +7,7 @@ import SearchModule from './components/SearchModule.vue';
 import PageNotFound from './components/PageNotFound.vue';
 import LoginPage from './components/LoginPage.vue';
 import RegisterPage from './components/RegisterPage.vue';
+import AccountPage from './components/AccountPage.vue';
 
 
 const routes = [
@@ -20,7 +21,7 @@ const routes = [
         phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : [],}),},
   {path: '/login', component: LoginPage},
   {path: '/register', component: RegisterPage},
-
+  {path: '/account', component: AccountPage},
 
   //Route de secours
   {
