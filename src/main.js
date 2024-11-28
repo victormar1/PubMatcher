@@ -14,6 +14,6 @@ createApp(App)
   .use(VueGtag, {
     config: { id: "G-PGNGTTRTN2" },
     debug_mode: true,
-  }, router)
+  })
   .use(FloatingVue)
   .mount('#app');

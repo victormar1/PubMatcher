@@ -68,8 +68,8 @@ methods:{
 
                 if (response.ok) {
                     const data = await response.json();
+                    login(data.user.username, data.user.email, data.user.institute,data.user.role, data.token);
                     console.log(data)
-                    login(data.user.username, data.user.email, data.user.institute, data.token);
                     this.$router.push('/account'); 
                 } else {
                     const errorData = await response.json();

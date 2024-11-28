@@ -41,9 +41,9 @@
                             </dd>
                         </dl>
                         <dl>
-                            <dt class="mb-1 font-semibold text-gray-900 dark:text-white">Autre infos</dt>
+                            <dt class="mb-1 font-semibold text-gray-900 dark:text-white">Role/Position</dt>
                             <div>
-                                <dd class="text-gray-500 dark:text-gray-400">Généticien</dd>
+                                <dd class="text-gray-500 dark:text-gray-400">{{ role }}</dd>
                             </div>
                         </dl>
                     </div>
@@ -84,6 +84,7 @@ export default {
                 this.username = user.username;
                 this.email = user.email;
                 this.institute = user.institute;
+                this.role = user.role;
             } else {
                 alert('You are not logged in.');
                 this.$router.push('/login');
@@ -99,6 +100,9 @@ export default {
         },
         institute() {
             return authState.institute;
+        },
+        role() {
+            return authState.role;
         },
     },
     methods: {

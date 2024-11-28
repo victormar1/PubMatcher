@@ -10,17 +10,17 @@ exports.register = async (req, res) => {
     try {
         // Extract user details from the request body
         console.log(req.body)
-        const { username, password, institute, email } = req.body;
+        const { username, password, institute, email, role } = req.body;
 
-        if (!username || !email || !password || !institute) {
+        if (!username || !email || !password || !institute || !role) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
         // Password hash
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Insert user in db
-        const query = 'INSERT INTO users (username, password_hash, institute, email) VALUES ($1, $2, $3, $4) RETURNING *';
-        const values = [username, hashedPassword, institute, email];
+        const query = 'INSERT INTO users (username, password_hash, institute, email, role) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+        const values = [username, hashedPassword, institute, email, role];
         const result = await pool.query(query, values);
 
         res.status(201).json("User registered successfully.");
