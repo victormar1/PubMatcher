@@ -132,7 +132,7 @@ async function getData(req) {
 
             //if warning is about spellcheck
             const spellCheckOnly = "Showing results for";
-            const warningText = $(spellCheckWarningSelector).text().trim();
+            const warningText = $(spellCheckWarningSelector).text().trim();     //If spellcheck we return 0 result, but we still return 18 article count, should it be 0 too ? 
             const isAutocorrected = warningText.includes(spellCheckOnly);
 
             if(!isAutocorrected){ //Find article only if no spellcheck warning ?
