@@ -34,7 +34,7 @@ router.post('/register', registerController.register);
 router.post('/login', loginController.login);
 
 router.get('/account', authenticateToken, (req, res) => {
-    res.json({ message: 'Welcome to your account page!', user: req.user });
+    res.json({ user: req.user });
 });
 
 router.get('/getuserhistory', authenticateToken, userHistoryController.getHistory); 
