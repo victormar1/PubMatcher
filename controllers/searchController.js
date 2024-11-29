@@ -12,7 +12,8 @@ exports.search = async (req, res) => {
         const genes = req.method === 'POST' ? req.body.genes : req.query.genes;
         const phenotypes = req.method === 'POST' ? req.body.phenotypes : req.query.phenotypes;
         const userId = req.body.userId ;
-        //hash the query
+        
+        //hash the query for easy compar
         const queryHash = crypto.createHash('sha256').update(`${genes.join(',')}:${phenotypes.join(',')}`).digest('hex');
 
         // Check or insert
