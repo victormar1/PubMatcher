@@ -1,5 +1,27 @@
 <template>
     <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-8 ">
+        <div>
+            <button
+                v-if="isScrolled"
+                @click="scrollToTop"
+                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600"
+            >
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5 15l7-7 7 7"
+                />
+                </svg>
+            </button>
+        </div>
         <div class="mx-auto max-w-screen-lg px-4 2xl:px-0">
             <div class="py-4 md:py-8">
                 <div class="mb-4 grid gap-4 sm:grid-cols-2 sm:gap-8 lg:gap-16">
@@ -38,7 +60,7 @@
                 </div>
             </div>
             <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:p-8 shadow-sm">
-                <h3 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Research History</h3>
+                <h3 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white">Research History</h3>
                 <div>
                     <ul v-if="history.length">
                         <li v-for="(entry, index) in history" :key="index" class="mb-4">
@@ -80,7 +102,7 @@
                                         <span
                                             v-for="(gene, geneIndex) in entry.genes.split(',')"
                                             :key="geneIndex"
-                                            class="inline-block px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md dark:bg-blue-600"
+                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-blue-300 rounded-md dark:bg-blue-600"
                                         >
                                             {{ gene }}
                                         </span>
@@ -93,12 +115,12 @@
                                             v-if="entry.phenotypes"
                                             v-for="(phenotype, phenotypeIndex) in entry.phenotypes.split(',')"
                                             :key="phenotypeIndex"
-                                            class="inline-block px-3 py-1 text-sm font-medium text-white bg-green-500 rounded-md dark:bg-green-600"
+                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-green-600"
                                         >
                                             {{ phenotype }}
                                         </span>
 
-                                        <span v-else class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-gray-300 rounded-md dark:bg-gray-600">
+                                        <span v-else class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-gray-600">
                                             No phenotypes
                                         </span>
                                     </div>
@@ -145,11 +167,17 @@ export default {
         return {
             logoutModalVisible: false,
             history: [],
-            accordionState: [], // Tracks which accordions are open
+            accordionState: [], 
+            isScrolled: false,
+
         };
     },
     async mounted() {
         await this.fetchUserHistory();
+        window.addEventListener("scroll", this.handleScroll);
+    },
+    beforeDestroy() {
+        window.removeEventListener("scroll", this.handleScroll);
     },
     computed: {
         username() {
@@ -211,6 +239,15 @@ export default {
             hour: 'numeric',
             minute: 'numeric',
         }).format(date);
+        },
+        scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        },
+        handleScroll() {
+            this.isScrolled = window.scrollY > 500; //Appear limit
         },
     },
 };
