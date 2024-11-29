@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="flex flex-col min-h-screen dark:bg-gray-600">
     <AppHeader />
+    <PatchNote />
     <main class="flex-grow">
       <router-view></router-view>
     </main>
@@ -11,12 +12,14 @@
 <script>
   import AppHeader from './components/AppHeader.vue';
   import AppFooter from './components/AppFooter.vue';
+  import PatchNote from './components/PatchNote.vue';
 
   export default {
     name: 'App',
     components: {
       AppHeader,
       AppFooter,
+      PatchNote,
     },
     mounted() {
       this.applyDarkModePreference();
@@ -39,6 +42,4 @@
   
 </script>
 
-<style>
-  /* Vos styles globaux */
-</style>
+

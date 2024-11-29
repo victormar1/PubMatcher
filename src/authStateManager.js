@@ -15,7 +15,7 @@ export function login(username, email, institute, role, token) {
     authState.institute = institute;
     authState.role = role;
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify({ username, email, institute }));
+    localStorage.setItem('user', JSON.stringify({ username, email, institute, role }));
 }
 
 export function logout() {

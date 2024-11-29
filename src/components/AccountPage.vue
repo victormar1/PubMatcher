@@ -16,8 +16,8 @@
                             </div>
                         </div>
                         <button
-                            @click="logout"
-                            class="w-full text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            @click="showLogoutModal"
+                            class="w-30 text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         >
                             Logout
                         </button>
@@ -69,6 +69,31 @@
             </div>
         </div>
     </section>
+    
+    <div v-if="logoutModalVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <!-- Modal Content -->
+        <div class="bg-white rounded-lg shadow-lg w-96 p-6 text-center">
+            <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
+            <p class="text-gray-600 mb-6">You'll be logged out.</p>
+            <div class="flex justify-center gap-4">
+                <button
+                @click="confirm"
+                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
+                >
+                Yes, I'm Sure
+                </button>
+                <button
+                @click="cancel"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none"
+                >
+                Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
 </template>
 
 <script>
@@ -76,20 +101,10 @@ import { logout, authState  } from '../authStateManager'; // Import the login fu
 
 export default {
     name: 'AccountPage',
-    mounted(){
-        console.log(authState)
-
-        const user = JSON.parse(localStorage.getItem('user'));
-            if (user && user.username) {
-                this.username = user.username;
-                this.email = user.email;
-                this.institute = user.institute;
-                this.role = user.role;
-            } else {
-                alert('You are not logged in.');
-                this.$router.push('/login');
-            }
-        console.log(user)
+    data() {
+        return {
+            logoutModalVisible: false,
+        };
     },
     computed: {
         username() {
@@ -106,10 +121,17 @@ export default {
         },
     },
     methods: {
-        logout() {
+        showLogoutModal() {
+            this.logoutModalVisible = true;
+        },
+
+        confirm() {
+            this.logoutModalVisible = false;
             logout();
-            alert('You have been logged out.');
             this.$router.push('/login');
+        },
+        cancel() {
+            this.logoutModalVisible = false;
         },
     },
 };

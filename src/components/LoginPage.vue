@@ -16,7 +16,7 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
-                        <p v-if="errorData.error" class="text-sm font-light text-gray-500 dark:text-gray-400">{{ errorData.error }}</p>
+                        <p v-if="errorData.error" class="text-sm font-medium text-red-500 dark:text-gray-400">{{ errorData.error }}</p>
                     </div>
                     <button type="submit" class="w-full text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign in</button>
                     <p class="text-sm font-light text-gray-500 dark:text-gray-400">
@@ -69,7 +69,6 @@ methods:{
                 if (response.ok) {
                     const data = await response.json();
                     login(data.user.username, data.user.email, data.user.institute,data.user.role, data.token);
-                    console.log(data)
                     this.$router.push('/account'); 
                 } else {
                     const errorData = await response.json();
