@@ -529,17 +529,13 @@ export default {
       });
     },
     async reasearch() {
-      event('research_clicked', { //Test event
-        category: 'Debug',
-        label: 'Test depuis localhost',
-        value: 1,
-        debug_mode: true,
-      });
       this.startLoader();
       const genes = this.getItems('gene');
       const phenotypes = this.getItems('phenotype');
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userId = user ? user.id : null;
       if (genes.length > 0 || phenotypes.length > 0) {
-        const data = { genes, phenotypes };
+        const data = { userId, genes, phenotypes };
         fetch('api/search', {
           method: 'POST',
           headers: {

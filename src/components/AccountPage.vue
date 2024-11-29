@@ -51,21 +51,17 @@
             </div>
             <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:p-8">
                 <h3 class="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Research history</h3>
-                <div
-                    class="flex flex-wrap items-center justify-between gap-y-4 border-b border-gray-200 pb-4 dark:border-gray-700 md:pb-5">
-                    <dl class="">
-                        <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Request</dt>
-                        <dd class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
-                            <a href="#" class="hover:underline">GENE PHENOTYPES</a>
-                        </dd>
-                    </dl>
-                    <dl class="">
-                        <dt class="text-base font-medium text-gray-500 dark:text-gray-400">Date:</dt>
-                        <dd>
-                            <dt class="text-base font-medium text-black-500 dark:text-gray-400">03/10/2024</dt>
-                        </dd>
-                    </dl>
-                </div>
+                <div>
+    <h2>Your Search History</h2>
+    <ul v-if="history.length">
+      <li v-for="(entry, index) in history" :key="index">
+        <span>{{ entry.timestamp }}:</span>
+        <span>Genes: {{ entry.genes }}</span>
+        <span>Phenotypes: {{ entry.phenotypes }}</span>
+      </li>
+    </ul>
+    <p v-else>No history found.</p>
+  </div>
             </div>
         </div>
     </section>
@@ -104,7 +100,12 @@ export default {
     data() {
         return {
             logoutModalVisible: false,
+            history: [], 
+
         };
+    },
+    async mounted() {
+    await this.fetchUserHistory();
     },
     computed: {
         username() {
@@ -132,6 +133,26 @@ export default {
         },
         cancel() {
             this.logoutModalVisible = false;
+        },
+        async fetchUserHistory() {
+            try {
+                const response = await fetch('api/getuserhistory', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                });
+
+                if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                this.history = data.history;
+            } catch (error) {
+                console.error('Error fetching user history:', error);
+            }
         },
     },
 };

@@ -9,7 +9,10 @@ const exportpdfController = require('../controllers/exportpdfController');
 const extractgenesController = require('../controllers/extractgenesController');
 const registerController = require('../controllers/registerController');
 const loginController = require('../controllers/loginController');
-const authenticateToken = require('../src/authentication'); // Adjust the path as needed
+const authenticateToken = require('../src/authentication'); 
+const userHistoryController = require('../controllers/userHistoryController');
+
+
 
 // Route pour la recherche
 router.post('/search', searchController.search);
@@ -33,6 +36,13 @@ router.post('/login', loginController.login);
 router.get('/account', authenticateToken, (req, res) => {
     res.json({ message: 'Welcome to your account page!', user: req.user });
 });
+
+router.get('/getuserhistory', authenticateToken, userHistoryController.getHistory); 
+
+router.get('/account', authenticateToken, (req, res) => {
+    userHistoryController.getHistory(req, res);
+});
+
 
 
 
