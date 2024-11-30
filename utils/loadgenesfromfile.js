@@ -1,6 +1,6 @@
 // utils/loadGenesFromFile.js
-const fs = require('fs');
-const csv = require('csv-parser');
+const fs = require('fs')
+const csv = require('csv-parser')
 
 /**
  * Charge la liste des gènes depuis un fichier CSV
@@ -8,22 +8,22 @@ const csv = require('csv-parser');
  * @returns {Promise<Array>} - Promesse résolue avec un tableau de noms de gènes
  */
 function loadGenesFromFile(filePath) {
-    return new Promise((resolve, reject) => {
-        const genes = [];
-        fs.createReadStream(filePath)
-            .pipe(csv())
-            .on('data', (row) => {
-                genes.push(row.geneName); 
-            })
-            .on('end', () => {
-                console.log('Genes CSV file successfully processed');
-                resolve(genes);
-            })
-            .on('error', (error) => {
-                console.error('Error reading genes CSV:', error);
-                reject(error);
-            });
-    });
+  return new Promise((resolve, reject) => {
+    const genes = []
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => {
+        genes.push(row.geneName)
+      })
+      .on('end', () => {
+        console.log('Genes CSV file successfully processed')
+        resolve(genes)
+      })
+      .on('error', (error) => {
+        console.error('Error reading genes CSV:', error)
+        reject(error)
+      })
+  })
 }
 
-module.exports = loadGenesFromFile;
+module.exports = loadGenesFromFile

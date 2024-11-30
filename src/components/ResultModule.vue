@@ -6,24 +6,11 @@
         </div>
         <!-- BACK TO TOP BUTTON -->
         <div>
-            <button
-                v-if="isScrolled"
-                @click="scrollToTop"
-                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600"
-            >
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M5 15l7-7 7 7"
-                />
+            <button v-if="isScrolled" @click="scrollToTop"
+                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
                 </svg>
             </button>
         </div>
@@ -141,21 +128,22 @@
                                                         class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400">
                                                         <p class="font-bold ">LOEUF</p>
                                                         <p>{{ displayVersion === 'v2' ?
-                                                            result.constraints_v2.oe_mis_upper :
-                                                            result.constraints_v4.oe_mis_upper }}</p>
+                                                            result.constraints_v2.oe_lof_upper :
+                                                            result.constraints_v4.oe_lof_upper }}</p>
                                                     </div>
                                                     <div
                                                         class="flex py-1.5 flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
                                                         <p class="font-bold ">Z_score</p>
                                                         <p>{{ displayVersion === 'v2' ?
-                                                            result.constraints_v2.oe_lof_upper :
-                                                            result.constraints_v4.oe_lof_upper }}</p>
+                                                            result.constraints_v2.mis_z :
+                                                            result.constraints_v4.mis_z }}</p>
                                                     </div>
                                                     <div
                                                         class="flex py-1.5 flex-col  items-center justify-center border border-gray-400 rounded-br-lg">
                                                         <p class="font-bold ">MOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z :
-                                                            result.constraints_v4.mis_z }}</p>
+                                                        <p>{{ displayVersion === 'v2' ?
+                                                            result.constraints_v2.oe_mis_upper :
+                                                            result.constraints_v4.oe_mis_upper }}</p>
                                                     </div>
                                                     <div
                                                         class="absolute inset-0 flex items-center justify-center select-none">
@@ -192,7 +180,7 @@
                                     <div class="flex items-center justify-center">
                                         <a :href="result.url" target="_blank"
                                             class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800">
-                                            {{ result.title || 'N/A' }}
+                                            {{ result.firstArticleTitle || 'N/A' }}
                                             <i class="fas fa-external-link-alt ml-2 text-xs"></i>
                                         </a>
                                     </div>
@@ -206,13 +194,13 @@
                                         {{ keyword }}
                                     </span>
                                 </div>
-                                {{ result.function || 'N/A' }} <a :href="result.urlAccession" target="_blank"
+                                {{ result.geneFunction || 'N/A' }} <a :href="result.urlAccession" target="_blank"
                                     class="font-bold text-blue-600">[...]</a>
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
-                                <div v-if="result.mousePhenotype && Object.keys(result.mousePhenotype).length > 0"
+                                <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
                                     class="flex flex-wrap gap-2 justify-center">
-                                    <div v-for="(details, category) in result.mousePhenotype" :key="category"
+                                    <div v-for="(details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
                                         <!-- Tooltip Trigger -->
                                         <span v-html="details.icon" class="w-6 h-6 cursor-pointer"
@@ -433,10 +421,10 @@ export default {
             default: () => [],
         },
     },
-    mounted(){
+    mounted() {
         window.addEventListener("scroll", this.handleScroll);
     },
-    beforeDestroy(){
+    beforeDestroy() {
         window.removeEventListener("scroll", this.handleScroll);
     }
 };

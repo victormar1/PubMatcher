@@ -53,31 +53,3 @@ exports.getHistory = async (req, res) => {
     }
 };
 
-/**
- * Controller to clear user search history
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- */
-exports.clearHistory = async (req, res) => {
-    try {
-        const userId = req.user?.id || req.body.userId;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'User is not authenticated' });
-        }
-
-        // Delete all history for the user
-        await pool.query(
-            `
-            DELETE FROM search_history
-            WHERE user_id = $1;
-            `,
-            [userId]
-        );
-
-        res.status(200).json({ message: 'Search history cleared.' });
-    } catch (error) {
-        console.error('Error clearing user history:', error);
-        res.status(500).send('Internal Server Error');
-    }
-};

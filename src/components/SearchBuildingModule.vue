@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3 justify-center "
+  <div class="flex flex-col gap-3 justify-center min-w-[790px]"
     @click.capture="hideSuggestions('geneSuggestions'); hideSuggestions('phenotypeSuggestions')">
     <!-- EXTRACTION -->
     <div>
@@ -82,45 +82,48 @@
     <!-- GENES AND PHENOTYPES -->
     <div class="flex flex-row h-full gap-2 min-h-72 mx-2 ">
       <!-- GENES -->
-      <div class="flex flex-col w-1/2 justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
-        
-        <form @submit.prevent class="w-full max-w-md pb-2">
-          
-          <label for="default-search"
-          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
-          <div class="relative">
-            <!-- Search logo -->
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+      <div class="flex flex-col w-1/2 min-w-[350px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
+        <div class="flex flex-row justify-between items-center  w-full">
+          <button @click="clearContainer('gene')" >
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
             </svg>
+          </button>
+          <form @submit.prevent class="w-2/3 ">
+            
+            <label for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
+            <div class="relative">
+              <!-- Search logo -->
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
+              </div>
+  
+              <!-- Search input -->
+              <input type="search" ref="geneInput" id="geneInput"
+                class="block w-full h-full p-4 pl-10 text-base text-gray-900 border shadow-inner border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
+                placeholder="Add Genes..." @input="debouncedShowSuggestions('gene')" @keydown.enter.prevent="addFreeGene"
+                autocomplete="off" required />
+  
+              <!-- Search button -->
+              <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
+                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <p class="text-white">Add</p>
+              </button>
+  
+              <!-- Suggestion dropdown -->
+              <ul id="geneSuggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
+              </ul>
             </div>
-
-            <!-- Search input -->
-            <input type="search" ref="geneInput" id="geneInput"
-              class="block w-full h-full p-4 pl-10 text-base text-gray-900 border shadow-inner border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-              placeholder="Add Genes..." @input="debouncedShowSuggestions('gene')" @keydown.enter.prevent="addFreeGene"
-              autocomplete="off" required />
-
-            <!-- Search button -->
-            <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
-              class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              <p class="text-white">Add</p>
-            </button>
-
-            <!-- Suggestion dropdown -->
-            <ul id="geneSuggestions"
-              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-            </ul>
+          </form>
+          <div class="w-6">
           </div>
-        </form>
-        <button @click="clearContainer('gene')" class="absolute left-10">
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-          </svg>
-        </button>
+        </div>
         <div class="flex flex-col items-center  space-y-4 rounded max-h-48 overflow-auto  p-4">
           <!-- GENES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 gene-items ">
@@ -130,50 +133,66 @@
       </div>
       <!-- DIVIDER -->
 
+
+
+
       <div class=" bg-gray-300 w-0.5">
       </div>
 
+
+
+
+
+
+
       <!-- PHENOTYPES -->
-      <div class="flex flex-col w-1/2  justify-start items-center bg-gray-50 border border-gray-300 rounded-lg p-4 ">
-        <form class="w-full max-w-md pb-2">
-          <label for="default-search"
-            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-          <div class="relative">
-            <!-- Search logo -->
-            <div class="absolute inset-y-0 left-0 flex  items-center pl-3 pointer-events-none">
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-              </svg>
-            </div>
-
-            <!-- Search input -->
-            <input type="search" id="phenotypeInput" ref="phenotypeInput"
-              class="block w-full h-full p-4 pl-10 text-base shadow-inner text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-              placeholder="Add phenotypes..." @input="debouncedShowSuggestions('phenotype')" autocomplete="off"
-              @keydown.enter.prevent="addFreePhenotype" required />
-            <!-- Search button -->
-            <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
-              class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              <p class="text-white">Add</p>
-            </button>
-            <ul id="phenotypeSuggestions"
-              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-            </ul>
-
-            <!-- Suggestion dropdown -->
-            <ul id="suggestions"
-              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10">
-              <!-- Suggestions will be dynamically generated here -->
-            </ul>
+      <div class="flex flex-col w-1/2 min-w-[410px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
+        <div class="flex flex-row justify-between items-center  w-full">
+          <div class="w-6">
           </div>
-        </form>
-        <button @click="clearContainer('phenotype')" class="absolute right-10">
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-          </svg>
-        </button>
+          <form class="w-2/3">
+            <label for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+            <div class="relative">
+              <!-- Search logo -->
+              <div class="absolute inset-y-0 left-0 flex  items-center pl-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+              </div>
+
+              <!-- Search input -->
+              <input type="search" id="phenotypeInput" ref="phenotypeInput"
+                class="block w-full h-full p-4 pl-10 text-base shadow-inner text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
+                placeholder="Add phenotypes..." @input="debouncedShowSuggestions('phenotype')" autocomplete="off"
+                @keydown.enter.prevent="addFreePhenotype" required />
+              <!-- Search button -->
+              <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
+                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <p class="text-white">Add</p>
+              </button>
+              <ul id="phenotypeSuggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
+              </ul>
+
+              <!-- Suggestion dropdown -->
+              <ul id="suggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10">
+                <!-- Suggestions will be dynamically generated here -->
+              </ul>
+            </div>
+          </form>
+          <button @click="clearContainer('phenotype')">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+            </svg>
+          </button>
+        </div>
+
+
+
         <div class="flex flex-col items-center space-y-4 rounded max-h-48  overflow-auto  p-4">
           <!-- PHENOTYPES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 phenotype-items ">
