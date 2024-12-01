@@ -45,6 +45,7 @@ exports.search = async (req, res) => {
     const cachedResult = await pool.query('SELECT * FROM query_results WHERE query_id = $1 AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)', [query.id])
 
     if (cachedResult.rows.length > 0) {
+      // ! EXCLUDE PUBMED DATA FROM DB BUFFERING | CONSIDER ALSO UPDATING OTHER DATA PERIODICALLY
       const cachedData = cachedResult.rows[0].result_data
       const phenotypes = req.body.phenotypes || []
 

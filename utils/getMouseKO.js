@@ -45,11 +45,11 @@ async function getMouseKO(mgdId) {
           }
         }
       } catch (error) {
-        console.error('Error finding SVG icon for category:', phenotypeCategory, error)
+        console.error('Error finding SVG icon for category')
       }
     })
   } catch (error) {
-    console.error('Error fetching phenotypes from IMPC:', error)
+    console.error('Error fetching phenotypes from IMPC')
   }
   //GOOFY ASS
   if (Object.keys(groupedPhenotypes).length === 0) {
