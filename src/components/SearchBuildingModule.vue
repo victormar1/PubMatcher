@@ -263,7 +263,7 @@ export default {
       genesList: [],
       batchInput: '',
       extractedGenes: [],
-      logoutModalVisible: true,
+      logoutModalVisible: false,
 
     };
   },

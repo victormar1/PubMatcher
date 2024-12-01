@@ -2,7 +2,7 @@
     <main id="searchResults" class="flex px-20 my-10 w-full bg-transparent rounded-lg flex-grow flex-col"
         :class="{ 'hidden': !results || results.length === 0 }">
         <div class="flex justify-center">
-            <h2 class="text-bold text-3xl font-mono font-bold text-gray-700">RESULTS</h2>
+            <p class="text-bold text-4xl font-mono font-bold underline pb-5  text-gray-700">RESULTS</p>
         </div>
         <!-- BACK TO TOP BUTTON -->
         <div>

@@ -1,12 +1,16 @@
 const pool = require('../models/db.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'changeThisBeforeProd'; // Replace with a secure key
+const crypto = require('crypto');
+require('dotenv').config();
+
+const SECRET_KEY = process.env.SECRET_KEY;
 
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
 
+    console.log(SECRET_KEY)
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required.' });
     }
@@ -29,7 +33,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign(
             { id: user.id, username: user.username },
             SECRET_KEY,
-            { expiresIn: '1h' } // Token expires in 1 hour
+            { expiresIn: '1y' } // Token expires in 1 hour
         );
 
         res.status(200).json({

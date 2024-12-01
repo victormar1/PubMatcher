@@ -1,24 +1,11 @@
 <template>
     <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-8 ">
         <div>
-            <button
-                v-if="isScrolled"
-                @click="scrollToTop"
-                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600"
-            >
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M5 15l7-7 7 7"
-                />
+            <button v-if="isScrolled" @click="scrollToTop"
+                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
                 </svg>
             </button>
         </div>
@@ -36,10 +23,8 @@
                                 </h2>
                             </div>
                         </div>
-                        <button
-                            @click="showLogoutModal"
-                            class="w-30 text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                        >
+                        <button @click="showLogoutModal"
+                            class="w-30 text-white bg-red-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                             Logout
                         </button>
                         <dl>
@@ -59,51 +44,44 @@
                     </div>
                 </div>
             </div>
-            <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:p-8 shadow-sm">
-                <h3 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white">Research History</h3>
-                <div>
+            <div
+                class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:p-8 shadow-sm">
+                <h3 class=" text-2xl font-bold text-gray-900 dark:text-white">Research History</h3>
+                <div class="overflow-auto max-h-96">
                     <ul v-if="history.length">
                         <li v-for="(entry, index) in history" :key="index" class="mb-4">
-                            <button
-                                @click="toggleAccordion(index)"
+                            <button @click="toggleAccordion(index)"
                                 class="flex w-full items-center justify-between p-4 font-medium text-gray-500 rounded-lg bg-gray-100 dark:bg-gray-700 dark:text-gray-400 focus:outline-none">
                                 <span>
-                                <a 
-                                    :href="`/search?genes=${entry.genes.split(',').join(',')}&phenotypes=${entry.phenotypes.split(',').join(',')}`"
-                                    class="text-blue-600 hover:underline">
-                                    {{ formatDate(entry.timestamp) }}
-                                </a>
+                                    <a :href="`/search?genes=${entry.genes.split(',').join(',')}&phenotypes=${entry.phenotypes.split(',').join(',')}`"
+                                        class="text-blue-600 hover:underline">
+                                        {{ formatDate(entry.timestamp) }}
+                                    </a>
                                 </span>
                                 <div class="space-x-2">
-                                    <span class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-blue-300 rounded-md dark:bg-gray-600">
-                                        {{entry.genes.split(',').length}} Genes
+                                    <span
+                                        class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-blue-300 rounded-md dark:bg-gray-600">
+                                        {{ entry.genes.split(',').length }} Genes
                                     </span>
-                                    <span class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-gray-600">
+                                    <span
+                                        class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-gray-600">
                                         {{ entry.phenotypes ? entry.phenotypes.split(',').length : 0 }} Phenotypes
                                     </span>
                                 </div>
-                                <svg
-                                    :class="{'rotate-180': accordionState[index]}"
-                                    class="w-4 h-4 transition-transform"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <svg :class="{ 'rotate-180': accordionState[index] }"
+                                    class="w-4 h-4 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <div
-                                v-show="accordionState[index]"
-                                class="mt-2 p-4 text-gray-500 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
-                            >
+                            <div v-show="accordionState[index]"
+                                class="mt-2 p-4 text-gray-500 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700">
                                 <div>
                                     <p class="mb-2 font-semibold"><strong>Genes:</strong></p>
                                     <div class="flex flex-wrap gap-2">
-                                        <span
-                                            v-for="(gene, geneIndex) in entry.genes.split(',')"
-                                            :key="geneIndex"
-                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-blue-300 rounded-md dark:bg-blue-600"
-                                        >
+                                        <span v-for="(gene, geneIndex) in entry.genes.split(',')" :key="geneIndex"
+                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-blue-300 rounded-md dark:bg-blue-600">
                                             {{ gene }}
                                         </span>
                                     </div>
@@ -111,21 +89,20 @@
                                 <div class="mt-4">
                                     <p class="mb-2 font-semibold"><strong>Phenotypes:</strong></p>
                                     <div class="flex flex-wrap gap-2">
-                                        <span
-                                            v-if="entry.phenotypes"
+                                        <span v-if="entry.phenotypes"
                                             v-for="(phenotype, phenotypeIndex) in entry.phenotypes.split(',')"
                                             :key="phenotypeIndex"
-                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-green-600"
-                                        >
+                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-green-600">
                                             {{ phenotype }}
                                         </span>
 
-                                        <span v-else class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-gray-600">
+                                        <span v-else
+                                            class="inline-block px-3 py-1 text-sm font-medium text-gray-500 bg-red-300 rounded-md dark:bg-gray-600">
                                             No phenotypes
                                         </span>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </li>
                     </ul>
@@ -135,22 +112,18 @@
         </div>
     </section>
     <div v-if="logoutModalVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <!-- Modal Content -->
+        <!-- Modal Content -->
         <div class="bg-white rounded-lg shadow-lg w-96 p-6 text-center">
             <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
             <p class="text-gray-600 mb-6">You'll be logged out.</p>
             <div class="flex justify-center gap-4">
-                <button
-                @click="confirm"
-                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
-                >
-                Yes, I'm Sure
+                <button @click="confirm"
+                    class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
+                    Yes, I'm Sure
                 </button>
-                <button
-                @click="cancel"
-                class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none"
-                >
-                Cancel
+                <button @click="cancel"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none">
+                    Cancel
                 </button>
             </div>
         </div>
@@ -167,7 +140,7 @@ export default {
         return {
             logoutModalVisible: false,
             history: [],
-            accordionState: [], 
+            accordionState: [],
             isScrolled: false,
 
         };
@@ -226,19 +199,20 @@ export default {
                 console.error('Error fetching user history:', error);
             }
         },
+
         toggleAccordion(index) {
             this.accordionState[index] = !this.accordionState[index];
         },
         formatDate(timestamp) {
-        const date = new Date(timestamp);
-        return new Intl.DateTimeFormat('en-US', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-        }).format(date);
+            const date = new Date(timestamp);
+            return new Intl.DateTimeFormat('en-US', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+            }).format(date);
         },
         scrollToTop() {
             window.scrollTo({
