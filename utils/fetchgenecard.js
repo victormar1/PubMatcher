@@ -1,7 +1,7 @@
 // utils/fetchGeneCARD.js
 const axios = require('axios')
 const xml2js = require('xml2js')
-const Gene = require('../models/gene.js') // Import the Gene model
+const Gene = require('../models/gene.js') // Import the Gene model dzad
 const fs = require('fs')
 const path = require('path')
 const csvParser = require('csv-parser')
