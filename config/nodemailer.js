@@ -3,7 +3,9 @@ const nodemailer = require('nodemailer');
 
 function configureNodemailer(app) {
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'ssl0.ovh.net', // MX Plan SMTP server
+        port: 465, // Use port 465 for SSL
+        secure: true, // Set to true for SSL
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS

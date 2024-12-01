@@ -8,14 +8,14 @@
 exports.reportBug = (req, res) => {
     console.log('Received /reportbug request');
 
-    const { name, message } = req.body;
-    console.log('Bug report data:', { name, message });
+    const { name, description } = req.body;
+    console.log('Bug report data:', { name, description });
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.ADMIN_EMAIL,
         subject: 'Bug Report from Pubmatcher',
-        text: `Name: ${name}\n\nMessage: ${message}`
+        text: `Name: ${name}\n\nMessage: ${description}`
     };
 
     console.log('Mail Options:', mailOptions);
