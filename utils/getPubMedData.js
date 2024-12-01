@@ -19,7 +19,7 @@ async function getPubMedData(gene, phenotypes) {
   // * GET ARTICLE COUNT
   const countSelector = '#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span'
   const countText = $(countSelector).text().trim().replace(',', '')
-  const count = parseInt(countText, 10) || 0
+  let count = parseInt(countText, 10) || 0
 
   // * DEFAULT VALUES
   let firstArticleTitle = 'No articles found'
@@ -50,6 +50,16 @@ async function getPubMedData(gene, phenotypes) {
     })
   } else {
     firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${combinedQuery}/`
+  }
+
+  const requestPath = response.request.path
+  console.log(requestPath)
+  if (!requestPath.includes('term')) {
+    firstArticleTitle = $('#full-view-heading > h1.heading-title').text().trim()
+    count = 1
+  } else {
+    firstArticleTitle = firstArticleTitle || 'No PubMed Articles'
+    count = isNaN(count) ? 0 : count
   }
 
   // * RETURN THE RESULT
