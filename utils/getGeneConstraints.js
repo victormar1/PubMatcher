@@ -39,7 +39,6 @@ async function getGeneConstraints(gene) {
     constraintsDelta = false //If both na dnt flag
   }
 
-  const perc = 1.5 //perc
   if (constraints_v2[gene] && constraints_v4[gene]) {
     const parseValue = (value) => parseFloat(value.toString().replace(',', '.'))
 
@@ -57,12 +56,12 @@ async function getGeneConstraints(gene) {
       mis_z: parseValue(constraints_v4[gene].mis_z)
     }
 
-    const conditionPLi = v2.pLI !== 0 && v4.pLI !== 0 && v4.pLI >= v2.pLI * perc
-
-    if (conditionPLi) {
-      constraintsDelta = true
+    const perc = 1.5 // * threshold
+    if (v2.pLI === 0 || v4.pLI === 0) {
+      constraintsDelta = v2.pLI !== v4.pLI
     } else {
-      constraintsDelta = false
+      const conditionPLi = v4.pLI >= v2.pLI * perc || v4.pLI <= v2.pLI / perc
+      constraintsDelta = conditionPLi
     }
   }
 

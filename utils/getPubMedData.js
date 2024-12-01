@@ -2,7 +2,6 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 
 async function getPubMedData(gene, phenotypes) {
-  console.log('PUBMED QUERY')
   // * BUILD THE QUERY
   let combinedQuery = ''
   if (phenotypes.length > 0) {
