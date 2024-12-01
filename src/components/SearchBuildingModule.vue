@@ -589,6 +589,15 @@ export default {
       });
     },
     async reasearch() {
+
+      event('research_click', {
+        event_category: 'user_interaction', // Category: What kind of action is this?
+        event_label: 'search_button',
+        debug_mode: true
+        // Label: Which button was clicked?
+      });
+
+
       this.startLoader();
       const genes = this.getItems('gene');
       const phenotypes = this.getItems('phenotype');
