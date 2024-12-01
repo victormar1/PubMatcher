@@ -1,55 +1,67 @@
-
-import { createRouter, createWebHistory } from 'vue-router';
-import HomePage from './components/HomePage.vue';
-import AboutPage from './components/AboutPage.vue';
-import ContactPage from './components/ContactPage.vue';
-import SearchModule from './components/SearchModule.vue';
-import PageNotFound from './components/PageNotFound.vue';
-import LoginPage from './components/LoginPage.vue';
-import RegisterPage from './components/RegisterPage.vue';
-import AccountPage from './components/AccountPage.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import HomePage from './components/HomePage.vue'
+import AboutPage from './components/AboutPage.vue'
+import ContactPage from './components/ContactPage.vue'
+import SearchModule from './components/SearchModule.vue'
+import PageNotFound from './components/PageNotFound.vue'
+import LoginPage from './components/LoginPage.vue'
+import RegisterPage from './components/RegisterPage.vue'
+import AccountPage from './components/AccountPage.vue'
+import ForgotPasswordPage from './components/ForgotPasswordPage.vue'
+import ResetPasswordPage from './components/ResetPasswordPage.vue'
 
 function isAuthenticated() {
-  const token = localStorage.getItem('token'); 
-  return !!token; 
+  const token = localStorage.getItem('token')
+  return !!token
 }
 
 const routes = [
   { path: '/', component: HomePage },
   { path: '/about', component: AboutPage },
   { path: '/contact', component: ContactPage },
-  {path: '/search',
+  {
+    path: '/search',
     component: SearchModule, //enfer
-    props: route => ({
-        genes: route.query.genes ? route.query.genes.split(',') : [],
-        phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : [],}),},
-  {path: '/login', component: LoginPage},
-  {path: '/register', component: RegisterPage},
+    props: (route) => ({
+      genes: route.query.genes ? route.query.genes.split(',') : [],
+      phenotypes: route.query.phenotypes ? route.query.phenotypes.split(',') : []
+    })
+  },
+  { path: '/login', component: LoginPage },
+  { path: '/register', component: RegisterPage },
   {
     path: '/account',
     component: AccountPage,
-    meta: { requiresAuth: true }, 
+    meta: { requiresAuth: true }
   },
 
   //Route de secours
   {
     path: '/:pathMatch(.*)*',
-    component: PageNotFound,
+    component: PageNotFound
   },
-];
+  {
+    path: '/forgot-password',
+    component: ForgotPasswordPage
+  },
+  {
+    path: '/reset-password/:token',
+    component: ResetPasswordPage,
+    props: true
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
-
+  routes
+})
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !isAuthenticated()) {
     // If route requires auth and user is not authenticated, redirect to login
-    return next('/login');
+    return next('/login')
   }
-  next(); // Otherwise, allow access
-});
+  next() // Otherwise, allow access
+})
 
-export default router;
+export default router
