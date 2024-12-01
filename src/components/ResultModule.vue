@@ -361,6 +361,8 @@ export default {
                 return "bg-orange-300"
             } else if (valid === 'No Known') {
                 return "bg-gray-500"
+            } else if (valid === 'No Known Disease Relationship') {
+                return "bg-gray-500"
             }
         },
 

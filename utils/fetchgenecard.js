@@ -7,7 +7,7 @@ const path = require('path')
 const csvParser = require('csv-parser')
 
 // ranking
-const classificationRanking = ['Definitive', 'Strong', 'Moderate', 'Supportive', 'Limited', 'Disputed Evidence', 'Refuted', 'Animal', 'No Known'] // Ordered by importance
+const classificationRanking = ['Definitive', 'Strong', 'Moderate', 'Supportive', 'Limited', 'Disputed Evidence', 'Refuted', 'Animal', 'No Known', 'No Known Disease Relationship'] // Ordered by importance
 
 const validityMap = new Map()
 
@@ -24,7 +24,6 @@ function loadCSV() {
         if (hgncId && classification) {
           if (validityMap.has(hgncId)) {
             const existingClassification = validityMap.get(hgncId)
-
             // Compare, if more important replace
             if (classificationRanking.indexOf(classification) < classificationRanking.indexOf(existingClassification)) {
               validityMap.set(hgncId, classification)
