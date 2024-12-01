@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import { event } from 'vue-gtag';
+
 export default {
     data() {
         return {
@@ -77,6 +79,12 @@ export default {
     methods: {
         toggleDrawer() {
             this.isDrawerOpen = !this.isDrawerOpen;
+            event('changelog_read', {
+                event_category: 'user_interaction', // Category: What kind of action is this?
+                event_label: 'changelog_read',
+                debug_mode: true
+                // Label: Which button was clicked?
+            });
         },
     },
 };
