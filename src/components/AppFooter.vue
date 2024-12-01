@@ -7,7 +7,7 @@
         
       </div>
 
-      <!-- Dark Mode Toggle -->
+      <!-- Dark Mode Toggle 
       <div class="flex items-center ">
         <button
           @click="toggleDarkMode"
@@ -32,7 +32,7 @@
             <p>Light mode</p>
           </template>
         </div>
-      </div>
+      </div> -->
       
 
       <!-- Center Section: SVG and Rights -->
