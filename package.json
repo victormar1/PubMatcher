@@ -38,7 +38,9 @@
   },
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "prettier": "^3.4.1",
+    "prettier-plugin-tailwindcss": "^0.6.9"
   },
   "scripts": {
     "dev": "vue-cli-service serve",

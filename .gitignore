@@ -2,4 +2,3 @@ node_modules/*
 .env
 a.out
 package-lock.json
-.prettierrc

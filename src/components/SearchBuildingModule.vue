@@ -127,7 +127,7 @@
           <div class="w-6">
           </div>
         </div>
-        <div class="flex flex-col items-center  space-y-4 rounded max-h-48 overflow-auto  p-4">
+        <div class="flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto  p-4">
           <!-- GENES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 gene-items ">
             <!-- GENES POPULATE HERE -->
@@ -199,7 +199,7 @@
 
 
 
-        <div class="flex flex-col items-center space-y-4 rounded max-h-48  overflow-auto  p-4">
+        <div class="flex flex-col items-center mt-2 space-y-4 rounded max-h-48  overflow-auto  p-4">
           <!-- PHENOTYPES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 phenotype-items ">
             <!-- PHENOTYPES POPULATE HERE -->

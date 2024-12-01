@@ -27,31 +27,36 @@
                 </span>
             </button>
 
-            <div class="p-4">
-                <div class="flex flex-row justify-between">
+
+            <div class="p-4 flex flex-col items-center  justify-start  h-full">
+                <div class="flex flex-row w-full px-2 justify-between ">
                     <h2 class="text-lg font-bold">ChangeLog</h2>
                     <h2 class="text-lg font-bold">2.0.1</h2>
                 </div>
-                <p class="mt-2 text-sm">PubMatcher is evolving!</p>
-                <ul class="mt-4 list-disc list-inside text-sm space-y-1">
+                <div class="h-0.5 w-full mt-1 bg-gray-100 w-fullfull">
+                </div>
+                <p class=" mt-10 text-xl font-medium">PubMatcher is evolving!</p>
+                <ul class="mt-4 list-disc list-inside text-sm space-y-1 text-gray-200 ">
                     <li>
-                        <span class="font-semibold">User Accounts:</span> Users can now register and log in to access
+
+                        <span class="font-semibold underline ">USER ACCOUNTS:</span> Users can now register and
+                        log
+                        in to access
                         search history and upcomming features.
                     </li>
                     <li>
-                        <span class="font-semibold">Enhanced Display:</span> A fresh new layout for an improved user
+                        <span class="font-semibold underline ">ENHANCED DISPLAY:</span> A fresh new layout for an
+                        improved user
                         experience.
                     </li>
                     <li>
-                        <span class="font-semibold">New Features:</span> Additional tools to streamline genetic research
-                        workflows.
-                    </li>
-                    <li>
-                        <span class="font-semibold">Improved Performance:</span> Faster load times and optimized search
+                        <span class="font-semibold underline ">IMPROVED PERFORMANCE:</span> Faster load times and
+                        optimized search
                         queries.
                     </li>
                     <li>
-                        <span class="font-semibold">Bug Fixes:</span> Tons of bug have been fixed, data is now more
+                        <span class="font-semibold underline ">BUG FIXES:</span> Tons of bug have been fixed, data is
+                        now more
                         accurate.
                     </li>
                 </ul>
@@ -65,7 +70,7 @@
 export default {
     data() {
         return {
-            isDrawerOpen: false,
+            isDrawerOpen: true,
         };
     },
     methods: {
