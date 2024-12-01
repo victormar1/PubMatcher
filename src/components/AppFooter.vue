@@ -67,7 +67,7 @@
       <div class="bg-white p-6 rounded-md w-96">
         <h2 class="text-lg font-bold mb-4">Report a Bug</h2>
         <label class="block mb-2">
-          Name:
+          Your email:
           <input v-model="bugReport.name" type="text" class="border p-2 w-full rounded" />
         </label>
         <label class="block mb-4">
