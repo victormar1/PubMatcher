@@ -39,7 +39,8 @@
                 <ul class="mt-4 list-disc list-inside text-sm space-y-1 text-gray-200 ">
                     <li>
 
-                        <span class="font-semibold underline ">USER ACCOUNTS:</span> Users can now register and
+                        <span class="font-semibold underline ">USER ACCOUNTS:</span> Users can now <a href="/register"
+                            class="font-bold underline">register</a> and
                         log
                         in to access
                         search history and upcomming features.

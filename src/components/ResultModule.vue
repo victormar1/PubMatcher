@@ -109,11 +109,12 @@
                                             <div class="relative  w-full  ">
                                                 <!-- Top-Right Indicator -->
                                                 <div v-if="result.constraintsDelta"
-                                                    v-tooltip="{ content: 'Notable differences exist between V2 and V4 constraints <br/> Click to swap versions', html: true }"
+                                                    v-tooltip="{ content: 'Notable differences exist between V2 and V4 constraints <br/> Click to swap versions', html: true, placement: 'right' }"
                                                     class="absolute z-20 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full dark:border-gray-900 cursor-pointer"
                                                     style="top: 50%; left: 90%; transform: translateY(-50%);">
                                                     !
                                                 </div>
+
 
                                                 <!-- Grid for Constraints -->
                                                 <div

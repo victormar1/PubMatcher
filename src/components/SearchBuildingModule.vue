@@ -37,7 +37,7 @@
             placeholder="Paste your genes here..."></textarea>
           <div class="absolute bottom-2 right-4 flex space-x-2">
             <button id="submitTextArea" @click="extractGeneFromBatch" type="button"
-              class="flex items-center px-4 py-2 bg-gray-800 hover:bg-blue-600 text-white font-medium rounded-md space-x-2">
+              class="flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-600 text-white font-medium rounded-md space-x-2">
               <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd"
@@ -114,7 +114,7 @@
 
               <!-- Search button -->
               <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
-                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <p class="text-white">Add</p>
               </button>
 
@@ -174,7 +174,7 @@
                 @keydown.enter.prevent="addFreePhenotype" required />
               <!-- Search button -->
               <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
-                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <p class="text-white">Add</p>
               </button>
               <ul id="phenotypeSuggestions"
@@ -210,7 +210,7 @@
     <!-- RESEARCHED BUTTON -->
     <div class="flex flex-row justify-center mx-2 ">
       <button type="button" id="researchButton" @click="reasearch"
-        class="text-white  bg-gray-800 hover:bg-blue-800 w-full justify-center  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        class="text-white  bg-gray-800 hover:bg-gray-600 w-full justify-center  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         <svg class="loader w-12 h-12 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
           width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
