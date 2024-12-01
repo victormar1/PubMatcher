@@ -24,9 +24,9 @@
             Extract genes from raw text, file, url, webpage or SeqOne.
           </span>
         </div>
-        <button class="ml-auto px-4 py-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
-          @click="clearWholeResearch">
-          Clear Research
+        <button class="ml-auto px-4 py-1 mb-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
+          @click="showLogoutModal">
+          New Research
         </button>
       </div>
       <div class="flex flex-row mx-2">
@@ -226,6 +226,23 @@
           <span class="sr-only">Loading...</span>
         </div>
       </button>
+      <div v-if="logoutModalVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <!-- Modal Content -->
+        <div class="bg-white rounded-lg shadow-lg w-96 p-6 text-center">
+          <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
+          <p class="text-gray-600 mb-6">This will clear all the research fields</p>
+          <div class="flex justify-center gap-4">
+            <button @click="confirm"
+              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
+              Yes, I'm Sure
+            </button>
+            <button @click="cancel"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -246,6 +263,8 @@ export default {
       genesList: [],
       batchInput: '',
       extractedGenes: [],
+      logoutModalVisible: true,
+
     };
   },
 
@@ -275,6 +294,22 @@ export default {
     this.debouncedShowSuggestions = this.debounce(this.showSuggestions, 300);
   },
   methods: {
+    showLogoutModal() {
+      this.logoutModalVisible = true;
+    },
+    confirm() {
+      this.logoutModalVisible = false;
+      this.clearWholeResearch()
+    },
+    cancel() {
+      this.logoutModalVisible = false;
+    },
+
+
+
+
+
+
     async searchFromUrl() {
       const queryData = {
         genes: this.genesInput.split(',').map((g) => g.trim()),
@@ -674,14 +709,10 @@ export default {
       }
     },
     clearWholeResearch() {
-      if (
-        confirm('Are you sure you want to clear the entire research box?')
-      ) {
-        this.clearList('gene');
-        this.clearList('phenotype');
-        this.batchInput = '';
-        this.extractedGenes = [];
-      }
+      this.clearList('gene');
+      this.clearList('phenotype');
+      this.batchInput = '';
+      this.extractedGenes = [];
     },
     clearContainer(type) {
       this.clearList(type);
