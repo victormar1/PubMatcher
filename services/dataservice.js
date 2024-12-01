@@ -1,5 +1,5 @@
 // services/dataService.js
-const fetchGeneCard = require('../utils/fetchGeneCard.js')
+const fetchGeneCard = require('../utils/fetchgenecard.js')
 const getPubMedData = require('../utils/getPubMedData.js')
 const getUniProtFunction = require('../utils/getUniProtFunction.js')
 const getMouseKO = require('../utils/getMouseKO.js')
