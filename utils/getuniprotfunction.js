@@ -21,6 +21,10 @@ async function getUniProtFunction(uniprotId) {
           if (element.type === 'FUNCTION') {
             // * STORE GENE FUNCTION
             geneFunction = element.text[0].value
+            // * TRUNCATE IF TEXT IS TOO LONG
+            if (geneFunction && geneFunction.length > 300) {
+              geneFunction = geneFunction.substring(0, 300) + '... '
+            }
             // * EXTRACT FUNCTION KEYWORDS
             for (let i = 0; i < Object.keys(data.keywords).length; i++) {
               functionKeywords.push(data.keywords[i].value)
