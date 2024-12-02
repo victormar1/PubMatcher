@@ -32,7 +32,7 @@
 export default {
     data() {
         return {
-            bannerVisible: true, // ACTIVATE BANNER 
+            bannerVisible: false, // ACTIVATE BANNER 
         };
     },
 }
