@@ -4,7 +4,6 @@ const path = require('path')
 const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const { configureServer } = require('./config/server')
-const configureNodemailer = require('./config/nodemailer')
 
 // Initialize the Express app
 const app = express()
@@ -15,9 +14,6 @@ app.use(express.static(path.join(__dirname, 'dist'))) // Serve Vue's built files
 app.use(express.static(path.join(__dirname, 'public'))) // Static files
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
-// Configure Nodemailer
-configureNodemailer(app)
 
 // Configure server startup
 configureServer(app)

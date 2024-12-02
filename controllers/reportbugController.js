@@ -1,37 +1,28 @@
 // controllers/reportBugController.js
+const { sendBugReportEmail } = require('../config/nodemailer')
 
-/**
- * Controller pour gérer les rapports de bugs
- * @param {Request} req - Objet requête Express
- * @param {Response} res - Objet réponse Express
- */
-exports.reportBug = (req, res) => {
-    console.log('Received /reportbug request');
+exports.reportBug = async (req, res) => {
+  console.log('Received /reportbug request')
 
-    const { name, description } = req.body;
-    console.log('Bug report data:', { name, description });
+  const { name, description } = req.body
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.ADMIN_EMAIL,
-        subject: 'Bug Report from Pubmatcher',
-        text: `Name: ${name}\n\nMessage: ${description}`
-    };
+  if (!name || !description) {
+    return res.status(400).json({
+      error: 'Both name and description are required.'
+    })
+  }
 
-    console.log('Mail Options:', mailOptions);
+  try {
+    await sendBugReportEmail(name, description)
 
-    // Accéder au transporteur depuis les locals de l'application                                        <- A VOIR
-    const transporter = req.app.locals.transporter;
+    res.status(200).json({
+      message: 'Bug report sent successfully.'
+    })
+  } catch (error) {
+    console.error('Error sending bug report:', error)
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email:', error);
-            res.status(500).send('Error sending email');
-        } else {
-            console.log('Email sent:', info.response);
-            res.status(200).send('Email sent');
-        }
-    });
-};
-
-
+    res.status(500).json({
+      error: 'Failed to send the bug report. Please try again later.'
+    })
+  }
+}

@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const nodemailer = require('nodemailer')
-const pool = require('../models/db') // Adjust to your database connection
+const pool = require('../models/db')
+const { sendPasswordResetEmail } = require('../config/nodemailer')
 
 const sendPwResetMailController = async (req, res) => {
   const { email } = req.body
@@ -34,26 +35,9 @@ const sendPwResetMailController = async (req, res) => {
       [hashedToken, tokenExpiration, email]
     )
 
-    // Configure the email transport
-    const transporter = nodemailer.createTransport({
-      host: 'ssl0.ovh.net', // MX Plan SMTP server
-      port: 465, // Use port 465 for SSL
-      secure: true, // Set to true for SSL
-      auth: {
-        user: process.env.RESET_MAIL_ADRESS, // Your email address
-        pass: process.env.RESET_MAIL_PASSWORD // Your email password
-      }
-    })
-
     // Create the reset URL
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`
-
-    await transporter.sendMail({
-      from: process.env.RESET_MAIL_ADRESS, // Sender address
-      to: user.email,
-      subject: 'Password Reset Request',
-      text: `You requested a password reset. Click the link below to reset your password:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email.`
-    })
+    await sendPasswordResetEmail(email, resetUrl)
 
     res.status(200).json({ message: 'Password reset email sent successfully.' })
   } catch (error) {
