@@ -1,18 +1,23 @@
 <template>
   <div id="app" class="flex flex-col min-h-screen dark:bg-gray-600">
     <AppHeader />
+    <Announcement />
     <PatchNote />
     <main class="flex-grow">
       <router-view></router-view>
     </main>
     <AppFooter />
   </div>
+
+
+
 </template>
 
 <script>
 import AppHeader from './components/AppHeader.vue';
 import AppFooter from './components/AppFooter.vue';
 import PatchNote from './components/PatchNote.vue';
+import Announcement from './components/Announcement.vue';
 
 export default {
   name: 'App',
@@ -20,6 +25,7 @@ export default {
     AppHeader,
     AppFooter,
     PatchNote,
+    Announcement,
   },
   mounted() {
     this.applyDarkModePreference();
