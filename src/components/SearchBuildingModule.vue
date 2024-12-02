@@ -250,6 +250,7 @@
 <script>
 import { event } from 'vue-gtag';
 
+
 export default {
   name: 'SearchBuildingModule',
   props: {
@@ -568,10 +569,20 @@ export default {
     addFreePhenotype() {
       const inputField = document.getElementById('phenotypeInput');
       const inputValue = inputField.value.trim();
-
+      let extPhenos = []
       if (inputValue) {
+        if (inputValue.length > 20) {
+          const regex = /\d{7}:\s[^0-9]+(?=\s|$)/g;
+          extPhenos = inputValue.match(regex)
+          for (let i in extPhenos) {
+            extPhenos[i] = extPhenos[i].split(':')[1].trim()
+            this.addPhenotype(extPhenos[i])
+          }
+        } else {
+          this.addPhenotype(inputValue);
+
+        }
         // Add the input value as a gene, whether it's in suggestions or not
-        this.addPhenotype(inputValue);
 
         // Clear input field and suggestions
         inputField.value = '';
