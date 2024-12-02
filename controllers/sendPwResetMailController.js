@@ -36,7 +36,7 @@ const sendPwResetMailController = async (req, res) => {
     )
 
     // Create the reset URL
-    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`
+    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password:${resetToken}`
     await sendPasswordResetEmail(email, resetUrl)
 
     res.status(200).json({ message: 'Password reset email sent successfully.' })

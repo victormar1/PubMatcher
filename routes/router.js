@@ -40,7 +40,7 @@ router.get('/account', authenticateToken, (req, res) => {
 router.get('/getuserhistory', authenticateToken, userHistoryController.getHistory)
 
 router.post('/sendPwResetMail', sendPwResetMailController)
-router.get('/reset-password/:token', resetPasswordController.validateToken)
+router.get('/reset-password:token', resetPasswordController.validateToken)
 router.post('/reset-password', resetPasswordController.resetPassword)
 
 router.get('/account', authenticateToken, (req, res) => {

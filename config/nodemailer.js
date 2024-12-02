@@ -22,7 +22,25 @@ const passwordResetTransporter = nodemailer.createTransport({
   }
 })
 
-// BUG REPORT FUNCTION
+// General email sender function
+async function sendEmail({ transporter, to, subject, text, html }) {
+  try {
+    const info = await transporter.sendMail({
+      from: transporter.options.auth.user,
+      to,
+      subject,
+      text,
+      html
+    })
+    console.log(`Email sent: ${info.messageId}`)
+    return info
+  } catch (error) {
+    console.error('Error sending email:', error)
+    throw error
+  }
+}
+
+// Function to send a bug report email
 async function sendBugReportEmail(reporterName, reportBody) {
   const adminEmail = process.env.ADMIN_USER // Email address of the admin
   const subject = `Bug Report from ${reporterName}`
@@ -49,7 +67,6 @@ async function sendBugReportEmail(reporterName, reportBody) {
   }
 }
 
-// PASSWORD RESET FUNCTION
 async function sendPasswordResetEmail(to, resetLink) {
   const subject = 'Password Reset Request'
   const text = `You requested a password reset. Use this link: ${resetLink}`
