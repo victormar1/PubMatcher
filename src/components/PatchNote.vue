@@ -31,12 +31,16 @@
             <div class="p-4 flex flex-col items-center  justify-start  h-full">
                 <div class="flex flex-row w-full px-2 justify-between ">
                     <h2 class="text-lg font-bold">ChangeLog</h2>
-                    <h2 class="text-lg font-bold">2.0.1</h2>
+                    <h2 class="text-lg font-bold">2.0.2</h2>
                 </div>
                 <div class="h-0.5 w-full mt-1 bg-gray-100 w-fullfull">
                 </div>
                 <p class=" mt-10 text-xl font-medium">PubMatcher is evolving!</p>
                 <ul class="mt-4 list-disc list-inside text-sm space-y-1 text-gray-200 ">
+                    <li>
+
+                        <span class="font-semibold underline ">BATCH INPUT:</span> Fix for the bug affecting on 03/12 & Users can now blacklist genes (IMPACT,ADAR) 
+                        </li>
                     <li>
 
                         <span class="font-semibold underline ">USER ACCOUNTS:</span> Users can now <a href="/register"
