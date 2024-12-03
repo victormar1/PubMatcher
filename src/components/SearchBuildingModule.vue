@@ -737,28 +737,20 @@ export default {
     },
     extractGeneFromBatch() {
       console.log("Extract Genes button clicked");
-
-      if (!this.batchInput.trim()) {
+      if (!this.batchInput.trim() || this.genesList.length === 0) {
         this.extractedGenes = [];
         return;
       }
 
 
-
       const text = this.batchInput;
-      console.log("Processing text:", text);
-
       // Filter genes from batch input
       const foundGenes = this.genesList.filter((gene) => {
-        const regex = new RegExp(`\\b${gene} \\b`, 'i');
+        const regex = new RegExp(`\\b${gene}\\b`, 'i');
         return regex.test(text);
       });
 
-      if (foundGenes.length === 0) {
-        console.log("No genes found in input");
-        return;
-      }
-
+      foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
 
       this.extractedGenes = foundGenes;
       this.populateSearchWithExtraction(foundGenes);
