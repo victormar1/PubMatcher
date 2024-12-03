@@ -295,7 +295,6 @@ export default {
     //GET STORED GENE BLACKLIST
     const storedBlacklist = localStorage.getItem('blacklistedGenes');
     this.blacklistedGenes = storedBlacklist ? JSON.parse(storedBlacklist) : [];
-    console.log(this.blacklistedGenes);
 
     this.displayItems('gene');
     this.displayItems('phenotype');
@@ -739,7 +738,6 @@ export default {
 
     },
     extractGeneFromBatch() {
-      console.log("Extract Genes button clicked");
       if (!this.batchInput.trim() || this.genesList.length === 0) {
         this.extractedGenes = [];
         return;
