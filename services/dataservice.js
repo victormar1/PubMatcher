@@ -5,6 +5,7 @@ const getUniProtFunction = require('../utils/getUniProtFunction.js')
 const getMouseKO = require('../utils/getMouseKO.js')
 const getGeneConstraints = require('../utils/getGeneConstraints.js')
 const getPanelApps = require('../utils/getPanelApps.js')
+const getClinVarData = require('../utils/getClinVarData.js');
 const axios = require('axios')
 
 async function getData(req) {
@@ -28,6 +29,7 @@ async function getData(req) {
           ...(await getMouseKO(validatedGene.mgdId)), // * Mouse KO data
           ...(await getGeneConstraints(gene)), // * Gene constraint data
           ...(await getPanelApps(gene)), // * PanelApp data
+          ...(await getClinVarData(gene)), // * ClinVar data
           // * ADDITIONNAL
           geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : '', // HGNC link
           geneValidity: validatedGene.validityMarker || 'No validity found',

@@ -78,6 +78,16 @@
                                 </div>
                             </th>
 
+
+                                                        <!-- ClinVar Data -->
+                                                        <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
+                                CLINVAR DATA
+                                <div
+                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+                                    LOF and Missense variants from ClinVar
+                                </div>
+                            </th>
+
                             <!-- Status -->
                             <th scope="col" class="px-6 py-3 text-center relative group cursor-pointer">
                                 STATUS
@@ -219,6 +229,16 @@
                                     </div>
                                 </div>
                             </td>
+
+                                                        <!-- ClinVar Data -->
+                                                        <td class="px-6 py-4 border-r border-gray-200">
+                                <div>
+                                    <p><strong>LOF Variants:</strong> {{ result.lofVariants || 0 }}</p>
+                                    <p><strong>Missense Variants:</strong> {{ result.missenseVariants || 0 }}</p>
+                                </div>
+                            </td>
+
+
                             <td class="px-6 py-4 text-center">
                                 <div :class="[getValidityColor(result.geneValidity)]"
                                     class="rounded-full text-white font-bold py-1 px-2 text-nowrap">
