@@ -265,6 +265,7 @@ export default {
       batchInput: '',
       extractedGenes: [],
       logoutModalVisible: false,
+      blacklistedGenes: []
 
     };
   },
@@ -282,13 +283,15 @@ export default {
       );
     }
 
+    const storedBlacklist = sessionStorage.getItem('blacklistedGenes');
+    this.blacklistedGenes = storedBlacklist ? JSON.parse(storedBlacklist) : [];
+
     this.displayItems('gene');
     this.displayItems('phenotype');
 
     if (this.genes.length || this.phenotypes.length) {
       this.searchFromUrl();
     }
-
     this.fetchGenesListAndCache(); // Load genes list
   },
   created() {
@@ -488,22 +491,47 @@ export default {
         items.forEach((item) => {
           const cardElement = document.createElement('div');
           const geneNameElement = document.createElement('div');
-          cardElement.className =
-            'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          if (this.blacklistedGenes.includes(item)) {
+            cardElement.className =
+              'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          } else {
+            cardElement.className =
+              'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          }
+
           geneNameElement.textContent = item; // Set the text content directly
           const svgIcon = this.createSvgIcon(type, item); // Create the SVG element with click handler
           cardElement.appendChild(geneNameElement);
           cardElement.appendChild(svgIcon);
+          cardElement.addEventListener('click', () => {
+            this.handleGeneClick(item, cardElement);
+          });
           container.appendChild(cardElement);
         });
       } else {
         console.error('Container element not found!');
       }
       if (type === 'gene') {
-        document.querySelector('.genes-count').textContent = `RESEARCH ${Object.keys(items).length
+        document.querySelector('.genes-count').textContent = `RESEARCH ${(Object.keys(items).length - Object.keys(this.blacklistedGenes).length)
           } GENES`;
       }
     },
+    handleGeneClick(gene, container) {
+      const isBlacklisted = this.blacklistedGenes.includes(gene);
+      if (isBlacklisted) {
+        // Remove the gene from the blacklist
+        this.blacklistedGenes = this.blacklistedGenes.filter((item) => item !== gene);
+        container.className = 'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+      } else {
+        // Add the gene to the blacklist
+        this.blacklistedGenes.push(gene);
+        container.className = 'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+      }
+      this.displayItems('gene')
+      // Save the updated blacklist to sessionStorage
+      sessionStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+    },
+
     createSvgIcon(type, item) {
       const svgIcon = document.createElementNS(
         'http://www.w3.org/2000/svg',
@@ -610,10 +638,11 @@ export default {
 
 
       this.startLoader();
-      const genes = this.getItems('gene');
+      let genes = this.getItems('gene');
       const phenotypes = this.getItems('phenotype');
       const user = JSON.parse(localStorage.getItem('user'));
       const userId = user ? user.id : null;
+      genes = genes.filter((gene) => !this.blacklistedGenes.includes(gene));
       if (genes.length > 0 || phenotypes.length > 0) {
         const data = { userId, genes, phenotypes };
         fetch('api/search', {
@@ -625,7 +654,7 @@ export default {
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error(`HTTP error! status: ${response.status} `);
             }
             return response.json(); // Parse the response as JSON
           })
@@ -686,7 +715,7 @@ export default {
 
       const text = this.batchInput;
       const foundGenes = this.genesList.filter((gene) => {
-        const regex = new RegExp(`\\b${gene}\\b`, 'i');
+        const regex = new RegExp(`\\b${gene} \\b`, 'i');
         return regex.test(text);
       });
 
