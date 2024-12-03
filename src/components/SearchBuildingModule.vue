@@ -124,10 +124,19 @@
               </ul>
             </div>
           </form>
-          <div class="w-6">
-          </div>
+
+          <button @click="clearBlacklist()" class="bg-red-500 py-1 px-1  rounded-full text-white text-center"
+            v-tooltip="{ content: blacklistedGenes.length + ' gene blacklisted <br/> ' + blacklistedGenes.join(' - ') + '<br/>Click to clear list', html: true, placement: 'top' }">
+            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <span class="relative z-10 text-lg font-bold">{{ blacklistedGenes.length }}</span>
+
+          </button>
         </div>
-        <div class="flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto  p-4">
+        <div class=" flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto p-4">
           <!-- GENES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 gene-items ">
             <!-- GENES POPULATE HERE -->
@@ -272,6 +281,7 @@ export default {
 
   mounted() {
 
+    this.fetchGenesListAndCache(); // Load genes list
     // Initialize sessionStorage
     if (!sessionStorage.getItem('data')) {
       sessionStorage.setItem(
@@ -282,9 +292,10 @@ export default {
         ])
       );
     }
-
-    const storedBlacklist = sessionStorage.getItem('blacklistedGenes');
+    //GET STORED GENE BLACKLIST
+    const storedBlacklist = localStorage.getItem('blacklistedGenes');
     this.blacklistedGenes = storedBlacklist ? JSON.parse(storedBlacklist) : [];
+    console.log(this.blacklistedGenes);
 
     this.displayItems('gene');
     this.displayItems('phenotype');
@@ -292,7 +303,9 @@ export default {
     if (this.genes.length || this.phenotypes.length) {
       this.searchFromUrl();
     }
-    this.fetchGenesListAndCache(); // Load genes list
+
+
+
   },
   created() {
     this.debouncedShowSuggestions = this.debounce(this.showSuggestions, 300);
@@ -512,9 +525,13 @@ export default {
         console.error('Container element not found!');
       }
       if (type === 'gene') {
-        document.querySelector('.genes-count').textContent = `RESEARCH ${(Object.keys(items).length - Object.keys(this.blacklistedGenes).length)
-          } GENES`;
+        const geneCount = Math.max(
+          Object.keys(items).length - Object.keys(this.blacklistedGenes).length,
+          0
+        );
+        document.querySelector('.genes-count').textContent = `RESEARCH ${geneCount} GENES`;
       }
+
     },
     handleGeneClick(gene, container) {
       const isBlacklisted = this.blacklistedGenes.includes(gene);
@@ -527,9 +544,15 @@ export default {
         this.blacklistedGenes.push(gene);
         container.className = 'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
       }
+
       this.displayItems('gene')
       // Save the updated blacklist to sessionStorage
-      sessionStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+      localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+    },
+    clearBlacklist() {
+      this.blacklistedGenes = []
+      localStorage.removeItem('blacklistedGenes')
+      this.displayItems('gene')
     },
 
     createSvgIcon(type, item) {
@@ -708,21 +731,34 @@ export default {
 
     },
     extractGeneFromBatch() {
-      if (!this.batchInput.trim() || this.genesList.length === 0) {
+      console.log("Extract Genes button clicked");
+
+      if (!this.batchInput.trim()) {
         this.extractedGenes = [];
         return;
       }
 
+
+
       const text = this.batchInput;
+      console.log("Processing text:", text);
+
+      // Filter genes from batch input
       const foundGenes = this.genesList.filter((gene) => {
         const regex = new RegExp(`\\b${gene} \\b`, 'i');
         return regex.test(text);
       });
 
-      foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
+      if (foundGenes.length === 0) {
+        console.log("No genes found in input");
+        return;
+      }
+
+
       this.extractedGenes = foundGenes;
       this.populateSearchWithExtraction(foundGenes);
     },
+
     async populateSearchWithExtraction(genes) {
       for (const gene of genes) {
         this.addGene(gene);
