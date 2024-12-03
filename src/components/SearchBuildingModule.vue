@@ -585,7 +585,10 @@ export default {
       );
       path.setAttribute('clip-rule', 'evenodd');
       svgIcon.appendChild(path);
-      svgIcon.addEventListener('click', () => this.removeItem(type, item)); // Attach click listener
+      svgIcon.addEventListener('click', (event) => {
+        event.stopPropagation(); // 
+        this.removeItem(type, item);
+      });
       return svgIcon;
     },
     removeItem(type, itemToRemove) {
