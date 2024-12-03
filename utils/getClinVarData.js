@@ -11,7 +11,7 @@ async function delay(ms) {
 
 async function getClinVarData(gene) {
     try {
-        await delay(500); // Ajoute un délai de 500ms entre les requêtes
+        await delay(2000); // Ajoute un délai de 500ms entre les requêtes
 
         // Requête pour LOF
         const lofResponse = await axios.get('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi', {
@@ -24,7 +24,7 @@ async function getClinVarData(gene) {
 
         const lofCount = parseInt(lofResponse.data.esearchresult.count, 10);
 
-        await delay(500); // Ajoute un délai avant la prochaine requête
+        await delay(2000); // Ajoute un délai avant la prochaine requête
 
         // Requête pour Missense
         const missenseResponse = await axios.get('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi', {

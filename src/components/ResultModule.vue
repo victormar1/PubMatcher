@@ -230,13 +230,30 @@
                                 </div>
                             </td>
 
-                                                        <!-- ClinVar Data -->
-                                                        <td class="px-6 py-4 border-r border-gray-200">
-                                <div>
-                                    <p><strong>LOF Variants:</strong> {{ result.lofVariants || 0 }}</p>
-                                    <p><strong>Missense Variants:</strong> {{ result.missenseVariants || 0 }}</p>
-                                </div>
-                            </td>
+                <!-- ClinVar Data Column -->
+                <td class="px-6 py-4 border-r border-gray-200">
+                    <div class="relative w-full h-6 bg-gray-300 rounded-lg overflow-hidden">
+                        <!-- LOF Section -->
+                        <div
+                            class="absolute top-0 left-0 h-full bg-red-500"
+                            :style="{ width: `${getPercentage(result.lofVariants, result.lofVariants + result.missenseVariants)}%` }"
+                            v-tooltip="{ content: `${result.lofVariants || 0} LOFs`, placement: 'top' }"
+                        ></div>
+
+                        <!-- Missense Section -->
+                        <div
+                            class="absolute top-0 right-0 h-full bg-blue-500"
+                            :style="{ width: `${getPercentage(result.missenseVariants, result.lofVariants + result.missenseVariants)}%` }"
+                            v-tooltip="{ content: `${result.missenseVariants || 0} Missenses`, placement: 'top' }"
+                        ></div>
+                    </div>
+                    <!-- Labels -->
+                    <div class="flex justify-between text-xs mt-1">
+                        <span class="text-red-700 font-bold">LOFs</span>
+                        <span class="text-blue-700 font-bold">Missenses</span>
+                    </div>
+                </td>
+
 
 
                             <td class="px-6 py-4 text-center">
@@ -345,6 +362,12 @@ export default {
     return 'text-black';
 },
 
+
+
+        getPercentage(count, total) {
+                if (total === 0) return '0';
+                return ((count / total) * 100).toFixed(2); // Limite à 2 décimales
+            },
 
 
 
