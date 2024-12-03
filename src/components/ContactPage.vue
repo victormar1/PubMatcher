@@ -4,8 +4,8 @@
     <div class="contact py-10 px-6 text-center">
       <p class="text-lg text-gray-700 mb-10">
         For inquiries, please contact us at:
-        <a href="mailto:victor.marin@chu-bordeaux.fr" class="text-blue-600 hover:underline font-semibold">
-          victor.marin@chu-bordeaux.fr
+        <a href="mailto:admin@pubmatcher.fr" class="text-blue-600 hover:underline font-semibold">
+          admin@pubmatcher.fr
         </a>
       </p>
 

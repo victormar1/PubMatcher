@@ -1,29 +1,16 @@
 <template>
-    <main id="searchResults" class="flex px-4 my-10 w-full bg-transparent rounded-lg flex-grow flex-col"
+    <main id="searchResults" class="flex px-20 my-10 w-full bg-transparent rounded-lg flex-grow flex-col"
         :class="{ 'hidden': !results || results.length === 0 }">
         <div class="flex justify-center">
-            <h2 class="text-bold text-3xl font-mono font-bold text-gray-700">RESULTS</h2>
+            <p class="text-bold text-4xl font-mono font-bold underline pb-5  text-gray-700">RESULTS</p>
         </div>
         <!-- BACK TO TOP BUTTON -->
         <div>
-            <button
-                v-if="isScrolled"
-                @click="scrollToTop"
-                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600"
-            >
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M5 15l7-7 7 7"
-                />
+            <button v-if="isScrolled" @click="scrollToTop"
+                class="fixed bottom-20 right-1 p-3 z-50 bg-gray-800 text-white rounded-full hover:bg-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
                 </svg>
             </button>
         </div>
@@ -122,52 +109,55 @@
                                             <div class="relative  w-full  ">
                                                 <!-- Top-Right Indicator -->
                                                 <div v-if="result.constraintsDelta"
-                                                    v-tooltip="{ content: 'Notable differences exist between V2 and V4 constraints <br/> Click to swap versions', html: true }"
+                                                    v-tooltip="{ content: 'Notable differences exist between V2 and V4 constraints <br/> Click to swap versions', html: true, placement: 'right' }"
                                                     class="absolute z-20 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full dark:border-gray-900 cursor-pointer"
                                                     style="top: 50%; left: 90%; transform: translateY(-50%);">
                                                     !
                                                 </div>
 
-                                                <!-- Grid for Constraints -->
-                                                <div
-                                                    class="grid grid-cols-2  text-center text-xs  border-blue-600 bg-gray-100 rounded-lg">
-                                                    <div
-                                                        class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400">
-                                                        <p class="font-bold ">pLI</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI :
-                                                            result.constraints_v4.pLI }}</p>
-                                                    </div>
-                                                    <div
-                                                        class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400">
-                                                        <p class="font-bold ">LOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ?
-                                                            result.constraints_v2.oe_mis_upper :
-                                                            result.constraints_v4.oe_mis_upper }}</p>
-                                                    </div>
-                                                    <div
-                                                        class="flex py-1.5 flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
-                                                        <p class="font-bold ">Z_score</p>
-                                                        <p>{{ displayVersion === 'v2' ?
-                                                            result.constraints_v2.oe_lof_upper :
-                                                            result.constraints_v4.oe_lof_upper }}</p>
-                                                    </div>
-                                                    <div
-                                                        class="flex py-1.5 flex-col  items-center justify-center border border-gray-400 rounded-br-lg">
-                                                        <p class="font-bold ">MOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z :
-                                                            result.constraints_v4.mis_z }}</p>
-                                                    </div>
-                                                    <div
-                                                        class="absolute inset-0 flex items-center justify-center select-none">
-                                                        <div class="flex items-center justify-center">
-                                                            <div
-                                                                class="bg-white border border-gray-300 rounded-full w-10 h-5 flex items-center justify-center">
-                                                                <p class="text-gray-700 font-bold text-sm">{{
-                                                                    displayVersion }}</p>
-                                                            </div>
+
+                                            <!-- Grid for Constraints -->
+                                            <div class="grid grid-cols-2 text-center text-xs border-blue-600 bg-gray-100 rounded-lg">
+                                                <!-- pLI -->
+                                                <div 
+                                                    class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400"
+                                                    :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.pLI, 'pLI') : 'text-black'">
+                                                    <p class="font-bold">pLI</p>
+                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI : result.constraints_v4.pLI }}</p>
+                                                </div>
+
+                                                <!-- LOEUF -->
+                                                <div 
+                                                    class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400"
+                                                    :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF') : 'text-black'">
+                                                    <p class="font-bold">LOEUF</p>
+                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_lof_upper : result.constraints_v4.oe_lof_upper }}</p>
+                                                </div>
+
+                                                <!-- Z_score -->
+                                                <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
+                                                    <p class="font-bold">Z_score</p>
+                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z : result.constraints_v4.mis_z }}</p>
+                                                </div>
+
+                                                <!-- MOEUF -->
+                                                <div 
+                                                    class="flex py-1.5 flex-col items-center justify-center border border-gray-400 rounded-br-lg"
+                                                    :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF') : 'text-black'">
+                                                    <p class="font-bold">MOEUF</p>
+                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_mis_upper : result.constraints_v4.oe_mis_upper }}</p>
+                                                </div>
+
+                                                <div class="absolute inset-0 flex items-center justify-center select-none">
+                                                    <div class="flex items-center justify-center">
+                                                        <div class="bg-white border border-gray-300 rounded-full w-10 h-5 flex items-center justify-center">
+                                                            <p class="text-gray-700 font-bold text-sm">{{ displayVersion }}</p>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -188,32 +178,31 @@
                                         </text>
                                     </svg>
                                 </div>
-
                                 <div class="flex flex-col flex-grow items-center justify-center border-red-700 w-32 ">
                                     <div class="flex items-center justify-center">
-                                        <a :href="result.firstArticleUrl" target="_blank"
+                                        <a :href="result.url" target="_blank"
                                             class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800">
-                                            {{ result.title || 'N/A' }}
+                                            {{ result.firstArticleTitle || 'N/A' }}
                                             <i class="fas fa-external-link-alt ml-2 text-xs"></i>
                                         </a>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
-                                <div v-if="result.functionKeywords && result.functionKeywords.length > 0"
-                                    class="mb-2 flex flex-wrap gap-2">
-                                    <span v-for="keyword in result.functionKeywords" :key="keyword"
+                                <div v-if="result.bioProcessKeywordsOnly && result.bioProcessKeywordsOnly.length > 0"
+                                     class="mb-2 flex flex-wrap gap-2">
+                                  <span v-for="keyword in result.bioProcessKeywordsOnly" :key="keyword"
                                         class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
-                                        {{ keyword }}
-                                    </span>
+                                    {{ keyword }}
+                                  </span>
                                 </div>
-                                {{ result.function || 'N/A' }} <a :href="result.urlAccession" target="_blank"
+                                {{ result.geneFunction || 'N/A' }} <a :href="result.urlAccession" target="_blank"
                                     class="font-bold text-blue-600">[...]</a>
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
-                                <div v-if="result.mousePhenotype && Object.keys(result.mousePhenotype).length > 0"
+                                <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
                                     class="flex flex-wrap gap-2 justify-center">
-                                    <div v-for="(details, category) in result.mousePhenotype" :key="category"
+                                    <div v-for="(details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
                                         <!-- Tooltip Trigger -->
                                         <span v-html="details.icon" class="w-6 h-6 cursor-pointer"
@@ -313,6 +302,32 @@ export default {
     },
     methods: {
 
+        getConstraintColor(value, type) {
+    // Remplacement des virgules par des points pour convertir en nombre valide
+    const numericValue = parseFloat(value.replace(',', '.'));
+    
+    if (type === 'LOEUF' || type === 'MOEUF') {
+        const thresholds = [
+            { max: 0.26, color: 'bg-red-300' }, // Top 10%
+            { max: 0.41, color: 'bg-red-200' }, // Top 20%
+            { max: 0.48, color: 'bg-orange-200' }, // Top 25%
+            { max: 0.55, color: 'bg-yellow-200' }, // Top 30%
+        ];
+        for (const { max, color } of thresholds) {
+            if (numericValue <= max) {
+                return color;
+            }
+        }
+        return 'text-black';
+    } else if (type === 'pLI') {
+        return numericValue > 0.97 ? 'bg-red-300' : 'text-black';
+    }
+    return 'text-black';
+},
+
+
+
+
         toggleVersion() {
             this.displayVersion = this.displayVersion === "v2" ? "v4" : "v2";
         },
@@ -372,6 +387,8 @@ export default {
             } else if (valid === 'Animal') {
                 return "bg-orange-300"
             } else if (valid === 'No Known') {
+                return "bg-gray-500"
+            } else if (valid === 'No Known Disease Relationship') {
                 return "bg-gray-500"
             }
         },
@@ -434,10 +451,10 @@ export default {
             default: () => [],
         },
     },
-    mounted(){
+    mounted() {
         window.addEventListener("scroll", this.handleScroll);
     },
-    beforeDestroy(){
+    beforeDestroy() {
         window.removeEventListener("scroll", this.handleScroll);
     }
 };

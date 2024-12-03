@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3 justify-center "
+  <div class="flex flex-col gap-3 justify-center min-w-[790px]"
     @click.capture="hideSuggestions('geneSuggestions'); hideSuggestions('phenotypeSuggestions')">
     <!-- EXTRACTION -->
     <div>
@@ -24,9 +24,9 @@
             Extract genes from raw text, file, url, webpage or SeqOne.
           </span>
         </div>
-        <button class="ml-auto px-4 py-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
-          @click="clearWholeResearch">
-          Clear Research
+        <button class="ml-auto px-4 py-1 mb-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
+          @click="showLogoutModal">
+          New Research
         </button>
       </div>
       <div class="flex flex-row mx-2">
@@ -37,7 +37,7 @@
             placeholder="Paste your genes here..."></textarea>
           <div class="absolute bottom-2 right-4 flex space-x-2">
             <button id="submitTextArea" @click="extractGeneFromBatch" type="button"
-              class="flex items-center px-4 py-2 bg-gray-800 hover:bg-blue-600 text-white font-medium rounded-md space-x-2">
+              class="flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-600 text-white font-medium rounded-md space-x-2">
               <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd"
@@ -82,46 +82,52 @@
     <!-- GENES AND PHENOTYPES -->
     <div class="flex flex-row h-full gap-2 min-h-72 mx-2 ">
       <!-- GENES -->
-      <div class="flex flex-col w-1/2 justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
-        
-        <form @submit.prevent class="w-full max-w-md pb-2">
-          
-          <label for="default-search"
-          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
-          <div class="relative">
-            <!-- Search logo -->
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+      <div
+        class="flex flex-col w-1/2 min-w-[350px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
+        <div class="flex flex-row justify-between items-center  w-full">
+          <button @click="clearContainer('gene')">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
             </svg>
+          </button>
+          <form @submit.prevent class="w-2/3 ">
+
+            <label for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
+            <div class="relative">
+              <!-- Search logo -->
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+              </div>
+
+              <!-- Search input -->
+              <input type="search" ref="geneInput" id="geneInput"
+                class="block w-full h-full p-4 pl-10 text-base text-gray-900 border shadow-inner border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
+                placeholder="Add Genes..." @input="debouncedShowSuggestions('gene')"
+                @keydown.enter.prevent="addFreeGene" autocomplete="off" required />
+
+              <!-- Search button -->
+              <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
+                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <p class="text-white">Add</p>
+              </button>
+
+              <!-- Suggestion dropdown -->
+              <ul id="geneSuggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
+              </ul>
             </div>
-
-            <!-- Search input -->
-            <input type="search" ref="geneInput" id="geneInput"
-              class="block w-full h-full p-4 pl-10 text-base text-gray-900 border shadow-inner border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-              placeholder="Add Genes..." @input="debouncedShowSuggestions('gene')" @keydown.enter.prevent="addFreeGene"
-              autocomplete="off" required />
-
-            <!-- Search button -->
-            <button type="button" id="addPhenotypeButton" @click="addFreeGene()"
-              class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              <p class="text-white">Add</p>
-            </button>
-
-            <!-- Suggestion dropdown -->
-            <ul id="geneSuggestions"
-              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-            </ul>
+          </form>
+          <div class="w-6">
           </div>
-        </form>
-        <button @click="clearContainer('gene')" class="absolute left-10">
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-          </svg>
-        </button>
-        <div class="flex flex-col items-center  space-y-4 rounded max-h-48 overflow-auto  p-4">
+        </div>
+        <div class="flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto  p-4">
           <!-- GENES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 gene-items ">
             <!-- GENES POPULATE HERE -->
@@ -130,51 +136,70 @@
       </div>
       <!-- DIVIDER -->
 
+
+
+
       <div class=" bg-gray-300 w-0.5">
       </div>
 
+
+
+
+
+
+
       <!-- PHENOTYPES -->
-      <div class="flex flex-col w-1/2  justify-start items-center bg-gray-50 border border-gray-300 rounded-lg p-4 ">
-        <form class="w-full max-w-md pb-2">
-          <label for="default-search"
-            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-          <div class="relative">
-            <!-- Search logo -->
-            <div class="absolute inset-y-0 left-0 flex  items-center pl-3 pointer-events-none">
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-              </svg>
-            </div>
-
-            <!-- Search input -->
-            <input type="search" id="phenotypeInput" ref="phenotypeInput"
-              class="block w-full h-full p-4 pl-10 text-base shadow-inner text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-              placeholder="Add phenotypes..." @input="debouncedShowSuggestions('phenotype')" autocomplete="off"
-              @keydown.enter.prevent="addFreePhenotype" required />
-            <!-- Search button -->
-            <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
-              class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-              <p class="text-white">Add</p>
-            </button>
-            <ul id="phenotypeSuggestions"
-              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
-            </ul>
-
-            <!-- Suggestion dropdown -->
-            <ul id="suggestions"
-              class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10">
-              <!-- Suggestions will be dynamically generated here -->
-            </ul>
+      <div
+        class="flex flex-col w-1/2 min-w-[410px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
+        <div class="flex flex-row justify-between items-center  w-full">
+          <div class="w-6">
           </div>
-        </form>
-        <button @click="clearContainer('phenotype')" class="absolute right-10">
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-          </svg>
-        </button>
-        <div class="flex flex-col items-center space-y-4 rounded max-h-48  overflow-auto  p-4">
+          <form class="w-2/3">
+            <label for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+            <div class="relative">
+              <!-- Search logo -->
+              <div class="absolute inset-y-0 left-0 flex  items-center pl-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+              </div>
+
+              <!-- Search input -->
+              <input type="search" id="phenotypeInput" ref="phenotypeInput"
+                class="block w-full h-full p-4 pl-10 text-base shadow-inner text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
+                placeholder="Add phenotypes..." @input="debouncedShowSuggestions('phenotype')" autocomplete="off"
+                @keydown.enter.prevent="addFreePhenotype" required />
+              <!-- Search button -->
+              <button type="button" id="addPhenotypeButton" @click="addFreePhenotype()"
+                class="text-white absolute right-2 bottom-2 bg-gray-800 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <p class="text-white">Add</p>
+              </button>
+              <ul id="phenotypeSuggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10 top-full">
+              </ul>
+
+              <!-- Suggestion dropdown -->
+              <ul id="suggestions"
+                class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-60 overflow-y-auto shadow-lg z-10">
+                <!-- Suggestions will be dynamically generated here -->
+              </ul>
+            </div>
+          </form>
+          <button @click="clearContainer('phenotype')">
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+            </svg>
+          </button>
+        </div>
+
+
+
+        <div class="flex flex-col items-center mt-2 space-y-4 rounded max-h-48  overflow-auto  p-4">
           <!-- PHENOTYPES PLACEHOLDERS -->
           <div class="flex flex-wrap gap-2 p-4 phenotype-items ">
             <!-- PHENOTYPES POPULATE HERE -->
@@ -185,7 +210,7 @@
     <!-- RESEARCHED BUTTON -->
     <div class="flex flex-row justify-center mx-2 ">
       <button type="button" id="researchButton" @click="reasearch"
-        class="text-white  bg-gray-800 hover:bg-blue-800 w-full justify-center  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+        class="text-white  bg-gray-800 hover:bg-gray-600 w-full justify-center  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  py-2.5 text-center inline-flex items-center h-24 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         <svg class="loader w-12 h-12 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
           width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
@@ -201,12 +226,30 @@
           <span class="sr-only">Loading...</span>
         </div>
       </button>
+      <div v-if="logoutModalVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <!-- Modal Content -->
+        <div class="bg-white rounded-lg shadow-lg w-96 p-6 text-center">
+          <h2 class="text-xl font-bold mb-4">Are you sure?</h2>
+          <p class="text-gray-600 mb-6">This will clear all the research fields</p>
+          <div class="flex justify-center gap-4">
+            <button @click="confirm"
+              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none">
+              Yes, I'm Sure
+            </button>
+            <button @click="cancel"
+              class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { event } from 'vue-gtag';
+
 
 export default {
   name: 'SearchBuildingModule',
@@ -221,6 +264,9 @@ export default {
       genesList: [],
       batchInput: '',
       extractedGenes: [],
+      logoutModalVisible: false,
+      blacklistedGenes: []
+
     };
   },
 
@@ -237,19 +283,37 @@ export default {
       );
     }
 
+    const storedBlacklist = sessionStorage.getItem('blacklistedGenes');
+    this.blacklistedGenes = storedBlacklist ? JSON.parse(storedBlacklist) : [];
+
     this.displayItems('gene');
     this.displayItems('phenotype');
 
     if (this.genes.length || this.phenotypes.length) {
       this.searchFromUrl();
     }
-
     this.fetchGenesListAndCache(); // Load genes list
   },
   created() {
     this.debouncedShowSuggestions = this.debounce(this.showSuggestions, 300);
   },
   methods: {
+    showLogoutModal() {
+      this.logoutModalVisible = true;
+    },
+    confirm() {
+      this.logoutModalVisible = false;
+      this.clearWholeResearch()
+    },
+    cancel() {
+      this.logoutModalVisible = false;
+    },
+
+
+
+
+
+
     async searchFromUrl() {
       const queryData = {
         genes: this.genesInput.split(',').map((g) => g.trim()),
@@ -427,22 +491,47 @@ export default {
         items.forEach((item) => {
           const cardElement = document.createElement('div');
           const geneNameElement = document.createElement('div');
-          cardElement.className =
-            'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          if (this.blacklistedGenes.includes(item)) {
+            cardElement.className =
+              'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          } else {
+            cardElement.className =
+              'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          }
+
           geneNameElement.textContent = item; // Set the text content directly
           const svgIcon = this.createSvgIcon(type, item); // Create the SVG element with click handler
           cardElement.appendChild(geneNameElement);
           cardElement.appendChild(svgIcon);
+          cardElement.addEventListener('click', () => {
+            this.handleGeneClick(item, cardElement);
+          });
           container.appendChild(cardElement);
         });
       } else {
         console.error('Container element not found!');
       }
       if (type === 'gene') {
-        document.querySelector('.genes-count').textContent = `RESEARCH ${Object.keys(items).length
+        document.querySelector('.genes-count').textContent = `RESEARCH ${(Object.keys(items).length - Object.keys(this.blacklistedGenes).length)
           } GENES`;
       }
     },
+    handleGeneClick(gene, container) {
+      const isBlacklisted = this.blacklistedGenes.includes(gene);
+      if (isBlacklisted) {
+        // Remove the gene from the blacklist
+        this.blacklistedGenes = this.blacklistedGenes.filter((item) => item !== gene);
+        container.className = 'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+      } else {
+        // Add the gene to the blacklist
+        this.blacklistedGenes.push(gene);
+        container.className = 'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+      }
+      this.displayItems('gene')
+      // Save the updated blacklist to sessionStorage
+      sessionStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+    },
+
     createSvgIcon(type, item) {
       const svgIcon = document.createElementNS(
         'http://www.w3.org/2000/svg',
@@ -508,10 +597,20 @@ export default {
     addFreePhenotype() {
       const inputField = document.getElementById('phenotypeInput');
       const inputValue = inputField.value.trim();
-
+      let extPhenos = []
       if (inputValue) {
+        if (inputValue.length > 20) {
+          const regex = /\d{7}:\s[^0-9]+(?=\s|$)/g;
+          extPhenos = inputValue.match(regex)
+          for (let i in extPhenos) {
+            extPhenos[i] = extPhenos[i].split(':')[1].trim()
+            this.addPhenotype(extPhenos[i])
+          }
+        } else {
+          this.addPhenotype(inputValue);
+
+        }
         // Add the input value as a gene, whether it's in suggestions or not
-        this.addPhenotype(inputValue);
 
         // Clear input field and suggestions
         inputField.value = '';
@@ -529,17 +628,23 @@ export default {
       });
     },
     async reasearch() {
-      event('research_clicked', { //Test event
-        category: 'Debug',
-        label: 'Test depuis localhost',
-        value: 1,
-        debug_mode: true,
+
+      event('research_click', {
+        event_category: 'user_interaction', // Category: What kind of action is this?
+        event_label: 'search_button',
+        debug_mode: true
+        // Label: Which button was clicked?
       });
+
+
       this.startLoader();
-      const genes = this.getItems('gene');
+      let genes = this.getItems('gene');
       const phenotypes = this.getItems('phenotype');
+      const user = JSON.parse(localStorage.getItem('user'));
+      const userId = user ? user.id : null;
+      genes = genes.filter((gene) => !this.blacklistedGenes.includes(gene));
       if (genes.length > 0 || phenotypes.length > 0) {
-        const data = { genes, phenotypes };
+        const data = { userId, genes, phenotypes };
         fetch('api/search', {
           method: 'POST',
           headers: {
@@ -549,7 +654,7 @@ export default {
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error(`HTTP error! status: ${response.status} `);
             }
             return response.json(); // Parse the response as JSON
           })
@@ -610,7 +715,7 @@ export default {
 
       const text = this.batchInput;
       const foundGenes = this.genesList.filter((gene) => {
-        const regex = new RegExp(`\\b${gene}\\b`, 'i');
+        const regex = new RegExp(`\\b${gene} \\b`, 'i');
         return regex.test(text);
       });
 
@@ -621,7 +726,7 @@ export default {
     async populateSearchWithExtraction(genes) {
       for (const gene of genes) {
         this.addGene(gene);
-        await new Promise((resolve) => setTimeout(resolve, 100)); // test                                                 REMOVE BEFORE PROD
+        await new Promise((resolve) => setTimeout(resolve, 10)); // test                                                 REMOVE BEFORE PROD
       }
     },
     clearBatchInput() {
@@ -653,14 +758,10 @@ export default {
       }
     },
     clearWholeResearch() {
-      if (
-        confirm('Are you sure you want to clear the entire research box?')
-      ) {
-        this.clearList('gene');
-        this.clearList('phenotype');
-        this.batchInput = '';
-        this.extractedGenes = [];
-      }
+      this.clearList('gene');
+      this.clearList('phenotype');
+      this.batchInput = '';
+      this.extractedGenes = [];
     },
     clearContainer(type) {
       this.clearList(type);
