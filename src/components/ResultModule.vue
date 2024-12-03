@@ -189,12 +189,12 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
-                                <div v-if="result.functionKeywords && result.functionKeywords.length > 0"
-                                    class="mb-2 flex flex-wrap gap-2">
-                                    <span v-for="keyword in result.functionKeywords" :key="keyword"
+                                <div v-if="result.bioProcessKeywordsOnly && result.bioProcessKeywordsOnly.length > 0"
+                                     class="mb-2 flex flex-wrap gap-2">
+                                  <span v-for="keyword in result.bioProcessKeywordsOnly" :key="keyword"
                                         class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
-                                        {{ keyword }}
-                                    </span>
+                                    {{ keyword }}
+                                  </span>
                                 </div>
                                 {{ result.geneFunction || 'N/A' }} <a :href="result.urlAccession" target="_blank"
                                     class="font-bold text-blue-600">[...]</a>
