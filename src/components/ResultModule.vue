@@ -78,6 +78,16 @@
                                 </div>
                             </th>
 
+
+                                                        <!-- ClinVar Data -->
+                                                        <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
+                                ClinVar LookUp
+                                <div
+                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+                                    Variants P/PL or VUS repartition from ClinVar
+                                </div>
+                            </th>
+
                             <!-- Status -->
                             <th scope="col" class="px-6 py-3 text-center relative group cursor-pointer">
                                 STATUS
@@ -190,12 +200,14 @@
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
                                 <div v-if="result.bioProcessKeywordsOnly && result.bioProcessKeywordsOnly.length > 0"
-                                     class="mb-2 flex flex-wrap gap-2">
-                                  <span v-for="keyword in result.bioProcessKeywordsOnly" :key="keyword"
+
+                                    class="mb-2 flex flex-wrap gap-2">
+                                <span v-for="keyword in result.bioProcessKeywordsOnly" :key="keyword"
                                         class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
                                     {{ keyword }}
-                                  </span>
+                                </span>
                                 </div>
+
                                 {{ result.geneFunction || 'N/A' }} <a :href="result.urlAccession" target="_blank"
                                     class="font-bold text-blue-600">[...]</a>
                             </td>
@@ -219,6 +231,85 @@
                                     </div>
                                 </div>
                             </td>
+
+                      <!-- ClinVar Data Column -->
+<td class="px-6 py-4 border-r border-gray-200">
+    <!-- Titre P/LP -->
+    <div class="text-center text-sm font-bold text-gray-800 mb-1">P/LP</div>
+    <!-- Première Barre: LOFs et Missenses -->
+    <div v-if="result.lofVariants + result.missenseVariants > 0" class="relative w-full h-6 bg-gray-300 rounded-lg overflow-hidden">
+        <!-- LOF Section -->
+        <div
+            class="absolute top-0 left-0 h-full bg-red-500"
+            :style="{ width: `${getPercentage(result.lofVariants, result.lofVariants + result.missenseVariants)}%` }"
+            v-tooltip="{ content: `${result.lofVariants || 0} LOFs`, placement: 'top' }"
+        ></div>
+
+        <!-- Missense Section -->
+        <div
+            class="absolute top-0 right-0 h-full bg-blue-500"
+            :style="{ width: `${getPercentage(result.missenseVariants, result.lofVariants + result.missenseVariants)}%` }"
+            v-tooltip="{ content: `${result.missenseVariants || 0} Missenses`, placement: 'top' }"
+        ></div>
+    </div>
+    <div v-else class="text-center text-xs text-gray-500">0</div>
+    <!-- Labels pour la première barre -->
+    <div v-if="result.lofVariants + result.missenseVariants > 0" class="flex justify-between text-xs mt-1">
+        <span
+            class="text-red-700 font-bold text-xs cursor-pointer"
+            v-tooltip="{ content: `${result.lofVariants || 0} LOFs`, placement: 'top' }"
+        >
+            LOF
+        </span>
+        <span
+            class="text-blue-700 font-bold text-xs cursor-pointer"
+            v-tooltip="{ content: `${result.missenseVariants || 0} Missenses`, placement: 'top' }"
+        >
+            MS
+        </span>
+    </div>
+
+    <!-- Titre VUS -->
+    <div class="text-center text-sm font-bold text-gray-800 mt-3 mb-1">VUS</div>
+    <!-- Deuxième Barre: LOF Unknowns et Missense Unknowns -->
+    <div v-if="result.lofUnknown + result.missenseUnknown > 0" class="relative w-full h-6 bg-gray-300 rounded-lg overflow-hidden">
+        <!-- LOF Unknown Section -->
+        <div
+            class="absolute top-0 left-0 h-full bg-red-300"
+            :style="{ width: `${getPercentage(result.lofUnknown, result.lofUnknown + result.missenseUnknown)}%` }"
+            v-tooltip="{ content: `${result.lofUnknown || 0} LOF Unknowns`, placement: 'top' }"
+        ></div>
+
+        <!-- Missense Unknown Section -->
+        <div
+            class="absolute top-0 right-0 h-full bg-blue-300"
+            :style="{ width: `${getPercentage(result.missenseUnknown, result.lofUnknown + result.missenseUnknown)}%` }"
+            v-tooltip="{ content: `${result.missenseUnknown || 0} Missense Unknowns`, placement: 'top' }"
+        ></div>
+    </div>
+    <div v-else class="text-center text-xs text-gray-500">0</div>
+    <!-- Labels pour la deuxième barre -->
+    <div v-if="result.lofUnknown + result.missenseUnknown > 0" class="flex justify-between text-xs mt-1">
+        <span
+            class="text-red-500 font-bold text-xs cursor-pointer"
+            v-tooltip="{ content: `${result.lofUnknown || 0} LOF Unknowns`, placement: 'top' }"
+        >
+            LOF
+        </span>
+        <span
+            class="text-blue-500 font-bold text-xs cursor-pointer"
+            v-tooltip="{ content: `${result.missenseUnknown || 0} Missense Unknowns`, placement: 'top' }"
+        >
+            MS
+        </span>
+    </div>
+</td>
+
+
+
+
+
+
                             <td class="px-6 py-4 text-center">
                                 <div :class="[getValidityColor(result.geneValidity)]"
                                     class="rounded-full text-white font-bold py-1 px-2 text-nowrap">
@@ -325,6 +416,12 @@ export default {
     return 'text-black';
 },
 
+
+
+        getPercentage(count, total) {
+                if (total === 0) return '0';
+                return ((count / total) * 100).toFixed(2); // Limite à 2 décimales
+            },
 
 
 
