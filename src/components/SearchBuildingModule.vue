@@ -504,21 +504,26 @@ export default {
         items.forEach((item) => {
           const cardElement = document.createElement('div');
           const geneNameElement = document.createElement('div');
-          if (this.blacklistedGenes.includes(item)) {
-            cardElement.className =
-              'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-          } else {
-            cardElement.className =
-              'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-          }
 
           geneNameElement.textContent = item; // Set the text content directly
           const svgIcon = this.createSvgIcon(type, item); // Create the SVG element with click handler
           cardElement.appendChild(geneNameElement);
           cardElement.appendChild(svgIcon);
-          cardElement.addEventListener('click', () => {
-            this.handleGeneClick(item, cardElement);
-          });
+          if (type === 'gene') {
+            if (this.blacklistedGenes.includes(item)) {
+              cardElement.className =
+                'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+            } else {
+              cardElement.className =
+                'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+            }
+            cardElement.addEventListener('click', () => {
+              this.handleGeneClick(item, cardElement);
+            });
+          } else {
+            cardElement.className =
+              'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+          }
           container.appendChild(cardElement);
         });
       } else {
