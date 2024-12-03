@@ -1,57 +1,32 @@
-const axios = require('axios');
-
-const apiKey = 'd4f7a9923cb983c15c387c6fe5d21a388d08'; // Votre clé API
-const DELAY_MS = 100; // Délai pour respecter 10 requêtes par seconde
+const fs = require('fs');
 
 /**
- * Ajoute un délai pour respecter les limites de l'API
- * @param {number} ms - Durée en millisecondes
- * @returns {Promise<void>}
+ * Récupère les données ClinVar pour un gène donné à partir de la base de données JSON locale
+ * @param {string} gene - Nom du gène
+ * @param {string} jsonFilePath - Chemin vers le fichier JSON contenant les données
+ * @returns {Promise<{lofVariants: number, missenseVariants: number, lofUnknown: number, missenseUnknown: number}>}
  */
-async function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/**
- * Fetch ClinVar data for LOF and Missense variants
- * @param {string} gene - The gene name to query
- * @returns {Promise<{lofVariants: number, missenseVariants: number}>} - Counts of LOF and Missense variants
- */
-async function getClinVarData(gene) {
+async function getClinVarData(gene, jsonFilePath = './BDD/clinvarCountsPerGene.json') {
     try {
-        // Requête pour LOF
-        const lofResponse = await axios.get('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi', {
-            params: {
-                db: 'clinvar',
-                term: `(${gene}[gene]) AND ((("clinsig pathogenic"[Properties] OR "clinsig pathogenic low penetrance"[Properties] OR "clinsig established risk allele"[Properties]) OR ("clinsig likely pathogenic"[Properties] OR "clinsig likely pathogenic low penetrance"[Properties] OR "clinsig likely risk allele"[Properties])) AND (("frameshift variant"[Molecular consequence]) OR ("nonsense"[Molecular consequence] OR "SO 0001587"[Molecular consequence]) OR ("splice 3"[Molecular consequence] OR "splice 5"[Molecular consequence] OR "splice site"[Molecular consequence] OR "splice donor variant"[Molecular consequence] OR "splice acceptor variant"[Molecular consequence]))) AND 0[VARLEN] : 49[VARLEN]`,
-                retmode: 'json',
-                api_key: apiKey, // Ajout de la clé API
-            },
-        });
+        // Charger les données JSON
+        const data = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
 
-        const lofCount = parseInt(lofResponse.data.esearchresult.count, 10);
+        // Vérifier si le gène existe dans la base
+        if (!data[gene]) {
+            console.warn(`Gène ${gene} introuvable dans la base de données.`);
+            return { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0 };
+        }
 
-        await delay(DELAY_MS); // Ajoute un délai avant la prochaine requête
-
-        // Requête pour Missense
-        const missenseResponse = await axios.get('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi', {
-            params: {
-                db: 'clinvar',
-                term: `(${gene}[gene]) AND ((("clinsig pathogenic"[Properties] OR "clinsig pathogenic low penetrance"[Properties] OR "clinsig established risk allele"[Properties]) OR ("clinsig likely pathogenic"[Properties] OR "clinsig likely pathogenic low penetrance"[Properties] OR "clinsig likely risk allele"[Properties])) AND (("missense variant"[Molecular consequence]) OR ("SO 0001583"[Molecular consequence])) AND 0[VARLEN] : 49[VARLEN])`,
-                retmode: 'json',
-                api_key: apiKey, // Ajout de la clé API
-            },
-        });
-
-        const missenseCount = parseInt(missenseResponse.data.esearchresult.count, 10);
-
+        // Retourner les données du gène
         return {
-            lofVariants: lofCount,
-            missenseVariants: missenseCount,
+            lofVariants: data[gene].lofVariants || 0,
+            missenseVariants: data[gene].missenseVariants || 0,
+            lofUnknown: data[gene].lofUnknown || 0,
+            missenseUnknown: data[gene].missenseUnknown || 0,
         };
     } catch (error) {
-        console.error(`Error fetching ClinVar data for gene ${gene}:`, error);
-        return { lofVariants: 0, missenseVariants: 0 };
+        console.error(`Erreur lors de la lecture des données ClinVar pour le gène ${gene}:`, error);
+        return { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0 };
     }
 }
 
