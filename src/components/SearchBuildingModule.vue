@@ -529,12 +529,18 @@ export default {
         console.error('Container element not found!');
       }
       if (type === 'gene') {
+        const activeBlacklistedGenes = this.blacklistedGenes.filter((gene) =>
+          items.includes(gene)
+        ).length;
+
         const geneCount = Math.max(
-          Object.keys(items).length - Object.keys(this.blacklistedGenes).length,
+          Object.keys(items).length - activeBlacklistedGenes,
           0
         );
+
         document.querySelector('.genes-count').textContent = `RESEARCH ${geneCount} GENES`;
       }
+
 
     },
     handleGeneClick(gene, container) {
