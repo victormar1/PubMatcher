@@ -35,8 +35,10 @@
     "vcf": "^2.1.2",
     "vue": "^3.5.13",
     "vue-chartjs": "^5.3.2",
+    "vue-countup-v3": "^1.4.2",
     "vue-gtag": "^2.0.1",
     "vue-gtag-next": "^1.14.0",
+    "vue-number-animation": "^2.0.2",
     "vue-router": "^4.4.5",
     "xlsx": "^0.18.5",
     "xml2js": "^0.6.2"

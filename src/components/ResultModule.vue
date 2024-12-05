@@ -202,12 +202,10 @@
                                             <!-- Background Circle -->
                                             <circle class="text-gray-300" cx="50" cy="50" r="25" stroke-width="5"
                                                 :stroke="getColor(result.count)" fill="none" />
-                                            <text x="50" y="50" fill="black" font-size="14" font-weight="bold"
-                                                font-family="Arial, sans-serif" text-anchor="middle"
-                                                dominant-baseline="middle" transform="rotate(90, 50, 50)">
-                                                {{ result.count || 0 }}
-                                            </text>
+
                                         </svg>
+                                        <count-up :end-val="result.count" :duration="1.5" :easing="linear" class="
+                                            absolute font-bold"></count-up>
                                     </div>
                                     <div
                                         class="flex flex-col flex-grow items-center justify-center  border-red-700 w-32 ">
@@ -218,6 +216,7 @@
                                                 <i class="fas fa-external-link-alt ml-2 text-xs"></i>
                                             </a>
                                         </div>
+
                                     </div>
                                 </div>
                             </td>
@@ -331,11 +330,14 @@
 
 <script>
 import ClinVarVizualiser from './ClinVarVizualiser.vue';
+import CountUp from 'vue-countup-v3'
+
 
 export default {
     name: "ResultModule",
     components: {
         ClinVarVizualiser,
+        CountUp,
     },
     watch: {
         results(newResults) {
@@ -366,6 +368,15 @@ export default {
         };
     },
     methods: {
+        formatNumber(value) {
+            // Ensure the animation works by returning numbers during animation
+            if (value > 9999) {
+                const roundedValue = value / 1000;
+                console.log(roundedValue)
+                return Math.trunc(roundedValue); // Add 'k' suffix after rounding
+            }
+            return Math.trunc(value); // Return the rounded value during animation
+        },
 
         getConstraintColor(value, type) {
             // Remplacement des virgules par des points pour convertir en nombre valide
