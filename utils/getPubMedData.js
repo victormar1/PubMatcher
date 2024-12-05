@@ -53,7 +53,6 @@ async function getPubMedData(gene, phenotypes) {
   }
 
   const requestPath = response.request.path
-  console.log(requestPath)
   if (!requestPath.includes('term')) {
     firstArticleTitle = $('#full-view-heading > h1.heading-title').text().trim()
     count = 1

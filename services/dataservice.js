@@ -5,7 +5,7 @@ const getUniProtFunction = require('../utils/getUniProtFunction.js')
 const getMouseKO = require('../utils/getMouseKO.js')
 const getGeneConstraints = require('../utils/getGeneConstraints.js')
 const getPanelApps = require('../utils/getPanelApps.js')
-const getClinVarData = require('../utils/getClinVarData.js');
+const getClinVarData = require('../utils/getClinVarData.js')
 const axios = require('axios')
 
 async function getData(req) {
@@ -36,6 +36,7 @@ async function getData(req) {
           hgncId: validatedGene.hgncId || 'No HGNC ID'
         }
 
+        console.log(resultData)
         return resultData
       } catch (error) {
         console.error(`Error processing gene ${gene}:`, error)

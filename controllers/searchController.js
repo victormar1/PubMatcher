@@ -2,6 +2,7 @@ const getData = require('../services/dataservice.js')
 const crypto = require('crypto')
 const pool = require('../models/db.js')
 const getPubMedData = require('../utils/getPubMedData.js')
+const getClinVarData = require('../utils/getClinVarData.js')
 
 /**
  * Controller to handle search requests (GET and POST)
@@ -54,10 +55,12 @@ exports.search = async (req, res) => {
           const gene = item.gene
 
           const pubMedData = await getPubMedData(gene, phenotypes)
+          const clinVarData = await getClinVarData(gene)
 
           return {
             ...item,
-            ...pubMedData
+            ...pubMedData,
+            ...clinVarData
           }
         })
       )
