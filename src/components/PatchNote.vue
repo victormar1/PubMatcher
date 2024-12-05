@@ -1,7 +1,7 @@
 <template>
     <div class="relative ">
         <div :class="[
-            'fixed  top-24 left-0  h-96  w-96 z-30 bg-gray-800 rounded-sm text-white shadow-lg transform transition-transform duration-500 ease-in-out',
+            'fixed  top-24 left-0  h-1/2  w-96 z-30 bg-gray-800 rounded-sm text-white shadow-lg transform transition-transform duration-500 ease-in-out',
             isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
         ]">
             <button @click="toggleDrawer"
@@ -40,13 +40,15 @@
 
                     <li>
 
-                        <span class="font-semibold underline ">Clinvar LookUp:</span> Data regarding the known L/LP¨and VUS variant are displayed with results 
-                        </li>
+                        <span class="font-semibold underline ">Clinvar LookUp:</span> Data regarding the known L/LP¨and
+                        VUS variant are displayed with results
+                    </li>
 
                     <li>
 
-                        <span class="font-semibold underline ">BATCH INPUT:</span> Fix for the bug affecting on 03/12 & Users can now blacklist genes (IMPACT,ADAR) 
-                        </li>
+                        <span class="font-semibold underline ">BATCH INPUT:</span> Fix for the bug affecting on 03/12 &
+                        Users can now blacklist genes (IMPACT,ADAR)
+                    </li>
                     <li>
 
                         <span class="font-semibold underline ">USER ACCOUNTS:</span> Users can now <a href="/register"
@@ -83,7 +85,7 @@ import { event } from 'vue-gtag';
 export default {
     data() {
         return {
-            isDrawerOpen: false,
+            isDrawerOpen: true,
         };
     },
     methods: {
