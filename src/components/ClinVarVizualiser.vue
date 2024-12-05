@@ -31,7 +31,7 @@ export default {
                     {
                         label: 'Lof', // LOF data
                         data: [lofVariants, lofUnknown],
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)', // Blue color
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
 
                     },
                     {
@@ -47,6 +47,7 @@ export default {
         return {
             chartOptions: {
                 responsive: true,
+
                 maintainAspectRatio: false,
                 categoryPercentage: 0.5,
                 barPercentage: 1,
@@ -99,8 +100,9 @@ export default {
                         barPercentage: 0.9 // Adjust the width of bars within the group
                     },
                     y: {
-
+                        display: false, // Completely hide the Y-axis, including labels, ticks, and the vertical line
                         ticks: {
+                            display: false,
                             font: {
                                 family: "'Roboto', 'Arial', sans-serif", // X-axis labels font
                                 size: 12,
