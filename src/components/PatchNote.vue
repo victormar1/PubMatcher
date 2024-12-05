@@ -85,7 +85,7 @@ import { event } from 'vue-gtag';
 export default {
     data() {
         return {
-            isDrawerOpen: true,
+            isDrawerOpen: false,
         };
     },
     methods: {

@@ -79,8 +79,9 @@
                             </th>
 
 
-                                                        <!-- ClinVar Data -->
-                                                        <th scope="col" class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
+                            <!-- ClinVar Data -->
+                            <th scope="col"
+                                class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
                                 ClinVar LookUp
                                 <div
                                     class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
@@ -126,46 +127,54 @@
                                                 </div>
 
 
-                                            <!-- Grid for Constraints -->
-                                            <div class="grid grid-cols-2 text-center text-xs border-blue-600 bg-gray-100 rounded-lg">
-                                                <!-- pLI -->
-                                                <div 
-                                                    class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400"
-                                                    :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.pLI, 'pLI') : 'text-black'">
-                                                    <p class="font-bold">pLI</p>
-                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI : result.constraints_v4.pLI }}</p>
-                                                </div>
+                                                <!-- Grid for Constraints -->
+                                                <div
+                                                    class="grid grid-cols-2 text-center text-xs border-blue-600 bg-gray-100 rounded-lg">
+                                                    <!-- pLI -->
+                                                    <div class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400"
+                                                        :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.pLI, 'pLI') : 'text-black'">
+                                                        <p class="font-bold">pLI</p>
+                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI :
+                                                            result.constraints_v4.pLI }}</p>
+                                                    </div>
 
-                                                <!-- LOEUF -->
-                                                <div 
-                                                    class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400"
-                                                    :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF') : 'text-black'">
-                                                    <p class="font-bold">LOEUF</p>
-                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_lof_upper : result.constraints_v4.oe_lof_upper }}</p>
-                                                </div>
+                                                    <!-- LOEUF -->
+                                                    <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400"
+                                                        :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF') : 'text-black'">
+                                                        <p class="font-bold">LOEUF</p>
+                                                        <p>{{ displayVersion === 'v2' ?
+                                                            result.constraints_v2.oe_lof_upper :
+                                                            result.constraints_v4.oe_lof_upper }}</p>
+                                                    </div>
 
-                                                <!-- Z_score -->
-                                                <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
-                                                    <p class="font-bold">Z_score</p>
-                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z : result.constraints_v4.mis_z }}</p>
-                                                </div>
+                                                    <!-- Z_score -->
+                                                    <div
+                                                        class="flex py-1.5 flex-col items-center justify-center border-t border-l border-b rounded-bl-lg border-gray-400">
+                                                        <p class="font-bold">Z_score</p>
+                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.mis_z :
+                                                            result.constraints_v4.mis_z }}</p>
+                                                    </div>
 
-                                                <!-- MOEUF -->
-                                                <div 
-                                                    class="flex py-1.5 flex-col items-center justify-center border border-gray-400 rounded-br-lg"
-                                                    :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF') : 'text-black'">
-                                                    <p class="font-bold">MOEUF</p>
-                                                    <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_mis_upper : result.constraints_v4.oe_mis_upper }}</p>
-                                                </div>
+                                                    <!-- MOEUF -->
+                                                    <div class="flex py-1.5 flex-col items-center justify-center border border-gray-400 rounded-br-lg"
+                                                        :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF') : 'text-black'">
+                                                        <p class="font-bold">MOEUF</p>
+                                                        <p>{{ displayVersion === 'v2' ?
+                                                            result.constraints_v2.oe_mis_upper :
+                                                            result.constraints_v4.oe_mis_upper }}</p>
+                                                    </div>
 
-                                                <div class="absolute inset-0 flex items-center justify-center select-none">
-                                                    <div class="flex items-center justify-center">
-                                                        <div class="bg-white border border-gray-300 rounded-full w-10 h-5 flex items-center justify-center">
-                                                            <p class="text-gray-700 font-bold text-sm">{{ displayVersion }}</p>
+                                                    <div
+                                                        class="absolute inset-0 flex items-center justify-center select-none">
+                                                        <div class="flex items-center justify-center">
+                                                            <div
+                                                                class="bg-white border border-gray-300 rounded-full w-10 h-5 flex items-center justify-center">
+                                                                <p class="text-gray-700 font-bold text-sm">{{
+                                                                    displayVersion }}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
 
                                             </div>
@@ -200,12 +209,11 @@
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
                                 <div v-if="result.bioProcessKeywordsOnly && result.bioProcessKeywordsOnly.length > 0"
-
                                     class="mb-2 flex flex-wrap gap-2">
-                                <span v-for="keyword in result.bioProcessKeywordsOnly" :key="keyword"
+                                    <span v-for="keyword in result.bioProcessKeywordsOnly" :key="keyword"
                                         class="px-2 py-1 text-xs font-bold font-sans text-blue-700 bg-blue-100 rounded">
-                                    {{ keyword }}
-                                </span>
+                                        {{ keyword }}
+                                    </span>
                                 </div>
 
                                 {{ result.geneFunction || 'N/A' }} <a :href="result.urlAccession" target="_blank"
@@ -232,78 +240,14 @@
                                 </div>
                             </td>
 
-                      <!-- ClinVar Data Column -->
-<td class="px-6 py-4 border-r border-gray-200">
-    <!-- Titre P/LP -->
-    <div class="text-center text-sm font-bold text-gray-800 mb-1">P/LP</div>
-    <!-- Première Barre: LOFs et Missenses -->
-    <div v-if="result.lofVariants + result.missenseVariants > 0" class="relative w-full h-6 bg-gray-300 rounded-lg overflow-hidden">
-        <!-- LOF Section -->
-        <div
-            class="absolute top-0 left-0 h-full bg-red-500"
-            :style="{ width: `${getPercentage(result.lofVariants, result.lofVariants + result.missenseVariants)}%` }"
-            v-tooltip="{ content: `${result.lofVariants || 0} LOFs`, placement: 'top' }"
-        ></div>
-
-        <!-- Missense Section -->
-        <div
-            class="absolute top-0 right-0 h-full bg-blue-500"
-            :style="{ width: `${getPercentage(result.missenseVariants, result.lofVariants + result.missenseVariants)}%` }"
-            v-tooltip="{ content: `${result.missenseVariants || 0} Missenses`, placement: 'top' }"
-        ></div>
-    </div>
-    <div v-else class="text-center text-xs text-gray-500">0</div>
-    <!-- Labels pour la première barre -->
-    <div v-if="result.lofVariants + result.missenseVariants > 0" class="flex justify-between text-xs mt-1">
-        <span
-            class="text-red-700 font-bold text-xs cursor-pointer"
-            v-tooltip="{ content: `${result.lofVariants || 0} LOFs`, placement: 'top' }"
-        >
-            LOF
-        </span>
-        <span
-            class="text-blue-700 font-bold text-xs cursor-pointer"
-            v-tooltip="{ content: `${result.missenseVariants || 0} Missenses`, placement: 'top' }"
-        >
-            MS
-        </span>
-    </div>
-
-    <!-- Titre VUS -->
-    <div class="text-center text-sm font-bold text-gray-800 mt-3 mb-1">VUS</div>
-    <!-- Deuxième Barre: LOF Unknowns et Missense Unknowns -->
-    <div v-if="result.lofUnknown + result.missenseUnknown > 0" class="relative w-full h-6 bg-gray-300 rounded-lg overflow-hidden">
-        <!-- LOF Unknown Section -->
-        <div
-            class="absolute top-0 left-0 h-full bg-red-300"
-            :style="{ width: `${getPercentage(result.lofUnknown, result.lofUnknown + result.missenseUnknown)}%` }"
-            v-tooltip="{ content: `${result.lofUnknown || 0} LOF Unknowns`, placement: 'top' }"
-        ></div>
-
-        <!-- Missense Unknown Section -->
-        <div
-            class="absolute top-0 right-0 h-full bg-blue-300"
-            :style="{ width: `${getPercentage(result.missenseUnknown, result.lofUnknown + result.missenseUnknown)}%` }"
-            v-tooltip="{ content: `${result.missenseUnknown || 0} Missense Unknowns`, placement: 'top' }"
-        ></div>
-    </div>
-    <div v-else class="text-center text-xs text-gray-500">0</div>
-    <!-- Labels pour la deuxième barre -->
-    <div v-if="result.lofUnknown + result.missenseUnknown > 0" class="flex justify-between text-xs mt-1">
-        <span
-            class="text-red-500 font-bold text-xs cursor-pointer"
-            v-tooltip="{ content: `${result.lofUnknown || 0} LOF Unknowns`, placement: 'top' }"
-        >
-            LOF
-        </span>
-        <span
-            class="text-blue-500 font-bold text-xs cursor-pointer"
-            v-tooltip="{ content: `${result.missenseUnknown || 0} Missense Unknowns`, placement: 'top' }"
-        >
-            MS
-        </span>
-    </div>
-</td>
+                            <!-- ClinVar Data Column -->
+                            <td class="px-6 py-4 border-r  border-gray-200 ">
+                                <!-- First Visualizer for lofVariants and missenseVariants -->
+                                <div class="w-36 h-full border border-gray-200 rounded-md shadow-inner">
+                                    <ClinVarVizualiser
+                                        :variantData="[result.lofVariants, result.missenseVariants, result.lofUnknown, result.missenseUnknown]" />
+                                </div>
+                            </td>
 
 
 
@@ -361,8 +305,13 @@
 </template>
 
 <script>
+import ClinVarVizualiser from './ClinVarVizualiser.vue';
+
 export default {
     name: "ResultModule",
+    components: {
+        ClinVarVizualiser,
+    },
     watch: {
         results(newResults) {
             if (newResults && newResults.length > 0) {
@@ -394,38 +343,39 @@ export default {
     methods: {
 
         getConstraintColor(value, type) {
-    // Remplacement des virgules par des points pour convertir en nombre valide
-    const numericValue = parseFloat(value.replace(',', '.'));
-    
-    if (type === 'LOEUF' || type === 'MOEUF') {
-        const thresholds = [
-            { max: 0.26, color: 'bg-red-300' }, // Top 10%
-            { max: 0.41, color: 'bg-red-200' }, // Top 20%
-            { max: 0.48, color: 'bg-orange-200' }, // Top 25%
-            { max: 0.55, color: 'bg-yellow-200' }, // Top 30%
-        ];
-        for (const { max, color } of thresholds) {
-            if (numericValue <= max) {
-                return color;
+            // Remplacement des virgules par des points pour convertir en nombre valide
+            const numericValue = parseFloat(value.replace(',', '.'));
+
+            if (type === 'LOEUF' || type === 'MOEUF') {
+                const thresholds = [
+                    { max: 0.26, color: 'bg-red-300' }, // Top 10%
+                    { max: 0.41, color: 'bg-red-200' }, // Top 20%
+                    { max: 0.48, color: 'bg-orange-200' }, // Top 25%
+                    { max: 0.55, color: 'bg-yellow-200' }, // Top 30%
+                ];
+                for (const { max, color } of thresholds) {
+                    if (numericValue <= max) {
+                        return color;
+                    }
+                }
+                return 'text-black';
+            } else if (type === 'pLI') {
+                return numericValue > 0.97 ? 'bg-red-300' : 'text-black';
             }
-        }
-        return 'text-black';
-    } else if (type === 'pLI') {
-        return numericValue > 0.97 ? 'bg-red-300' : 'text-black';
-    }
-    return 'text-black';
-},
+            return 'text-black';
+        },
 
 
 
         getPercentage(count, total) {
-                if (total === 0) return '0';
-                return ((count / total) * 100).toFixed(2); // Limite à 2 décimales
-            },
+            if (total === 0) return '0';
+            return ((count / total) * 100).toFixed(2); // Limite à 2 décimales
+        },
 
 
 
         toggleVersion() {
+
             this.displayVersion = this.displayVersion === "v2" ? "v4" : "v2";
         },
         showTooltip(details, event) {
