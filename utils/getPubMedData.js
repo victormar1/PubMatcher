@@ -8,7 +8,7 @@ async function getPubMedData(gene, phenotypes) {
     const queries = phenotypes.map((phenotype) => `(${gene} AND ${phenotype})`)
     combinedQuery = queries.join(' OR ')
   } else {
-    combinedQuery = gene
+    combinedQuery = `${gene}`
   }
 
   // * FETCH DATA

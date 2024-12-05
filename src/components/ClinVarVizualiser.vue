@@ -1,5 +1,6 @@
 <template>
-    <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+
+    <Bar id="my-chart-id" :options="chartOptions" :data="chartData" class="" />
 </template>
 
 <script>
@@ -31,13 +32,13 @@ export default {
                     {
                         label: 'Lof', // LOF data
                         data: [lofVariants, lofUnknown],
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red color
 
                     },
                     {
                         label: 'Missense', // Missense data
                         data: [missenseVariants, missenseUnknown],
-                        backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red color
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
                     }
                 ]
             };
@@ -47,21 +48,21 @@ export default {
         return {
             chartOptions: {
                 responsive: true,
-
                 maintainAspectRatio: false,
-                categoryPercentage: 0.5,
+                categoryPercentage: 0.6,
                 barPercentage: 1,
                 layout: {
                     padding: {
-                        top: 20 // Add extra space above the chart
-                    }
+                        top: 20,
+                    },
+
                 }, // Reduce the width of each group
                 plugins: {
                     legend: {
                         display: false, // Hide the legend
                     },
                     tooltip: {
-                        enabled: true // Enable tooltips
+                        enabled: false // Enable tooltips
                     },
                     datalabels: {
                         display: true,
@@ -96,8 +97,6 @@ export default {
                         grid: {
                             display: false // Hide x-axis gridlines
                         },
-                        categoryPercentage: 0.6, // Reduce the width of each group
-                        barPercentage: 0.9 // Adjust the width of bars within the group
                     },
                     y: {
                         display: false, // Completely hide the Y-axis, including labels, ticks, and the vertical line

@@ -1,8 +1,19 @@
 <template>
-    <main id="searchResults" class="flex px-20 my-10 w-full bg-transparent rounded-lg flex-grow flex-col"
+    <main id="searchResults" class="flex px-20 my-10 w-full bg-transparent flex-grow flex-col"
         :class="{ 'hidden': !results || results.length === 0 }">
-        <div class="flex justify-center">
-            <p class="text-bold text-4xl font-mono font-bold underline pb-5  text-gray-700">RESULTS</p>
+        <div class="flex justify-center flex-row items-center py-10">
+            <svg v-if="results.length > 0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                class="fill-gray-700 ">
+                <path d="m12 17.586-7.293-7.293-1.414 1.414L12 20.414l8.707-8.707-1.414-1.414L12 17.586z" />
+                <path d="m20.707 5.707-1.414-1.414L12 11.586 4.707 4.293 3.293 5.707 12 14.414l8.707-8.707z" />
+            </svg>
+            <p class="text-bold h-10 text-4xl font-mono font-bold underline pb-5  text-gray-700">
+                RESULTS </p>
+            <svg v-if="results.length > 0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                class="fill-gray-700 ">
+                <path d="m12 17.586-7.293-7.293-1.414 1.414L12 20.414l8.707-8.707-1.414-1.414L12 17.586z" />
+                <path d="m20.707 5.707-1.414-1.414L12 11.586 4.707 4.293 3.293 5.707 12 14.414l8.707-8.707z" />
+            </svg>
         </div>
         <!-- BACK TO TOP BUTTON -->
         <div>
@@ -15,17 +26,17 @@
             </button>
         </div>
         <div class="block">
-            <div class="relative overflow-visible shadow-lg sm:rounded-lg">
+            <div class="drop-shadow-xl rounded-lg overflow-hidden"> <!-- Fixed spelling and applied overflow-hidden -->
                 <table id="resultsTable"
-                    class="w-full text-sm text-left rtl:text-right text-gray-500  rounded-3xl dark:text-gray-400 bg-gray-200">
-                    <thead>
+                    class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-800">
+                    <thead class="uppercase text-lg text-nowrap text-gray-200">
                         <tr>
                             <!-- Gene -->
                             <th scope="col"
                                 class="px-6 py-3 text-center border-r border-gray-300 relative group cursor-pointer">
                                 GENE
                                 <div
-                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
                                     Gene name and GnomAd constraints
                                 </div>
                             </th>
@@ -101,7 +112,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="result in results" :key="result.gene"
-                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
+                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 rounded-3xl">
                             <!-- GENE -->
                             <td
                                 class="px-6 py-4 text-lg text-center font-medium text-gray-900 whitespace-nowrap dark:text-white border-r border-gray-200">
@@ -183,30 +194,41 @@
                                 </div>
                             </td>
                             <!-- PubMed Article -->
-                            <td class="flex w-96 py-4 pr-3 items-center border-r border-gray-200 hover:bg-blue-50 ">
-                                <div
-                                    class="w-32 h-32 flex items-center justify-center  border-green-500 hover:bg-blue-50">
-                                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                        <!-- Background Circle -->
-                                        <circle class="text-gray-300" cx="50" cy="50" r="25" stroke-width="5"
-                                            :stroke="getColor(result.count)" fill="none" />
-                                        <text x="50" y="50" fill="black" font-size="14" font-weight="bold"
-                                            font-family="Arial, sans-serif" text-anchor="middle"
-                                            dominant-baseline="middle" transform="rotate(90, 50, 50)">
-                                            {{ result.count || 0 }}
-                                        </text>
-                                    </svg>
-                                </div>
-                                <div class="flex flex-col flex-grow items-center justify-center border-red-700 w-32 ">
-                                    <div class="flex items-center justify-center">
-                                        <a :href="result.url" target="_blank"
-                                            class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800">
-                                            {{ result.firstArticleTitle || 'N/A' }}
-                                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
-                                        </a>
+                            <td class=" w-96 py-4 pr-3 border-r  border-gray-200 hover:bg-gray-100 ">
+                                <div class="flex flex-row items-center justify-center">
+                                    <div
+                                        class="w-32 h-32 flex items-center justify-center  border-green-500 hover:bg-blue-50">
+                                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                            <!-- Background Circle -->
+                                            <circle class="text-gray-300" cx="50" cy="50" r="25" stroke-width="5"
+                                                :stroke="getColor(result.count)" fill="none" />
+                                            <text x="50" y="50" fill="black" font-size="14" font-weight="bold"
+                                                font-family="Arial, sans-serif" text-anchor="middle"
+                                                dominant-baseline="middle" transform="rotate(90, 50, 50)">
+                                                {{ result.count || 0 }}
+                                            </text>
+                                        </svg>
+                                    </div>
+                                    <div
+                                        class="flex flex-col flex-grow items-center justify-center  border-red-700 w-32 ">
+                                        <div class="flex items-center justify-center">
+                                            <a :href="result.url" target="_blank"
+                                                class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800">
+                                                {{ result.firstArticleTitle || 'N/A' }}
+                                                <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
+
+
+
+
+
+
+
+
                             <td class="px-6 py-4 border-r border-gray-200">
                                 <div v-if="result.bioProcessKeywordsOnly && result.bioProcessKeywordsOnly.length > 0"
                                     class="mb-2 flex flex-wrap gap-2">
@@ -243,11 +265,14 @@
                             <!-- ClinVar Data Column -->
                             <td class="px-6 py-4 border-r  border-gray-200 ">
                                 <!-- First Visualizer for lofVariants and missenseVariants -->
-                                <div class="w-36 h-full border border-gray-200 rounded-md shadow-inner">
-                                    <ClinVarVizualiser
-                                        :variantData="[result.lofVariants, result.missenseVariants, result.lofUnknown, result.missenseUnknown]" />
+                                <div class="flex flex-row justify-center ">
+                                    <div class="w-24  border border-gray-200 rounded-md shadow-inner ">
+                                        <ClinVarVizualiser
+                                            :variantData="[result.lofVariants, result.missenseVariants, result.lofUnknown, result.missenseUnknown]" />
+                                    </div>
                                 </div>
                             </td>
+
 
 
 
