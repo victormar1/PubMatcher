@@ -1,5 +1,5 @@
 <template>
-    <main id="searchResults" class="flex px-20 my-10 w-full bg-transparent flex-grow flex-col"
+    <main id="searchResults" class="flex px-20 my-10 w-full bg-transparent flex-grow flex-col font-noto"
         :class="{ 'hidden': !results || results.length === 0 }">
         <div class="flex justify-center flex-row items-center py-10">
             <svg v-if="results.length > 0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -125,20 +125,42 @@
                                     <!--  <p class="text-gray-500 text-sm font-light">{{ result.hgncId }}</p> -->
 
                                     <!-- Table for contraintes -->
-                                    <div class="relative flex h-full items-center justify-center  "
+                                    <div class="relative flex h-full items-center justify-center "
                                         @click="toggleVersion">
                                         <div class="flex w-32 h-24 justify-center items-center ">
                                             <div class="relative  w-full  ">
                                                 <!-- Top-Right Indicator -->
-                                                <div v-if="result.constraintsDelta"
-                                                    v-tooltip="{ content: 'Notable differences exist between V2 and V4 constraints <br/> Click to swap versions', html: true, placement: 'right' }"
-                                                    class="absolute z-20 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full dark:border-gray-900 cursor-pointer"
-                                                    style="top: 50%; left: 90%; transform: translateY(-50%);">
-                                                    !
+                                                <div v-if="result.constraintsDelta">
+                                                    <div :data-popover-target="'popover-const-' + result.gene"
+                                                        data-popover-placement="right"
+                                                        class="absolute inline-flex items-center z-10 justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+                                                        !
+                                                    </div>
                                                 </div>
+                                                <div data-popover :id="'popover-const-' + result.gene" role="tooltip"
+                                                    class="absolute z-20  inline-block invisible opacity-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                                    <div
+                                                        class="px-3 py-2   bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700 flex flex-row space-x-2">
+                                                        <svg class="w-5 h-5 text-red-500 dark:text-white"
+                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                            width="24" height="24" fill="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path fill-rule="evenodd"
+                                                                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v5a1 1 0 1 0 2 0V8Zm-1 7a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H12Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                        <h3 class="font-semibold text-gray-900 dark:text-white">
+                                                            Constraints warning</h3>
 
+                                                    </div>
+                                                    <div class="px-3 py-2 text-nowrap">
+                                                        <p>Significant differences detected in constraints.
+                                                        </p>
+                                                    </div>
+                                                    <div data-popper-arrow class="pr-2">
 
-                                                <!-- Grid for Constraints -->
+                                                    </div>
+                                                </div>
                                                 <div
                                                     class="grid grid-cols-2 text-center text-xs border-blue-600 bg-gray-100 rounded-lg">
                                                     <!-- pLI -->
@@ -241,24 +263,43 @@
                                     class="font-bold text-blue-600">[...]</a>
                             </td>
                             <td class="px-6 py-4 border-r border-gray-200">
+
+
                                 <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
                                     class="flex flex-wrap gap-2 justify-center">
                                     <div v-for="(details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
                                         <!-- Tooltip Trigger -->
                                         <span v-html="details.icon" class="w-6 h-6 cursor-pointer"
-                                            @mouseenter="showTooltip(details, $event)"
-                                            @mouseleave="hideTooltip(details)">
-                                        </span>
+                                            :data-popover-target="'popover-mouseKO-' + result.gene + '-' + category"></span>
+
                                         <!-- Tooltip -->
-                                        <div v-if="details.showTooltip"
-                                            :style="{ top: `${details.tooltipY}px`, left: `${details.tooltipX}px`, transform: 'translate(-100%, 30%)' }"
-                                            class="absolute whitespace-nowrap bg-gray-800  text-white text-sm pointer-events-none font-bold rounded px-3 py-1 z-50 shadow-lg">
-                                            <span v-for="name in details.names" :key="name" class="block">{{ name
-                                                }}</span>
+                                        <div :id="'popover-mouseKO-' + result.gene + '-' + category" data-popover
+                                            role="tooltip"
+                                            class="absolute z-10 invisible opacity-0 inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                            <div
+                                                class="px-3 py-2  bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                                <h3
+                                                    class="font-bold text-gray-800 font-noto dark:text-white text-nowrap">
+                                                    {{ formatCategory(category) }}
+                                                </h3>
+
+                                            </div>
+                                            <div class="px-3 py-2">
+                                                <ul class="list-disc space-y-1">
+                                                    <!-- Display all names -->
+                                                    <li v-for="name in details.names" :key="name"
+                                                        class="inline-flex px-2 justify-center items-center bg-blue-200 rounded-full">
+                                                        <p class="text-gray-700 font-bold font-noto text-nowrap">{{ name
+                                                            }}</p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div data-popper-arrow></div>
                                         </div>
                                     </div>
                                 </div>
+
                             </td>
 
                             <!-- ClinVar Data Column -->
@@ -368,6 +409,13 @@ export default {
         };
     },
     methods: {
+        formatCategory(cat) {
+            let newline = ''
+            newline = cat.replace('_phenotype', '')
+            newline = newline.replace(/_/g, ' ');
+            newline = newline.charAt(0).toUpperCase() + newline.slice(1)
+            return newline
+        },
         formatNumber(value) {
             // Ensure the animation works by returning numbers during animation
             if (value > 9999) {

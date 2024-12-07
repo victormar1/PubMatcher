@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="flex flex-col min-h-screen dark:bg-gray-600">
+  <div id="app" class="flex flex-col min-h-screen font-noto dark:bg-gray-600">
     <AppHeader />
     <Announcement />
     <PatchNote />

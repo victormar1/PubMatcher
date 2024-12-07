@@ -3,7 +3,10 @@ module.exports = {
   darkMode: 'class', // Change this if necessary
 
   content: [
-    './src/**/*.{html,js,vue}'
+    './index.html',
+    './src/**/*.{html,js,vue}',
+    './node_modules/flowbite/**/*.js'
+
     // Ajoute d'autres chemins si nécessaire
   ],
   theme: {
@@ -14,5 +17,5 @@ module.exports = {
       }
     }
   },
-  plugins: []
+  plugins: [require('flowbite/plugin')]
 }

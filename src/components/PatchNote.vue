@@ -1,5 +1,5 @@
 <template>
-    <div class="relative ">
+    <div class="relative font-noto">
         <div :class="[
             'fixed  top-24 left-0  h-1/2  w-96 z-30 bg-gray-800 rounded-sm text-white shadow-lg transform transition-transform duration-500 ease-in-out',
             isDrawerOpen ? 'translate-x-0' : '-translate-x-full'

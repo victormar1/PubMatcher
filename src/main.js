@@ -6,6 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import FloatingVue from 'floating-vue'
 import 'floating-vue/dist/style.css'
 import VueGtag, { event } from 'vue-gtag'
+import 'flowbite'
 
 createApp(App)
   .use(router)

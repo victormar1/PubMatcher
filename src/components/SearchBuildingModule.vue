@@ -1,28 +1,41 @@
 <template>
-  <div class="flex flex-col gap-3 justify-center min-w-[790px]"
+  <div class="flex flex-col gap-3 justify-center min-w-[790px] "
     @click.capture="hideSuggestions('geneSuggestions'); hideSuggestions('phenotypeSuggestions')">
     <!-- EXTRACTION -->
     <div>
       <!-- EXTRACTION -->
       <div class="flex flex-row items-center border-blue-600">
-        <label for="batch" class="block text-3xl ml-10  font-bold text-gray-700">
+        <label for="batch" class="block text-3xl ml-5  font-extrabold text-gray-700">
           EXTRACT FROM TEXT
         </label>
         <!-- TOOLTIP CONT -->
         <div class="group flex z-10 relative ml-3">
-          <button
+          <button data-popover-target="popover-extract" data-popover-placement="right"
             class="text-gray-600 transition-colors duration-200 focus:outline-none dark:text-gray-200 dark:hover:text-red-400 hover:text-red-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-              stroke="currentColor" class="w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+            <svg class="w-6 h-6 text-gray-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd"
+                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z"
+                clip-rule="evenodd" />
             </svg>
           </button>
-          <!-- Tooltip -->
-          <span
-            class="group-hover:opacity-100 transition-opacity duration-300 bg-gray-700 text-white text-1xl font-sans italic font-medium rounded-lg px-3 py-2 shadow-lg ml-4 absolute left-1/2 translate-x-3 -translate-y-5 opacity-0 mt-2 whitespace-nowrap">
-            Extract genes from raw text, file, url, webpage or SeqOne.
-          </span>
+        </div>
+        <div data-popover id="popover-extract" role="tooltip"
+          class="absolute z-10 invisible opacity-0  inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+          <div
+            class="flex flex-row items-center space-x-2 px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+            <svg class="w-6 h-6 text-gray-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+              width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd"
+                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z"
+                clip-rule="evenodd" />
+            </svg>
+            <h3 class="font-semibold text-gray-800 dark:text-white">Automatic genes extraction</h3>
+          </div>
+          <div class="px-3 py-2 font-semibold  text-nowrap">
+            <p>Paste text or drag a file to extract gene names automatically.</p>
+          </div>
+          <div data-popper-arrow></div>
         </div>
         <button class="ml-auto px-4 py-1 mb-1 mr-5 bg-red-500 text-white rounded-lg font-bold hover:bg-red-600"
           @click="showLogoutModal">
@@ -69,7 +82,7 @@
             <h2 class="mt-1 font-medium tracking-wide text-gray-700 dark:text-gray-200">
               Drop File Here
             </h2>
-            <p class="mt-2 text-xs tracking-wide text-gray-500 dark:text-gray-400">
+            <p class="mt-2 px-1.5 text-xs tracking-wide text-gray-500 dark:text-gray-400">
               Upload or drag & drop your file TXT, CSV or XML.
             </p>
           </label>
@@ -125,16 +138,42 @@
             </div>
           </form>
 
-          <button @click="clearBlacklist()" class="bg-red-500 py-1 px-1  rounded-full text-white text-center"
-            v-tooltip="{ content: blacklistedGenes.length + ' gene blacklisted <br/> ' + blacklistedGenes.join(' - ') + '<br/>Click to clear list', html: true, placement: 'top' }">
+          <button data-popover-target="popover-default" @click="clearBlacklist()"
+            class="bg-red-500 py-1 px-1  rounded-full text-white text-center">
             <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
               fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
                 d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
             <span class="relative z-10 text-lg font-bold">{{ blacklistedGenes.length }}</span>
-
           </button>
+          <!-- oppacity 0 invisible -->
+          <div data-popover id="popover-default" @click="clearBlacklist" role="tooltip"
+            class="absolute opacity 0 invisible z-10 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border
+            border-gray-200  rounded-lg shadow-sm opacity-100 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div
+              class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+              <h3 class="font-bold text-gray-900 font-noto dark:text-white">Excluded Genes</h3>
+              <p class=" font-medium italic font-noto text-red-500">Click to clear</p>
+            </div>
+            <div class="px-3  pt-4">
+              <div v-if="blacklistedGenes.length > 0" class="flex flex-wrap   gap-2">
+                <div v-for="gene in blacklistedGenes" :key="gene"
+                  class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
+                  <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
+                </div>
+              </div>
+              <div v-else class="flex flex-wrap gap-2">
+                <p class="text-gray-700  font-noto">Select a gene to ignore it</p>
+              </div>
+            </div>
+            <div class="px-3 py-2">
+              <div class="flex flex-wrap gap-2">
+                <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
+              </div>
+            </div>
+            <div data-popper-arrow></div>
+          </div>
         </div>
         <div class=" flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto p-4">
           <!-- GENES PLACEHOLDERS -->
@@ -511,10 +550,10 @@ export default {
           if (type === 'gene') {
             if (this.blacklistedGenes.includes(item)) {
               cardElement.className =
-                'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+                'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4 select-none';
             } else {
               cardElement.className =
-                'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+                'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4 select-none';
             }
             cardElement.addEventListener('click', () => {
               this.handleGeneClick(item, cardElement);
