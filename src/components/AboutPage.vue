@@ -197,7 +197,7 @@
 
       <!-- Navigation Arrows -->
       <button @click="prevSlide"
-         class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-800">
+         class="absolute invisible top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-800">
          <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
             width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -206,7 +206,7 @@
 
       </button>
       <button @click="nextSlide"
-         class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-800">
+         class="absolute invisible top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 p-2 rounded-full text-white hover:bg-gray-800">
          <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
             width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
