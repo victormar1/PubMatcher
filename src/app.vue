@@ -2,8 +2,8 @@
   <div id="app" class="flex flex-col min-h-screen font-noto dark:bg-gray-600">
     <AppHeader />
     <Announcement />
-    <PatchNote />
-    <main class="flex-grow">
+    <!-- <PatchNote /> -->
+    <main class="flex-grow flex flex-col ">
       <router-view></router-view>
     </main>
     <AppFooter />

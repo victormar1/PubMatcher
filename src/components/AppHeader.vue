@@ -1,9 +1,9 @@
 <template>
-  <header class="bg-gray-800 py-4 shadow-md min-w-screen font-noto">
+  <header class="bg-gray-800 py-3 shadow-md min-w-screen font-noto">
     <div class="flex justify-between px-4 items-center">
       <div class="flex items-center">
         <router-link to="/" class="flex items-center">
-          <img class="max-h-12 w-auto object-cover" src="images/pmlogo.svg" alt="PubMatcher Logo" />
+          <img class="max-h-12 w-auto object-cover" src="/images/pmlogo.svg" alt="PubMatcher Logo" />
           <!-- Titre principal -->
           <div class="flex flex-row items-baseline space-x-1 ">
             <h1 class="text-5xl font-bold  text-white">PUBMatcher</h1>
@@ -58,10 +58,9 @@
 
         </router-link>
       </div>
-      <nav class="flex space-x-4 text-nowrap pl-4">
+      <nav class="flex space-x-2 text-nowrap pl-4">
         <router-link to="/" class="text-white hover:text-blue-200 mx-2">Home</router-link>
-        <router-link to="/about" class="text-white hover:text-blue-200 mx-2">About</router-link>
-        <router-link to="/contact" class="text-white hover:text-blue-200 mx-2">Contact</router-link>
+        <router-link to="/about/general" class="text-white hover:text-blue-200 mx-2">About</router-link>
 
         <div v-if="!authState.isAuthenticated">
           <router-link to="/login" class="text-white font-bold hover:text-blue-200 mx-2">Log In</router-link>
@@ -70,6 +69,9 @@
           <router-link to="/account" class="text-white font-bold hover:text-blue-200 mx-2">{{ authState.username
             }}</router-link>
         </div>
+
+
+
       </nav>
     </div>
   </header>

@@ -9,6 +9,11 @@ import RegisterPage from './components/RegisterPage.vue'
 import AccountPage from './components/AccountPage.vue'
 import ForgotPasswordPage from './components/ForgotPasswordPage.vue'
 import ResetPasswordPage from './components/ResetPasswordPage.vue'
+import ChangelogPage from './components/ChangelogPage.vue'
+import AboutGeneralPage from './components/AboutGeneralPage.vue'
+import HowToUsePage from './components/HowToUsePage.vue'
+import DisclaimerPage from './components/DisclaimerPage.vue'
+import LegalMentionsPage from './components/LegalMentionsPage.vue'
 
 function isAuthenticated() {
   const token = localStorage.getItem('token')
@@ -17,8 +22,19 @@ function isAuthenticated() {
 
 const routes = [
   { path: '/', component: HomePage },
-  { path: '/about', component: AboutPage },
-  { path: '/contact', component: ContactPage },
+  {
+    path: '/about',
+    component: AboutPage,
+    children: [
+      { path: 'general', component: AboutGeneralPage },
+      { path: 'howto', component: HowToUsePage },
+      { path: 'changelog', component: ChangelogPage },
+      { path: 'disclaimer', component: DisclaimerPage },
+      { path: 'legals', component: LegalMentionsPage },
+      { path: 'contact', component: ContactPage }
+    ]
+  },
+
   {
     path: '/search',
     component: SearchModule, //enfer

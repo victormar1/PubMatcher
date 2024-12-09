@@ -362,12 +362,96 @@
                             </td>
 
                             <!-- ClinVar Data Column -->
-                            <td class="px-6 py-4   border-gray-200 ">
+                            <td class="px-6 py-4  border-gray-200 ">
                                 <!-- First Visualizer for lofVariants and missenseVariants -->
-                                <div class="flex flex-row justify-center ">
-                                    <div class="w-24  border border-gray-200 rounded-md shadow-inner ">
+                                <div class="flex h-36 flex-row justify-center ">
+                                    <div class=" w-20 drop-shadow  "
+                                        :data-popover-target="'popover-graph-' + result.gene">
                                         <ClinVarVizualiser
                                             :variantData="[result.lofVariants, result.missenseVariants, result.lofUnknown, result.missenseUnknown]" />
+                                    </div>
+                                    <div class="w-10 drop-shadow " :data-popover-target="'popover-vus-' + result.gene">
+                                        <VUSVizualiser :variantData="[result.lofUnknown, result.missenseUnknown]" />
+                                    </div>
+                                    <div data-popover :id="'popover-graph-' + result.gene" role="tooltip"
+                                        class="absolute z-30 invisible opacity-0  inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                        <div
+                                            class="px-3 py-2  bg-gray-100 border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            <h3
+                                                class="font-bold text-gray-800 font-noto text-center  dark:text-white text-nowrap">
+                                                P/LP
+                                            </h3>
+
+                                        </div>
+                                        <div
+                                            class="px-3 py-2 flex flex-row  justify-center items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            <div>
+                                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
+                                                    class="text-rose-400">
+                                                    <rect width="100" height="100" fill="currentColor" />
+                                                </svg>
+
+                                            </div>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
+                                                LOF: {{ result.lofVariants }}
+                                            </h3>
+                                        </div>
+
+                                        <div
+                                            class="px-3 py-2 flex flex-row items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            <div>
+                                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
+                                                    class="text-blue-400">
+                                                    <rect width="100" height="100" fill="currentColor" />
+                                                </svg>
+
+                                            </div>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
+                                                Missense: {{ result.missenseVariants }}
+                                            </h3>
+                                        </div>
+                                        <div data-popper-arrow class="bg-gray-100">
+                                        </div>
+                                    </div>
+                                    <div data-popover :id="'popover-vus-' + result.gene" role="tooltip"
+                                        class="absolute z-30 invisible opacity-0  inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                        <div
+                                            class="px-3 py-2  bg-gray-100 border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            <h3
+                                                class="font-bold text-gray-800 font-noto text-center  dark:text-white text-nowrap">
+                                                VUS
+                                            </h3>
+
+                                        </div>
+                                        <div
+                                            class="px-3 py-2 flex flex-row  justify-center items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            <div>
+                                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
+                                                    class="text-rose-400">
+                                                    <rect width="100" height="100" fill="currentColor" />
+                                                </svg>
+
+                                            </div>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
+                                                LOF: {{ result.lofUnknown }}
+                                            </h3>
+                                        </div>
+
+                                        <div
+                                            class="px-3 py-2 flex flex-row items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            <div>
+                                                <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
+                                                    class="text-blue-400">
+                                                    <rect width="100" height="100" fill="currentColor" />
+                                                </svg>
+
+                                            </div>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
+                                                Missense: {{ result.missenseUnknown }}
+                                            </h3>
+                                        </div>
+                                        <div data-popper-arrow class="bg-gray-100">
+                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -431,12 +515,14 @@
 <script>
 import ClinVarVizualiser from './ClinVarVizualiser.vue';
 import CountUp from 'vue-countup-v3'
+import VUSVizualiser from './VUSVizualiser.vue';
 
 
 export default {
     name: "ResultModule",
     components: {
         ClinVarVizualiser,
+        VUSVizualiser,
         CountUp,
     },
     watch: {

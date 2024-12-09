@@ -1,5 +1,4 @@
 <template>
-
     <Bar id="my-chart-id" :options="chartOptions" :data="chartData" class="" />
 </template>
 
@@ -23,20 +22,21 @@ export default {
     computed: {
         chartData() {
             // Destructure data from the prop
-            const [lofVariants, missenseVariants, lofUnknown, missenseUnknown] = this.variantData;
+            const [lofVariants, missenseVariants] = this.variantData;
 
             return {
-                labels: ['P/LP', 'VUS'], // Labels for the two groups
+                labels: ['P/LP'], // Labels for the two groups
                 datasets: [
                     {
                         label: 'Lof', // LOF data
-                        data: [lofVariants, lofUnknown],
-                        backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red color
+                        data: [lofVariants],
+                        backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                        // Red color
 
                     },
                     {
                         label: 'Missense', // Missense data
-                        data: [missenseVariants, missenseUnknown],
+                        data: [missenseVariants],
                         backgroundColor: 'rgba(54, 162, 235, 0.8)',
                     }
                 ]
@@ -49,9 +49,11 @@ export default {
                 animation: {
                     duration: 2000,
                 },
+                borderWidth: 2,
+                borderColor: '#fff',
                 responsive: true,
                 maintainAspectRatio: false,
-                categoryPercentage: 0.6,
+                categoryPercentage: 0.4,
                 barPercentage: 1,
                 layout: {
                     padding: {
@@ -87,7 +89,9 @@ export default {
 
                 scales: {
                     x: {
+
                         ticks: {
+                            display: false,
                             font: {
                                 family: "'Roboto', 'Arial', sans-serif", // X-axis labels font
                                 size: 12,
