@@ -18,6 +18,7 @@
         </div>
         <img class="  object-cover mx-auto drop-shadow" src="/images/pmchart.svg" alt="PubMatcher Logo" />
     </section>
+
 </template>
 
 <script>
