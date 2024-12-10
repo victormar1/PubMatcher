@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-gray-800 py-3 shadow-md min-w-screen font-noto">
+  <header class="bg-gray-800 py-3 shadow-md min-w-screen font-noto drop-shadow">
     <div class="flex justify-between px-4 items-center">
       <div class="flex items-center">
         <router-link to="/" class="flex items-center">

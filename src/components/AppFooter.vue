@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-800 shadow-md ">
-    <footer class="flex flex-row text-white justify-between h-16 py-4 mx-4">
+    <footer class="flex flex-row text-white justify-between h-16 py-4 mx-4 ">
       <!-- Left Section: Logo -->
       <div>
         <img class="h-full w-auto max-w-xs md:max-w-sm pr-4" src="/images/logoCHU.jpg" alt="Clinic Logo" />

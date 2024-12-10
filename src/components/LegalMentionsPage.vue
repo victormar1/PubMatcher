@@ -36,11 +36,12 @@
                     authorized under the applicable license.
                 </p>
                 <p class="mb-4 font-medium">
-                    This project is distributed under the GNU General Public License (GPL). For details, visit the <a
-                        href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer"
-                        class="text-blue-500 underline">GNU GPL website</a>.
+                    This project is distributed under the MIT License. For details, visit the <a
+                        href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer"
+                        class="text-blue-500 underline">MIT License website</a>.
                 </p>
             </div>
+
             <hr class="my-4 border-t border-gray-150" />
 
             <!-- Data Handling -->

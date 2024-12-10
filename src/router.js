@@ -14,6 +14,7 @@ import AboutGeneralPage from './components/AboutGeneralPage.vue'
 import HowToUsePage from './components/HowToUsePage.vue'
 import DisclaimerPage from './components/DisclaimerPage.vue'
 import LegalMentionsPage from './components/LegalMentionsPage.vue'
+import ResourcesPage from './components/ResourcesPage.vue'
 
 function isAuthenticated() {
   const token = localStorage.getItem('token')
@@ -28,6 +29,7 @@ const routes = [
     children: [
       { path: 'general', component: AboutGeneralPage },
       { path: 'howto', component: HowToUsePage },
+      { path: 'resources', component: ResourcesPage },
       { path: 'changelog', component: ChangelogPage },
       { path: 'disclaimer', component: DisclaimerPage },
       { path: 'legals', component: LegalMentionsPage },

@@ -16,6 +16,13 @@
                 </router-link>
             </li>
             <li>
+                <router-link to="/about/resources"
+                    class="block p-2 rounded-lg transition duration-75 hover:bg-gray-600 hover:text-gray-100"
+                    active-class="bg-gray-600 text-gray-100">
+                    Resources
+                </router-link>
+            </li>
+            <li>
                 <router-link to="/about/changelog"
                     class="block p-2 rounded-lg transition duration-75 hover:bg-gray-600 hover:text-gray-100"
                     active-class="bg-gray-600 text-gray-100">

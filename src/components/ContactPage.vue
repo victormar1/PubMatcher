@@ -12,7 +12,7 @@
         <div class="text-center text-gray-500 dark:text-gray-400">
 
           <h3 class="mb-1 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            <a href="#">Victor Marin</a>
+            Victor Marin
           </h3>
           <p>Co-founder</p>
           <ul class="flex justify-center mt-4 space-x-4">
@@ -44,7 +44,7 @@
         <div class="text-center text-gray-500 dark:text-gray-400">
 
           <h3 class="mb-1 text-2xl font-bold tracking-tight text-gray-800 dark:text-white">
-            <a href="#">Louis Lebreton</a>
+            Louis Lebreton
           </h3>
           <p>Co-founder</p>
           <ul class="flex justify-center mt-4 space-x-4">
@@ -67,7 +67,7 @@
         <div class="text-center text-gray-500 dark:text-gray-400">
 
           <h3 class="mb-1 text-2xl font-bold tracking-tight text-gray-800 dark:text-white">
-            <a href="#">Hugo Lannes</a>
+            Hugo Lannes
           </h3>
           <p>Developer</p>
           <ul class="flex justify-center mt-4 space-x-4">
@@ -99,7 +99,7 @@
         <div class="text-center text-gray-500 dark:text-gray-400">
 
           <h3 class="mb-1 text-2xl font-bold tracking-tight text-gray-800 dark:text-white">
-            <a href="#">Victor Dumont</a>
+            Victor Dumont
           </h3>
           <p>Developer</p>
           <ul class="flex justify-center mt-4 space-x-4">

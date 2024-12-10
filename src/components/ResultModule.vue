@@ -1,5 +1,6 @@
 <template>
-    <main id="searchResults" class="flex px-20  w-full  flex-grow flex-col font-noto justify-center items-center mb-10"
+    <main id="searchResults"
+        class="flex px-20  w-full  flex-grow flex-col font-noto justify-center items-center  mb-10 pt-32  border-red-700"
         :class="{ 'hidden': !results || results.length === 0 }">
         <div
             class="flex justify-center flex-row items-center  bg-gray-800 w-42 rounded-t-3xl px-4  hover:bg-gray-700 select-none cursor-pointer">
@@ -8,7 +9,7 @@
                 <path d="m12 17.586-7.293-7.293-1.414 1.414L12 20.414l8.707-8.707-1.414-1.414L12 17.586z" />
                 <path d="m20.707 5.707-1.414-1.414L12 11.586 4.707 4.293 3.293 5.707 12 14.414l8.707-8.707z" />
             </svg>
-            <p class="text-bold h-10 text-4xl  font-semibold  pb-5  text-gray-100" @click="scrollToResults">
+            <p class="text-bold h-10 text-4xl z-10 font-semibold  pb-5  text-gray-100" @click="scrollToResults">
                 RESULTS </p>
             <svg v-if="results.length > 0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 class="fill-gray-100 ">
@@ -27,10 +28,9 @@
             </button>
         </div>
         <div class="block">
-            <div class="drop-shadow-xl rounded-3xl overflow-hidden">
+            <div class="drop-shadow-xl rounded-3xl ">
                 <!-- Fixed spelling and applied overflow-hidden -->
-                <table id="resultsTable"
-                    class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 bg-gray-800">
+                <table id="resultsTable" class="w-full text-sm text-left  text-gray-500 dark:text-gray-400 bg-gray-800">
                     <thead class="uppercase text-lg text-nowrap text-gray-200">
                         <tr>
                             <!-- Gene -->
@@ -96,7 +96,7 @@
                                 class="px-6 py-3 text-center  border-gray-300 relative group cursor-default">
                                 ClinVar LookUp
                                 <div
-                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold rounded px-3 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
                                     Variants P/PL or VUS repartition from ClinVar
                                 </div>
                             </th>
@@ -321,32 +321,29 @@
                                 {{ result.geneFunction || 'N/A' }} <a :href="result.urlAccession" target="_blank"
                                     class="font-bold text-blue-600">[...]</a>
                             </td>
-                            <td class="px-6 py-4  border-gray-200">
-
-
+                            <td class="relative px-6 py-4 border-gray-200">
+                                <!-- Mouse Phenotype Tooltips -->
                                 <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
-                                    class="flex flex-wrap gap-2 justify-center drop-shadow">
+                                    class="relative flex flex-wrap gap-2 justify-center drop-shadow z-50">
                                     <div v-for="(details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
                                         <!-- Tooltip Trigger -->
                                         <span v-html="details.icon" class="w-6 h-6 cursor-pointer text-gray-600"
-                                            :data-popover-target="'popover-mouseKO-' + result.gene + '-' + category"></span>
-
+                                            :data-popover-target="'popover-mouseKO-' + result.gene + '-' + category">
+                                        </span>
                                         <!-- Tooltip -->
-                                        <div :id="'popover-mouseKO-' + result.gene + '-' + category" data-popover
-                                            role="tooltip"
-                                            class="absolute z-10 invisible opacity-0 inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                        <div :id="'popover-mouseKO-' + result.gene + '-' + category" role="tooltip"
+                                            data-popover
+                                            class="absolute z-50 invisible opacity-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 top-8 left-1/2 -translate-x-1/2">
                                             <div
-                                                class="px-3 py-2  bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                                                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
                                                 <h3
                                                     class="font-bold text-gray-800 font-noto dark:text-white text-nowrap">
                                                     {{ formatCategory(category) }}
                                                 </h3>
-
                                             </div>
                                             <div class="px-3 py-2">
                                                 <ul class="list-disc space-y-1">
-                                                    <!-- Display all names -->
                                                     <li v-for="name in details.names" :key="name"
                                                         class="inline-flex px-2 justify-center items-center bg-blue-200 rounded-full">
                                                         <p class="text-gray-700 font-bold font-noto text-nowrap">{{ name
@@ -358,103 +355,97 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </td>
 
-                            <!-- ClinVar Data Column -->
-                            <td class="px-6 py-4  border-gray-200 ">
-                                <!-- First Visualizer for lofVariants and missenseVariants -->
-                                <div class="flex h-36 flex-row justify-center ">
-                                    <div class=" w-20 drop-shadow  "
+                            <!-- ClinVar Data -->
+                            <td class="relative px-6 py-4 border-gray-200 z-10">
+                                <!-- ClinVar Visualizers -->
+                                <div class="flex h-36 flex-row justify-center">
+                                    <!-- P/LP Graph -->
+                                    <div class="relative z-10 w-20 drop-shadow"
                                         :data-popover-target="'popover-graph-' + result.gene">
                                         <ClinVarVizualiser
                                             :variantData="[result.lofVariants, result.missenseVariants, result.lofUnknown, result.missenseUnknown]" />
                                     </div>
-                                    <div class="w-10 drop-shadow " :data-popover-target="'popover-vus-' + result.gene">
+
+                                    <!-- VUS Graph -->
+                                    <div class="relative z-10 w-10 drop-shadow"
+                                        :data-popover-target="'popover-vus-' + result.gene">
                                         <VUSVizualiser :variantData="[result.lofUnknown, result.missenseUnknown]" />
                                     </div>
+
+                                    <!-- P/LP Popover -->
                                     <div data-popover :id="'popover-graph-' + result.gene" role="tooltip"
-                                        class="absolute z-30 invisible opacity-0  inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                        class="absolute z-50 invisible opacity-0 inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
                                         <div
-                                            class="px-3 py-2  bg-gray-100 border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            class="px-3 py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                             <h3
-                                                class="font-bold text-gray-800 font-noto text-center  dark:text-white text-nowrap">
+                                                class="font-bold text-gray-800 font-noto text-center dark:text-white text-nowrap">
                                                 P/LP
                                             </h3>
-
                                         </div>
                                         <div
-                                            class="px-3 py-2 flex flex-row  justify-center items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            class="px-3 py-2 flex flex-row justify-center items-center bg-white border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                             <div>
                                                 <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
                                                     class="text-rose-400">
                                                     <rect width="100" height="100" fill="currentColor" />
                                                 </svg>
-
                                             </div>
-                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
-                                                LOF: {{ result.lofVariants }}
-                                            </h3>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white">LOF: {{
+                                                result.lofVariants }}</h3>
                                         </div>
-
                                         <div
-                                            class="px-3 py-2 flex flex-row items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            class="px-3 py-2 flex flex-row items-center bg-white border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                             <div>
                                                 <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
                                                     class="text-blue-400">
                                                     <rect width="100" height="100" fill="currentColor" />
                                                 </svg>
-
                                             </div>
-                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
-                                                Missense: {{ result.missenseVariants }}
-                                            </h3>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white">Missense: {{
+                                                result.missenseVariants }}</h3>
                                         </div>
-                                        <div data-popper-arrow class="bg-gray-100">
-                                        </div>
+                                        <div data-popper-arrow class="bg-gray-100"></div>
                                     </div>
+
+                                    <!-- VUS Popover -->
                                     <div data-popover :id="'popover-vus-' + result.gene" role="tooltip"
-                                        class="absolute z-30 invisible opacity-0  inline-block  text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm  dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                                        class="absolute z-50 invisible opacity-0 inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
                                         <div
-                                            class="px-3 py-2  bg-gray-100 border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            class="px-3 py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                             <h3
-                                                class="font-bold text-gray-800 font-noto text-center  dark:text-white text-nowrap">
+                                                class="font-bold text-gray-800 font-noto text-center dark:text-white text-nowrap">
                                                 VUS
                                             </h3>
-
                                         </div>
                                         <div
-                                            class="px-3 py-2 flex flex-row  justify-center items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            class="px-3 py-2 flex flex-row justify-center items-center bg-white border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                             <div>
                                                 <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
                                                     class="text-rose-400">
                                                     <rect width="100" height="100" fill="currentColor" />
                                                 </svg>
-
                                             </div>
-                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
-                                                LOF: {{ result.lofUnknown }}
-                                            </h3>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white">LOF: {{
+                                                result.lofUnknown }}</h3>
                                         </div>
-
                                         <div
-                                            class="px-3 py-2 flex flex-row items-center bg-white border-b border-gray-200  dark:border-gray-600 dark:bg-gray-700">
+                                            class="px-3 py-2 flex flex-row items-center bg-white border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                             <div>
                                                 <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"
                                                     class="text-blue-400">
                                                     <rect width="100" height="100" fill="currentColor" />
                                                 </svg>
-
                                             </div>
-                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white ">
-                                                Missense: {{ result.missenseUnknown }}
-                                            </h3>
+                                            <h3 class="font-bold text-gray-700 font-noto dark:text-white">Missense: {{
+                                                result.missenseUnknown }}</h3>
                                         </div>
-                                        <div data-popper-arrow class="bg-gray-100">
-                                        </div>
+                                        <div data-popper-arrow class="bg-gray-100"></div>
                                     </div>
                                 </div>
                             </td>
+
 
 
 
