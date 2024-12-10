@@ -6,7 +6,7 @@
                 <div class="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400">
                     <h2 class="mb-4 text-4xl tracking-tight font-bold text-gray-800 dark:text-white">General Information
                     </h2>
-                    <p class="mb-4 font-light">This project is developed and maintained by PubMatcher team. The
+                    <p class="mb-4 font-light">This project is developed and maintained by the PubMatcher team. The
                         information provided by the project is for general informational and educational purposes only.
                     </p>
                     <p class="mb-4 font-medium">While we aim to ensure the accuracy and reliability of the data and
