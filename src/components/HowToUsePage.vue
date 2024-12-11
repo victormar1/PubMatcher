@@ -1,8 +1,9 @@
 <template>
-    <div
-        class="flex flex-col mx-auto px-10 py-16 justify-center items-center overflow-hidden border border-red-800 max-w-7xl">
+    <div class="flex flex-col mx-auto px-10 py-16 justify-center items-center overflow-hidden border-red-800 max-w-7xl"
+        @wheel="handleWheel">
+
         <!-- Navigation Buttons -->
-        <div class="flex justify-center mb-8 bg-gray-700 rounded-3xl p-1">
+        <div class="flex justify-center mb-8 bg-gray-700 rounded-3xl p-1 drop-shadow">
             <div class="flex space-x-4">
                 <button v-for="(slide, index) in slides" :key="index"
                     class="text-lg font-bold px-6 py-1 rounded-3xl transition-colors"
@@ -14,10 +15,10 @@
         </div>
 
         <!-- Carousel -->
-        <div class="relative w-full max-w-6xl mx-auto">
-            <div class="flex transition-transform duration-700 ease-in-out"
+        <div class="relative w-full max-w-6xl mx-auto overflow-hidden">
+            <div class="flex transition-transform duration-700 ease-in-out w-full"
                 :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
-                <div v-for="(slide, index) in slides" :key="index" class="w-full flex-shrink-0">
+                <div v-for="(slide, index) in slides" :key="index" class="w-full flex-shrink-0" style="flex: 0 0 100%">
                     <div class="flex flex-col items-center justify-center p-6 drop-shadow-lg">
                         <div class="relative max-w-5xl">
                             <!-- Screenshot -->
@@ -25,10 +26,10 @@
 
                             <!-- Pulsating Dots -->
                             <div v-for="(dot, index) in getDotset(slide.dotset)" :key="index"
-                                class="absolute flex items-center justify-center"
+                                class="absolute flex items-center justify-center "
                                 :style="{ top: dot.top, left: dot.left }">
                                 <div class="w-8 h-8 bg-red-500 rounded-full animate-ping"></div>
-                                <div class="absolute w-5 h-5 bg-red-500 rounded-full cursor-pointer"
+                                <div class="absolute w-5 h-5 bg-red-500 rounded-full border-2 border-white cursor-pointer drop-shadow"
                                     @click="showInfo(dot)"></div>
                             </div>
                         </div>
@@ -41,6 +42,7 @@
 
 
 
+
 <script>
 export default {
     name: "HowToUsePage",
@@ -49,7 +51,7 @@ export default {
             currentSlide: 0,
             slides: [{ index: 1, name: "Search", dotset: "dots_search", screen: "/images/screenshot.png" },
             { index: 2, name: "Read", dotset: "dots_read", screen: "/images/screenshot2.png" },
-            { index: 3, name: "Collaborate" },
+            { index: 2, name: "Collaborate", dotset: "dots_read", screen: "/images/screenshot3.png" },
             ],
 
             dots_search: [
@@ -62,6 +64,9 @@ export default {
                 { top: "10%", left: "84%", info: "Feature 2: Results Section" },
                 { top: "30%", left: "10%", info: "Feature 3: Graph Section" },
             ],
+            dots_read: [
+
+            ],
         };
     },
     methods: {
@@ -73,6 +78,23 @@ export default {
         },
         getDotset(dotsetName) {
             return dotsetName ? this[dotsetName] : [];
+        },
+        handleWheel(event) {
+            if (event.deltaY > 0) {
+                this.nextSlide();
+            } else {
+                this.prevSlide();
+            }
+        },
+        nextSlide() {
+            if (this.currentSlide < this.slides.length - 1) {
+                this.currentSlide++;
+            }
+        },
+        prevSlide() {
+            if (this.currentSlide > 0) {
+                this.currentSlide--;
+            }
         },
     },
 };
