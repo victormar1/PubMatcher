@@ -46,18 +46,7 @@ export default {
                     version: '2024_03',
                     link: 'https://www.uniprot.org/help/api',
                 },
-                {
-                    name: 'OMIM API',
-                    desc: 'Online Mendelian Inheritance in Man (OMIM) provides genetic disorder information.',
-                    version: '2024_01',
-                    link: 'https://omim.org/help/api',
-                },
-                {
-                    name: 'Ensembl REST API',
-                    desc: 'Offers access to Ensembl genomic data, including genes, transcripts, and variations.',
-                    version: 'v7.3',
-                    link: 'https://rest.ensembl.org/',
-                },
+
                 {
                     name: 'ClinVar API',
                     desc: 'Database of clinically relevant variants, offering submissions, classifications, and annotations.',
@@ -70,18 +59,7 @@ export default {
                     version: 'v2.2',
                     link: 'https://panelapp.genomicsengland.co.uk/',
                 },
-                {
-                    name: 'Gene Ontology (GO) API',
-                    desc: 'Provides access to structured knowledge on the functions of genes and proteins.',
-                    version: 'v1.8',
-                    link: 'http://geneontology.org/docs/api/',
-                },
-                {
-                    name: 'DECIPHER Database',
-                    desc: 'Database for the interpretation of clinically relevant genomic variation.',
-                    version: '2024_02',
-                    link: 'https://www.deciphergenomics.org/',
-                },
+
                 {
                     name: 'HGNC API',
                     desc: 'HUGO Gene Nomenclature Committee provides standardized human gene names and symbols.',
@@ -94,24 +72,7 @@ export default {
                     version: 'v3.1',
                     link: 'https://gnomad.broadinstitute.org/',
                 },
-                {
-                    name: '1000 Genomes Project',
-                    desc: 'Provides publicly available human genomic variation data from diverse populations.',
-                    version: 'Phase 3',
-                    link: 'http://www.internationalgenome.org/',
-                },
-                {
-                    name: 'GTEx Portal API',
-                    desc: 'Provides access to gene expression data across human tissues.',
-                    version: 'v8',
-                    link: 'https://gtexportal.org/home/api-docs',
-                },
-                {
-                    name: 'PubTator API',
-                    desc: 'Provides text-mining annotations for biomedical literature, including genes, diseases, and chemicals.',
-                    version: 'v1.5',
-                    link: 'https://www.ncbi.nlm.nih.gov/research/pubtator/',
-                },
+
             ]
 
         };

@@ -31,26 +31,29 @@ export default {
             changelogEntries: [
                 {
                     date: 'December 2024',
-                    changes: ['User accounts', 'New UI', 'Bug fixes', 'New features'],
+                    changes: [
+                        'Better search design with QoL changes (gene blacklisting ).',
+                        'ClinVar Lookup column added.',
+                        'Added a complete About page with changelog (v2.1) for improved transparency.',
+                        'Improved response time for smoother navigation.',
+                        'Better management of search histories with direct display.',
+                    ],
                 },
                 {
                     date: 'November 2024',
-                    changes: ['Added new feature X', 'Improved performance', 'Fixed bug Y'],
+                    changes: [
+                        'Major UI redesign with modern visuals and improved navigation.',
+                        'User login system with account management.',
+                        'Performance fixes for buffering issues and response time improvements.',
+                        'Enhanced error handling (icons, error messages, loading states).',
+                    ],
                 },
                 {
-                    date: 'June 2024',
-                    changes: ['Initial Release'],
+                    date: 'February 2024',
+                    changes: ['Major stability improvement','Fix stability of batch input'],
                 },
                 {
-                    date: 'June 2024',
-                    changes: ['Initial Release'],
-                },
-                {
-                    date: 'June 2024',
-                    changes: ['Initial Release'],
-                },
-                {
-                    date: 'June 2024',
+                    date: 'January 2024',
                     changes: ['Initial Release'],
                 },
 
