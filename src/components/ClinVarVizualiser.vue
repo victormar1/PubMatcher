@@ -77,7 +77,7 @@ export default {
                         clamp: true,
                         font: {
                             family: 'Roboto, sans-serif',
-                            size: 8,
+                            size: 11,
                             weight: 'bold',
                         },
                         formatter: function (value) {

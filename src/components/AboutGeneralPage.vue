@@ -6,12 +6,10 @@
                 </h2>
                 <p class="mb-4 font-light">
                     PubMatcher is an automated genomic search tool designed to streamline genetic analysis and research.
-                    By integrating biological databases and APIs, it simplifies the interpretation of genetic data and
-                    connects users with crucial information for their research.
+                    By integrating biological databases and APIs, it simplifies the interpretation of pangenomic data espically for lesser known genes.
                 </p>
                 <p class="mb-4 font-medium">
-                    PubMatcher bridges the gap between genomic data and actionable insights, making it an invaluable
-                    resource for researchers, clinicians, and bioinformaticians.
+                    PubMatcher bridges the gap between genomic data and actionable insights, aiming to quickly identitfy possible association.
                 </p>
 
             </div>
