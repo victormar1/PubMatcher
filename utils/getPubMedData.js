@@ -21,31 +21,41 @@ async function getPubMedData(gene, phenotypes) {
   const countText = $(countSelector).text().trim().replace(',', '')
   let count = parseInt(countText, 10) || 0
 
-  // * DEFAULT VALUES
-  let firstArticleTitle = 'No articles found'
-  let firstArticleUrl = null
-
   // * CHECK IF RESPONSE HAS SPELLCHECK WARNING
   const spellCheckWarningSelector = '#spell-check-warning'
   const spellCheckOnly = 'Showing results for'
   const warningText = $(spellCheckWarningSelector).text().trim()
   const isAutocorrected = warningText.includes(spellCheckOnly)
 
+  // * DEFAULT VALUES
+  let firstArticleTitle = 'No articles found'
+  let firstArticleUrl = null
+  const complArticles = []
+
   if (!isAutocorrected) {
     const articles = $('#search-results > section > div.search-results-chunks > div > article')
-    articles.each((_, article) => {
+
+    // * ITERATE THROUGH ARTICLES
+    articles.each((index, article) => {
       const titleElement = $(article).find('.docsum-wrap > .docsum-content > a')
       const title = titleElement.text().trim()
       const href = titleElement.attr('href')
 
       if (title && href) {
-        firstArticleTitle = title
         const match = href.match(/\/(\d+)\//)
-        if (match) {
-          const firstArticleId = match[1]
-          firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${firstArticleId}/`
+        const articleId = match ? match[1] : null
+        const articleUrl = articleId ? `https://pubmed.ncbi.nlm.nih.gov/${articleId}/` : null
+
+        if (index === 0) {
+          // First article
+          firstArticleTitle = title
+          firstArticleUrl = articleUrl
+        } else if (index >= 1 && index <= 3) {
+          // Second, third, and fourth articles
+          complArticles.push({ title, url: articleUrl })
         }
-        return false
+
+        if (index >= 3) return false // Stop after the fourth article
       }
     })
   } else {
@@ -67,6 +77,7 @@ async function getPubMedData(gene, phenotypes) {
     url,
     firstArticleTitle,
     firstArticleUrl,
+    complArticles, // Array of second, third, and fourth articles
     count
   }
 }

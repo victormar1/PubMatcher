@@ -250,7 +250,7 @@
                                                     RESULTS
                                                 </h3>
                                             </div>
-                                            <div class=" ">
+                                            <div v-for="(article, index) in result.complArticles" :key="index">
                                                 <div
                                                     class="border-b border-gray-200 flex flex-row space-x-2 items-center hover:bg-blue-100">
                                                     <div>
@@ -262,38 +262,9 @@
                                                                 d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961" />
                                                         </svg>
                                                     </div>
-
-                                                    <p>RMI1 facilitates repair of ionizing radiation-induced DNA damage
-                                                        and maintenance of genomic stability.</p>
-                                                </div>
-                                                <div
-                                                    class="border-b border-gray-200 flex flex-row space-x-2 items-center">
-                                                    <div>
-                                                        <svg class="w-6 h-6  text-gray-500 dark:text-white"
-                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                            width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round"
-                                                                stroke-linejoin="round" stroke-width="2"
-                                                                d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961" />
-                                                        </svg>
-                                                    </div>
-                                                    <p>RMI1 contributes to DNA repair and to the tolerance to
-                                                        camptothecin.</p>
-                                                </div>
-                                                <div
-                                                    class="border-b border-gray-200 flex flex-row space-x-2 items-center">
-                                                    <div>
-                                                        <svg class="w-6 h-6  text-gray-500 dark:text-white"
-                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                            width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round"
-                                                                stroke-linejoin="round" stroke-width="2"
-                                                                d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961" />
-                                                        </svg>
-                                                    </div>
-                                                    <p>
-                                                        Phenotypic spectrum of BLM- and RMI1-related Bloom syndrome.
-                                                    </p>
+                                                    <a :href="result.complArticles[index].url" target="_blank">
+                                                        {{ result.complArticles[index].title }}
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div data-popper-arrow></div>
