@@ -63,7 +63,6 @@ async function getMouseKO(mgdId) {
     result.mousePhenotype = 'No match'
   }
   // * RETURN THE RESULT
-  console.log(groupedPhenotypes)
   return { mousePhenotypes: groupedPhenotypes }
 }
 

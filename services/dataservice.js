@@ -6,6 +6,7 @@ const getMouseKO = require('../utils/getMouseKO.js')
 const getGeneConstraints = require('../utils/getGeneConstraints.js')
 const getPanelApps = require('../utils/getPanelApps.js')
 const getClinVarData = require('../utils/getClinVarData.js')
+const fetchOmimData = require('../utils/fetchOMIM.js')
 const axios = require('axios')
 
 async function getData(req) {
@@ -30,12 +31,13 @@ async function getData(req) {
           ...(await getGeneConstraints(gene)), // * Gene constraint data
           ...(await getPanelApps(gene)), // * PanelApp data
           ...(await getClinVarData(gene)), // * ClinVar data
+          ...(await fetchOmimData(validatedGene.ensemblGeneId)), // * OMIM data
           // * ADDITIONNAL
           geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : '', // HGNC link
           geneValidity: validatedGene.validityMarker || 'No validity found',
-          hgncId: validatedGene.hgncId || 'No HGNC ID'
+          hgncId: validatedGene.hgncId || 'No HGNC ID',
+          omimId: validatedGene.omimId || 'No OMIM ID'
         }
-
         console.log(resultData)
         return resultData
       } catch (error) {

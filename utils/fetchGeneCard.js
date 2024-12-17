@@ -61,7 +61,6 @@ async function fetchGeneCARD(gene) {
 
       if (numFound > 0) {
         const doc = parsedData.response.result[0].doc[0]
-
         const geneName = doc.str?.find((item) => item.$.name === 'name')?._ || 'No match'
         const location = doc.str?.find((item) => item.$.name === 'location')?._ || 'No match'
         const aliasName = doc.arr?.find((item) => item.$.name === 'alias_name')?.str?.[0] || 'No match'
@@ -75,11 +74,9 @@ async function fetchGeneCARD(gene) {
         const orphanet = doc.int?.find((item) => item.$.name === 'orphanet')?._ || 'No match'
         const dateModified = doc.date?.find((item) => item.$.name === 'date_modified')?._ || 'No match'
         const dateApprovedReserved = doc.date?.find((item) => item.$.name === 'date_approved_reserved')?._ || 'No match'
-
         const validityMarker = validityMap.get(hgncId) || 'No Known'
-
-        const validatedGene = new Gene(geneName, aliasName, location, maneSelect, mgdId, enzymeId, uniprotIds, hgncId, rgdId, ensemblGeneId, orphanet, dateModified, dateApprovedReserved, validityMarker)
-
+        const omimId = doc.arr?.find((item) => item.$.name === 'omim_id')?.str?.[0] || 'No match'
+        const validatedGene = new Gene(geneName, aliasName, location, maneSelect, mgdId, enzymeId, uniprotIds, hgncId, rgdId, ensemblGeneId, orphanet, dateModified, dateApprovedReserved, validityMarker, omimId)
         // * RETURN THE RESULT
         return validatedGene
       } else {

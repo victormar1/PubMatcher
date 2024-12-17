@@ -494,6 +494,21 @@
                                         </div>
                                     </a>
                                 </div>
+                                <div>
+                                    <!-- Check if result.mim has at least one item -->
+
+                                    <!-- Link to OMIM if result.omimId exists -->
+                                    <a :href="result.omimId ? `https://omim.org/entry/${result.omimId}` : '#'"
+                                        target="_blank" rel="noopener noreferrer" class="relative">
+                                        <span v-if="result.mim && result.mim.length > 0"
+                                            class="text-green-600 font-bold">
+                                            MORBID
+                                        </span>
+                                        <span v-else class="text-red-600 font-bold">
+                                            NO MORBID
+                                        </span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

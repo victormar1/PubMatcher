@@ -42,30 +42,30 @@ exports.search = async (req, res) => {
       )
     }
 
-    // Check for cached results
-    const cachedResult = await pool.query('SELECT * FROM query_results WHERE query_id = $1 AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)', [query.id])
+    // // Check for cached results
+    // const cachedResult = await pool.query('SELECT * FROM query_results WHERE query_id = $1 AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)', [query.id])
 
-    if (cachedResult.rows.length > 0) {
-      // ! EXCLUDE PUBMED DATA FROM DB BUFFERING | CONSIDER ALSO UPDATING OTHER DATA PERIODICALLY
-      const cachedData = cachedResult.rows[0].result_data
-      const phenotypes = req.body.phenotypes || []
+    // if (cachedResult.rows.length > 0) {
+    //   // ! EXCLUDE PUBMED DATA FROM DB BUFFERING | CONSIDER ALSO UPDATING OTHER DATA PERIODICALLY
+    //   const cachedData = cachedResult.rows[0].result_data
+    //   const phenotypes = req.body.phenotypes || []
 
-      const updatedResults = await Promise.all(
-        cachedData.map(async (item) => {
-          const gene = item.gene
+    //   const updatedResults = await Promise.all(
+    //     cachedData.map(async (item) => {
+    //       const gene = item.gene
 
-          const pubMedData = await getPubMedData(gene, phenotypes)
-          const clinVarData = await getClinVarData(gene)
+    //       const pubMedData = await getPubMedData(gene, phenotypes)
+    //       const clinVarData = await getClinVarData(gene)
 
-          return {
-            ...item,
-            ...pubMedData,
-            ...clinVarData
-          }
-        })
-      )
-      return res.json({ cached: true, results: updatedResults }) // * cachedResult.rows[0].result_data TO TEST FUNCTION EXCLUSION
-    }
+    //       return {
+    //         ...item,
+    //         ...pubMedData,
+    //         ...clinVarData
+    //       }
+    //     })
+    //   )
+    //   return res.json({ cached: true, results: updatedResults }) // * cachedResult.rows[0].result_data TO TEST FUNCTION EXCLUSION
+    // }
 
     //If no result in db just fetch apis
     const queryParams = { body: { genes, phenotypes } }
