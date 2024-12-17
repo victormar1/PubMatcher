@@ -165,19 +165,20 @@
                                                     class="grid grid-cols-2 text-center text-xs border-blue-600 bg-gray-100 rounded-lg">
                                                     <!-- pLI -->
                                                     <div class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400"
-                                                        :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.pLI, 'pLI') : 'text-black'">
+                                                        :class="displayVersion === 'v2' 
+                                                            ? getConstraintColor(result.constraints_v2.pLI, 'pLI') 
+                                                            : getConstraintColor(result.constraints_v4.pLI, 'pLI')">
                                                         <p class="font-bold">pLI</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI :
-                                                            result.constraints_v4.pLI }}</p>
+                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI : result.constraints_v4.pLI }}</p>
                                                     </div>
 
                                                     <!-- LOEUF -->
                                                     <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400"
-                                                        :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF') : 'text-black'">
+                                                        :class="displayVersion === 'v2' 
+                                                            ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF') 
+                                                            : getConstraintColor(result.constraints_v4.oe_lof_upper, 'LOEUF')">
                                                         <p class="font-bold">LOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ?
-                                                            result.constraints_v2.oe_lof_upper :
-                                                            result.constraints_v4.oe_lof_upper }}</p>
+                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_lof_upper : result.constraints_v4.oe_lof_upper }}</p>
                                                     </div>
 
                                                     <!-- Z_score -->
@@ -190,11 +191,11 @@
 
                                                     <!-- MOEUF -->
                                                     <div class="flex py-1.5 flex-col items-center justify-center border border-gray-400 rounded-br-lg"
-                                                        :class="displayVersion === 'v2' ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF') : 'text-black'">
+                                                        :class="displayVersion === 'v2' 
+                                                            ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF') 
+                                                            : getConstraintColor(result.constraints_v4.oe_mis_upper, 'MOEUF')">
                                                         <p class="font-bold">MOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ?
-                                                            result.constraints_v2.oe_mis_upper :
-                                                            result.constraints_v4.oe_mis_upper }}</p>
+                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_mis_upper : result.constraints_v4.oe_mis_upper }}</p>
                                                     </div>
 
                                                     <div
@@ -544,27 +545,46 @@ export default {
         },
 
         getConstraintColor(value, type) {
-            // Remplacement des virgules par des points pour convertir en nombre valide
-            const numericValue = parseFloat(value.replace(',', '.'));
+    // Vérification des valeurs pour éviter les erreurs
+    if (!value || !type) return 'text-black';
+    
+    const numericValue = parseFloat(value.replace(',', '.'));
+    if (isNaN(numericValue)) return 'text-black';
 
-            if (type === 'LOEUF' || type === 'MOEUF') {
-                const thresholds = [
-                    { max: 0.26, color: 'bg-red-300' }, // Top 10%
-                    { max: 0.41, color: 'bg-red-200' }, // Top 20%
-                    { max: 0.48, color: 'bg-orange-200' }, // Top 25%
-                    { max: 0.55, color: 'bg-yellow-200' }, // Top 30%
-                ];
-                for (const { max, color } of thresholds) {
-                    if (numericValue <= max) {
-                        return color;
-                    }
-                }
-                return 'text-black';
-            } else if (type === 'pLI') {
-                return numericValue > 0.97 ? 'bg-red-300' : 'text-black';
-            }
-            return 'text-black';
+    // Seuils pour V2 et V4
+    const thresholds = {
+        v2: {
+            LOEUF: [0.26, 0.41, 0.48, 0.55],
+            MOEUF: [0.58, 0.70, 0.73, 0.77],
+            pLI: 0.97
         },
+        v4: {
+            LOEUF: [0.39, 0.57, 0.65, 0.72],
+            MOEUF: [0.75, 0.85, 0.88, 0.90],
+            pLI: 0.97
+        }
+    };
+
+    const currentThresholds = thresholds[this.displayVersion]; // Choix dynamique des seuils
+
+    const colors = ['bg-red-300', 'bg-red-200', 'bg-orange-200', 'bg-yellow-200'];
+
+    if (type === 'LOEUF' || type === 'MOEUF') {
+        const selectedThresholds = currentThresholds[type];
+        for (let i = 0; i < selectedThresholds.length; i++) {
+            if (numericValue <= selectedThresholds[i]) {
+                return colors[i];
+            }
+        }
+        return 'text-black';
+    } else if (type === 'pLI') {
+        return numericValue > currentThresholds.pLI ? 'bg-red-300' : 'text-black';
+    }
+
+    return 'text-black';
+}
+
+,
 
 
 
