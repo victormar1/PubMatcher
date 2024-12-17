@@ -516,10 +516,12 @@ export default {
         VUSVizualiser,
         CountUp,
     },
+
     watch: {
         results(newResults) {
             if (newResults && newResults.length > 0) {
                 this.scrollToResults();
+
             }
             if (this.originalResults.length === 0) {
                 this.originalResults = [...newResults];
@@ -554,7 +556,6 @@ export default {
             newline = newline.charAt(0).toUpperCase() + newline.slice(1)
             return newline
         },
-
 
         getConstraintColor(value, type) {
             // Remplacement des virgules par des points pour convertir en nombre valide
