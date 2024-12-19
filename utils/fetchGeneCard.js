@@ -80,15 +80,12 @@ async function fetchGeneCARD(gene) {
         // * RETURN THE RESULT
         return validatedGene
       } else {
-        console.log('No gene found')
         return false
       }
     } else {
-      console.error('Failed to fetch data from HGNC API.')
       return null
     }
   } catch (error) {
-    console.error('Error fetching GeneCARD:', error)
     return null
   }
 }
@@ -97,7 +94,6 @@ function parseXML(xml) {
   return new Promise((resolve, reject) => {
     xml2js.parseString(xml, (err, result) => {
       if (err) {
-        console.error('Error parsing XML:', err)
         reject(err)
       } else {
         resolve(result)
@@ -110,10 +106,7 @@ function parseXML(xml) {
   //IIAFE
   try {
     await loadCSV()
-    console.log('Gene validity CSV file loaded successfully.')
-  } catch (error) {
-    console.error('Error loading CSV:', error)
-  }
+  } catch (error) {}
 })()
 
 module.exports = fetchGeneCARD

@@ -19,7 +19,6 @@ async function getData(req) {
         // * VALIDATE GENE
         const validatedGene = await fetchGeneCard(gene)
         if (!validatedGene) {
-          console.error(`Gene validation failed for: ${gene}`)
           return null
         }
 
@@ -38,10 +37,8 @@ async function getData(req) {
           hgncId: validatedGene.hgncId || 'No HGNC ID',
           omimId: validatedGene.omimId || 'No OMIM ID'
         }
-        console.log(resultData)
         return resultData
       } catch (error) {
-        console.error(`Error processing gene ${gene}:`, error)
         return null
       }
     })

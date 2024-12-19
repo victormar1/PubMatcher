@@ -9,7 +9,7 @@
                 <path d="m12 17.586-7.293-7.293-1.414 1.414L12 20.414l8.707-8.707-1.414-1.414L12 17.586z" />
                 <path d="m20.707 5.707-1.414-1.414L12 11.586 4.707 4.293 3.293 5.707 12 14.414l8.707-8.707z" />
             </svg>
-            <p class="text-bold h-10 text-4xl z-10 font-semibold  pb-5  text-gray-100" @click="scrollToResults">
+            <p class="text-bold h-10 text-4xl  font-semibold  pb-5  text-gray-100" @click="scrollToResults">
                 RESULTS </p>
             <svg v-if="results.length > 0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 class="fill-gray-100 ">
@@ -38,7 +38,7 @@
                                 class="px-6 py-3 text-center  border-gray-300 relative group cursor-default">
                                 GENE
                                 <div
-                                    class="absolute whitespace-nowrap bg-gray-800 text-white text-sm font-bold px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
+                                    class="absolute whitespace-nowrap rounded-md bg-gray-800 text-white text-sm font-bold px-3 py-1 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -top-10 left-1/2 transform -translate-x-1/2">
                                     Gene name and GnomAd constraints
                                 </div>
                             </th>
@@ -165,20 +165,23 @@
                                                     class="grid grid-cols-2 text-center text-xs border-blue-600 bg-gray-100 rounded-lg">
                                                     <!-- pLI -->
                                                     <div class="flex py-1.5 flex-col items-center justify-center border-t border-l rounded-tl-lg border-gray-400"
-                                                        :class="displayVersion === 'v2' 
-                                                            ? getConstraintColor(result.constraints_v2.pLI, 'pLI') 
+                                                        :class="displayVersion === 'v2'
+                                                            ? getConstraintColor(result.constraints_v2.pLI, 'pLI')
                                                             : getConstraintColor(result.constraints_v4.pLI, 'pLI')">
                                                         <p class="font-bold">pLI</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI : result.constraints_v4.pLI }}</p>
+                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.pLI :
+                                                            result.constraints_v4.pLI }}</p>
                                                     </div>
 
                                                     <!-- LOEUF -->
                                                     <div class="flex py-1.5 flex-col items-center justify-center border-t border-l border-r rounded-tr-lg border-gray-400"
-                                                        :class="displayVersion === 'v2' 
-                                                            ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF') 
+                                                        :class="displayVersion === 'v2'
+                                                            ? getConstraintColor(result.constraints_v2.oe_lof_upper, 'LOEUF')
                                                             : getConstraintColor(result.constraints_v4.oe_lof_upper, 'LOEUF')">
                                                         <p class="font-bold">LOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_lof_upper : result.constraints_v4.oe_lof_upper }}</p>
+                                                        <p>{{ displayVersion === 'v2' ?
+                                                            result.constraints_v2.oe_lof_upper :
+                                                            result.constraints_v4.oe_lof_upper }}</p>
                                                     </div>
 
                                                     <!-- Z_score -->
@@ -191,11 +194,13 @@
 
                                                     <!-- MOEUF -->
                                                     <div class="flex py-1.5 flex-col items-center justify-center border border-gray-400 rounded-br-lg"
-                                                        :class="displayVersion === 'v2' 
-                                                            ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF') 
+                                                        :class="displayVersion === 'v2'
+                                                            ? getConstraintColor(result.constraints_v2.oe_mis_upper, 'MOEUF')
                                                             : getConstraintColor(result.constraints_v4.oe_mis_upper, 'MOEUF')">
                                                         <p class="font-bold">MOEUF</p>
-                                                        <p>{{ displayVersion === 'v2' ? result.constraints_v2.oe_mis_upper : result.constraints_v4.oe_mis_upper }}</p>
+                                                        <p>{{ displayVersion === 'v2' ?
+                                                            result.constraints_v2.oe_mis_upper :
+                                                            result.constraints_v4.oe_mis_upper }}</p>
                                                     </div>
 
                                                     <div
@@ -221,8 +226,7 @@
                                 :data-popover-target="'popover-pubmatch-' + result.firstArticleTitle"
                                 data-popover-placement="right">
                                 <div class="flex flex-row items-center justify-center">
-                                    <div
-                                        class="w-32 h-32 flex items-center justify-center  border-green-500 hover:bg-blue-50">
+                                    <div class="w-32 h-32 flex items-center justify-center  border-green-500 ">
                                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                                             <!-- Background Circle -->
                                             <circle class="text-gray-300" cx="50" cy="50" r="25" stroke-width="5"
@@ -232,14 +236,16 @@
                                         <count-up :end-val="result.count" :duration="1.5" :delay="10" :easing="linear"
                                             class="absolute font-bold"></count-up>
                                     </div>
-                                    <div
-                                        class="flex flex-col flex-grow items-center justify-center  border-red-700 w-32 ">
+                                    <div class="flex flex-col flex-grow items-center  justify-center  w-40">
                                         <div class="flex items-center justify-center">
                                             <a :href="result.url" target="_blank"
-                                                class="underline text-blue-600 text-base font-medium flex items-center transition duration-200 hover:text-blue-800">
-                                                {{ result.firstArticleTitle || 'N/A' }}
-                                                <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                                                class="underline text-blue-600 text-base font-medium flex items-center duration-200 hover:text-blue-800  max-w-full">
+                                                <p class="break-all max-w-full">
+                                                    {{ result.firstArticleTitle || 'N/A' }}
+                                                </p>
+
                                             </a>
+
                                         </div>
 
                                         <div data-popover :id="'popover-pubmatch-' + result.firstArticleTitle"
@@ -297,7 +303,8 @@
                                 <!-- Mouse Phenotype Tooltips -->
                                 <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
                                     class="relative flex flex-wrap gap-2 justify-center drop-shadow z-50">
-                                    <div v-for="(details, category) in result.mousePhenotypes" :key="category"
+                                    <a :href="result.impcUrl" target="_blank"
+                                        v-for=" (details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
                                         <!-- Tooltip Trigger -->
                                         <span v-html="details.icon" class="w-6 h-6 cursor-pointer text-gray-600"
@@ -309,12 +316,16 @@
                                             class="absolute z-50 invisible opacity-0 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800 top-8 left-1/2 -translate-x-1/2">
                                             <div
                                                 class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                                <h3
+                                                <h3 v-if="category !== 'noMatch'"
                                                     class="font-bold text-gray-800 font-noto dark:text-white text-nowrap">
                                                     {{ formatCategory(category) }}
                                                 </h3>
+                                                <h3 v-else
+                                                    class="font-bold text-gray-800 font-noto dark:text-white text-nowrap">
+                                                    No Match
+                                                </h3>
                                             </div>
-                                            <div class="px-3 py-2">
+                                            <div v-if="category !== 'noMatch'" class="px-3 py-2">
                                                 <ul class="list-disc space-y-1">
                                                     <li v-for="name in details.names" :key="name"
                                                         class="inline-flex px-2 justify-center items-center bg-blue-200 rounded-full">
@@ -323,9 +334,10 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            <div v-else class="px-3 py-2"></div>
                                             <div data-popper-arrow></div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </td>
 
@@ -545,46 +557,46 @@ export default {
         },
 
         getConstraintColor(value, type) {
-    // Vérification des valeurs pour éviter les erreurs
-    if (!value || !type) return 'text-black';
-    
-    const numericValue = parseFloat(value.replace(',', '.'));
-    if (isNaN(numericValue)) return 'text-black';
+            // Vérification des valeurs pour éviter les erreurs
+            if (!value || !type) return 'text-black';
 
-    // Seuils pour V2 et V4
-    const thresholds = {
-        v2: {
-            LOEUF: [0.26, 0.41, 0.48, 0.55],
-            MOEUF: [0.58, 0.70, 0.73, 0.77],
-            pLI: 0.97
-        },
-        v4: {
-            LOEUF: [0.39, 0.57, 0.65, 0.72],
-            MOEUF: [0.75, 0.85, 0.88, 0.90],
-            pLI: 0.97
-        }
-    };
+            const numericValue = parseFloat(value.replace(',', '.'));
+            if (isNaN(numericValue)) return 'text-black';
 
-    const currentThresholds = thresholds[this.displayVersion]; // Choix dynamique des seuils
+            // Seuils pour V2 et V4
+            const thresholds = {
+                v2: {
+                    LOEUF: [0.26, 0.41, 0.48, 0.55],
+                    MOEUF: [0.58, 0.70, 0.73, 0.77],
+                    pLI: 0.97
+                },
+                v4: {
+                    LOEUF: [0.39, 0.57, 0.65, 0.72],
+                    MOEUF: [0.75, 0.85, 0.88, 0.90],
+                    pLI: 0.97
+                }
+            };
 
-    const colors = ['bg-red-300', 'bg-red-200', 'bg-orange-200', 'bg-yellow-200'];
+            const currentThresholds = thresholds[this.displayVersion]; // Choix dynamique des seuils
 
-    if (type === 'LOEUF' || type === 'MOEUF') {
-        const selectedThresholds = currentThresholds[type];
-        for (let i = 0; i < selectedThresholds.length; i++) {
-            if (numericValue <= selectedThresholds[i]) {
-                return colors[i];
+            const colors = ['bg-red-300', 'bg-red-200', 'bg-orange-200', 'bg-yellow-200'];
+
+            if (type === 'LOEUF' || type === 'MOEUF') {
+                const selectedThresholds = currentThresholds[type];
+                for (let i = 0; i < selectedThresholds.length; i++) {
+                    if (numericValue <= selectedThresholds[i]) {
+                        return colors[i];
+                    }
+                }
+                return 'text-black';
+            } else if (type === 'pLI') {
+                return numericValue > currentThresholds.pLI ? 'bg-red-300' : 'text-black';
             }
+
+            return 'text-black';
         }
-        return 'text-black';
-    } else if (type === 'pLI') {
-        return numericValue > currentThresholds.pLI ? 'bg-red-300' : 'text-black';
-    }
 
-    return 'text-black';
-}
-
-,
+        ,
 
 
 
@@ -709,6 +721,7 @@ export default {
         handleScroll() {
             this.isScrolled = window.scrollY > 500; //Appear limit
         },
+
 
 
 

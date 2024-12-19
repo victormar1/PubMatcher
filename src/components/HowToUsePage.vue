@@ -60,13 +60,11 @@ export default {
                 { top: "70%", left: "80%", info: "Add the phenotype(s) of the case" },
             ],
             dots_read: [
-                { top: "20%", left: "50%", info: "Feature 1: Search Box" },
-                { top: "10%", left: "84%", info: "Feature 2: Results Section" },
-                { top: "30%", left: "10%", info: "Feature 3: Graph Section" },
+                { top: "20%", left: "50%", info: "Extract form unformatted text or list" },
+                { top: "50%", left: "30%", info: "Add genes individually" },
+                { top: "70%", left: "80%", info: "Add the phenotype(s) of the case" },
             ],
-            dots_read: [
 
-            ],
         };
     },
     methods: {

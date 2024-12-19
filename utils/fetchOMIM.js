@@ -19,15 +19,12 @@ const fetchMimMorbidData = async (ensemblId) => {
         if (!seen.has(description)) {
           mimMorbidDescriptions.push(description)
           seen.add(description)
-          console.log(`MIM Morbid Description Found: ${description}`)
         }
       }
     })
 
-    console.log('Filtered MIM Morbid Descriptions:', mimMorbidDescriptions)
     return { mim: mimMorbidDescriptions }
   } catch (error) {
-    console.error('Error fetching MIM morbid data:', error.message)
     return []
   }
 }

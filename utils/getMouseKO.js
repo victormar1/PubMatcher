@@ -51,6 +51,14 @@ async function getMouseKO(mgdId) {
   } catch (error) {
     console.error('Error fetching phenotypes from IMPC')
   }
+
+  //Add caps to first word of each phenotypes
+  for (const category in groupedPhenotypes) {
+    groupedPhenotypes[category].names = groupedPhenotypes[category].names.map((name) => {
+      return name.charAt(0).toUpperCase() + name.slice(1)
+    })
+  }
+
   //GOOFY ASS
   if (Object.keys(groupedPhenotypes).length === 0) {
     groupedPhenotypes['noMatch'] = {
@@ -63,7 +71,8 @@ async function getMouseKO(mgdId) {
     result.mousePhenotype = 'No match'
   }
   // * RETURN THE RESULT
-  return { mousePhenotypes: groupedPhenotypes }
+  impcUrl = `https://www.mousephenotype.org/data/genes/${mgdId}`
+  return { mousePhenotypes: groupedPhenotypes, impcUrl: impcUrl }
 }
 
 function loadSVGIcons() {
