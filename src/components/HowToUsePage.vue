@@ -23,14 +23,23 @@
                         <div class="relative max-w-5xl">
                             <!-- Screenshot -->
                             <img :src="slide.screen" alt="Screenshot" class="w-full h-auto rounded-md" />
-
                             <!-- Pulsating Dots -->
                             <div v-for="(dot, index) in getDotset(slide.dotset)" :key="index"
                                 class="absolute flex items-center justify-center "
                                 :style="{ top: dot.top, left: dot.left }">
                                 <div class="w-8 h-8 bg-red-500 rounded-full animate-ping"></div>
                                 <div class="absolute w-5 h-5 bg-red-500 rounded-full border-2 border-white cursor-pointer drop-shadow"
-                                    @click="showInfo(dot)"></div>
+                                    :data-popover-target="'popover-pubmatch-' + slide.dotset + '-' + index"
+                                    data-popover-placement="right">
+                                </div>
+                                <div data-popover :id="'popover-pubmatch-' + slide.dotset + '-' + index" role="tooltip"
+                                    class="absolute z-10 invisible text-md font-medium text-gray-600 transition-opacity duration-300
+         bg-white border border-gray-200 rounded-lg shadow-sm p-3 max-w-sm
+         whitespace-normal break-words text-nowrap">
+                                    {{ dot.info }}
+                                    <div data-popper-arrow></div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -51,26 +60,26 @@ export default {
             currentSlide: 0,
             slides: [{ index: 1, name: "Search", dotset: "dots_search", screen: "/images/screenshot.png" },
             { index: 2, name: "Read", dotset: "dots_read", screen: "/images/screenshot2.png" },
-            { index: 2, name: "Collaborate", dotset: "dots_read", screen: "/images/screenshot3.png" },
+                //{ index: 2, name: "Collaborate", dotset: "dots_read", screen: "/images/screenshot3.png" },
             ],
 
             dots_search: [
-                { top: "20%", left: "50%", info: "Extract form unformatted text or list" },
+                { top: "20%", left: "50%", info: "Extract from raw text or output" },
                 { top: "50%", left: "30%", info: "Add genes individually" },
-                { top: "70%", left: "80%", info: "Add the phenotype(s) of the case" },
+                { top: "60%", left: "70%", info: "Add phenotype(s) to match the case" },
             ],
             dots_read: [
-                { top: "20%", left: "50%", info: "Extract form unformatted text or list" },
-                { top: "50%", left: "30%", info: "Add genes individually" },
-                { top: "70%", left: "80%", info: "Add the phenotype(s) of the case" },
+                { top: "10%", left: "5%", info: "Check for gene constraints" },
+                { top: "8%", left: "25%", info: "Quickly get pubMed articles" },
+                { top: "50%", left: "50%", info: "Verify protein function" },
+                { top: "67%", left: "73%", info: "MouseKO related to gene" },
+                { top: "50%", left: "85%", info: "VUS / LOF ratios" },
+                { top: "30%", left: "93%", info: "Panel APP / Classification / OMIM" }
             ],
 
         };
     },
     methods: {
-        showInfo(dot) {
-            alert(dot.info);
-        },
         goToSlide(index) {
             this.currentSlide = index;
         },

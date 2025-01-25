@@ -485,25 +485,20 @@
                                     <!-- Link to OMIM if result.omimId exists -->
                                     <a :href="result.omimId ? `https://omim.org/entry/${result.omimId}` : '#'"
                                         target="_blank" rel="noopener noreferrer" class="relative">
-
-                                        <span v-if="result.mim && result.mim.length > 0"
-                                            class="text-white font-bold bg-green-200 rounded-lg px-2 py-1">
-                                            <div class="size-6">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-check">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                    <path d="M9 12l2 2l4 -4" />
-                                                    <path
-                                                        d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
-                                                </svg>
+                                        <div
+                                            class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center">
+                                            <span>
+                                                OMIM Status
+                                            </span>
+                                            <span v-if="result.mim && result.mim.length > 0"
+                                                class="text-white font-bold bg-green-500 rounded-lg px-2 py-1">
                                                 MORBID
-                                            </div>--
-                                        </span>
-                                        <span v-else class="text-red-600 font-bold">
-                                            NO MORBID
-                                        </span>
+                                            </span>
+                                            <span v-else
+                                                class=" text-white font-bold bg-red-500 rounded-lg px-2 py-1 text-nowrap">
+                                                NOT MORBID
+                                            </span>
+                                        </div>
                                     </a>
                                 </div>
                             </td>
