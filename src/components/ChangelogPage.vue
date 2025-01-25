@@ -32,11 +32,11 @@ export default {
                 {
                     date: 'December 2024',
                     changes: [
-                        'Better search design with QoL changes (gene blacklisting ).',
+                        'Better search design with QoL changes (gene blacklisting).',
                         'ClinVar Lookup column added.',
                         'Added a complete About page with changelog (v2.1) for improved transparency.',
                         'Improved response time for smoother navigation.',
-                        'Better management of search histories with direct display.',
+                        'Better management of search histories with direct display.'
                     ],
                 },
                 {
@@ -45,12 +45,12 @@ export default {
                         'Major UI redesign with modern visuals and improved navigation.',
                         'User login system with account management.',
                         'Performance fixes for buffering issues and response time improvements.',
-                        'Enhanced error handling (icons, error messages, loading states).',
+                        'Enhanced error handling (icons, error messages, loading states).'
                     ],
                 },
                 {
                     date: 'February 2024',
-                    changes: ['Major stability improvement','Fix stability of batch input'],
+                    changes: ['Major stability improvement', 'Fix stability of batch input'],
                 },
                 {
                     date: 'January 2024',
