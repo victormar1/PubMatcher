@@ -28,7 +28,7 @@
             </button>
         </div>
         <div class="block">
-            <div class="drop-shadow-xl rounded-3xl ">
+            <div class="border-2 border-gray-800  ">
                 <!-- Fixed spelling and applied overflow-hidden -->
                 <table id="resultsTable" class="w-full text-sm text-left  text-gray-500 dark:text-gray-400 bg-gray-800">
                     <thead class="uppercase text-lg text-nowrap text-gray-200">
@@ -302,7 +302,7 @@
                             <td class="relative px-6 py-4 border-gray-200">
                                 <!-- Mouse Phenotype Tooltips -->
                                 <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
-                                    class="relative flex flex-wrap gap-2 justify-center drop-shadow z-50">
+                                    class="relative flex flex-wrap gap-2 justify-center z-50">
                                     <a :href="result.impcUrl" target="_blank"
                                         v-for=" (details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
@@ -342,18 +342,19 @@
                             </td>
 
                             <!-- ClinVar Data -->
-                            <td class="relative px-6 py-4 border-gray-200 z-10">
+                            <td class="relative px-6 py-4  z-10">
                                 <!-- ClinVar Visualizers -->
-                                <div class="flex h-36 flex-row justify-center">
+                                <div class="flex h-36 flex-row justify-center cursor-pointer"
+                                    @click="openClinVarUrl(result.gene)">
                                     <!-- P/LP Graph -->
-                                    <div class="relative z-10 w-20 drop-shadow"
+                                    <div class="relative z-10 w-20 "
                                         :data-popover-target="'popover-graph-' + result.gene">
                                         <ClinVarVizualiser
                                             :variantData="[result.lofVariants, result.missenseVariants, result.lofUnknown, result.missenseUnknown]" />
                                     </div>
 
                                     <!-- VUS Graph -->
-                                    <div class="relative z-10 w-10 drop-shadow"
+                                    <div class="relative z-10 w-10 "
                                         :data-popover-target="'popover-vus-' + result.gene">
                                         <VUSVizualiser :variantData="[result.lofUnknown, result.missenseUnknown]" />
                                     </div>
@@ -484,9 +485,21 @@
                                     <!-- Link to OMIM if result.omimId exists -->
                                     <a :href="result.omimId ? `https://omim.org/entry/${result.omimId}` : '#'"
                                         target="_blank" rel="noopener noreferrer" class="relative">
+
                                         <span v-if="result.mim && result.mim.length > 0"
-                                            class="text-green-600 font-bold">
-                                            MORBID
+                                            class="text-white font-bold bg-green-200 rounded-lg px-2 py-1">
+                                            <div class="size-6">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-square-rounded-check">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path d="M9 12l2 2l4 -4" />
+                                                    <path
+                                                        d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" />
+                                                </svg>
+                                                MORBID
+                                            </div>--
                                         </span>
                                         <span v-else class="text-red-600 font-bold">
                                             NO MORBID
@@ -547,7 +560,9 @@ export default {
     },
 
     methods: {
-
+        openClinVarUrl(gene) {
+            window.open(`https://www.ncbi.nlm.nih.gov/clinvar/?term=%22${gene}%22%5BGENE%5D&redir=gene`, '_blank');
+        },
         formatCategory(cat) {
             let newline = ''
             newline = cat.replace('_phenotype', '')

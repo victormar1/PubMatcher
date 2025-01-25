@@ -27,6 +27,22 @@ async function getPubMedData(gene, phenotypes) {
   const warningText = $(spellCheckWarningSelector).text().trim()
   const isAutocorrected = warningText.includes(spellCheckOnly)
 
+  // NO RESULT CHECK
+  const zeroResultsBannerSelector = '.solr-message.query-error-message.usa-alert.usa-alert-slim.usa-alert-warning .usa-alert-body .usa-alert-text'
+  const zeroResultsBannerText = $(zeroResultsBannerSelector).text().trim()
+  const hasZeroResultsBanner = zeroResultsBannerText.includes('Your search was processed without automatic term mapping because it retrieved zero results.')
+
+  if (hasZeroResultsBanner) {
+    return {
+      gene,
+      url,
+      firstArticleTitle: 'No articles found',
+      firstArticleUrl: null,
+      complArticles: [],
+      count: 0
+    }
+  }
+
   // * DEFAULT VALUES
   let firstArticleTitle = 'No articles found'
   let firstArticleUrl = null
