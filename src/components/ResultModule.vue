@@ -439,12 +439,16 @@
 
 
                             <td class="px-6 py-4 text-center">
-                                <div :class="[getValidityColor(result.geneValidity)]"
-                                    class="rounded-full text-white font-bold py-1 px-2 text-nowrap">
-                                    <a :href="result.geneLink" target="_blank" rel="noopener noreferrer"
-                                        class="text-white hover:underline">
-                                        {{ result.geneValidity }}
-                                    </a>
+                                <div
+                                    class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center">
+                                    <span>GeneCC</span>
+                                    <div :class="[getValidityColor(result.geneValidity)]"
+                                        class="text-white font-bold bg-green-500 rounded-lg px-2 py-1">
+                                        <a :href="result.geneLink" target="_blank" rel="noopener noreferrer"
+                                            class="text-white hover:underline">
+                                            {{ result.geneValidity }}
+                                        </a>
+                                    </div>
                                 </div>
                                 <!-- ATTRIBUTION !!! -->
                                 <div class="flex flex-row justify-center gap-2">
@@ -483,42 +487,31 @@
                                     <!-- Check if result.mim has at least one item -->
 
                                     <!-- Link to OMIM if result.omimId exists -->
-                                    <a
-                                        :href="
-                                            result.omimId && result.omimId !== 'No match'
-                                            ? `https://omim.org/entry/${result.omimId}`
-                                            : '#'
-                                        "
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="relative"
-                                        >
-                                        <div class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center">
-                                            <span>OMIM Status</span>
+                                    <a :href="result.omimId && result.omimId !== 'No match'
+                                        ? `https://omim.org/entry/${result.omimId}`
+                                        : '#'
+                                        " target="_blank" rel="noopener noreferrer" class="relative">
+                                        <div
+                                            class="border-2 border-gray-500 rounded-lg  py-1 gap-3 flex items-center justify-center">
+                                            <span>OMIM</span>
 
                                             <!-- Si l'omimId renvoie 'No match' on affiche NOT OMIM -->
-                                            <span
-                                            v-if="result.omimId === 'No match'"
-                                            class="text-white font-bold bg-red-500 rounded-lg px-2 py-1"
-                                            >
-                                            NOT OMIM
+                                            <span v-if="result.omimId === 'No match'"
+                                                class="text-white font-bold bg-red-500 rounded-lg px-2 py-1">
+                                                NOT OMIM
                                             </span>
 
                                             <!-- Sinon, on garde la logique existante pour MORBID / NOT MORBID -->
-                                            <span
-                                            v-else-if="result.mim && result.mim.length > 0"
-                                            class="text-white font-bold bg-green-500 rounded-lg px-2 py-1"
-                                            >
-                                            MORBID
+                                            <span v-else-if="result.mim && result.mim.length > 0"
+                                                class="text-white font-bold bg-green-500 rounded-lg px-2 py-1">
+                                                MORBID
                                             </span>
-                                            <span
-                                            v-else
-                                            class="text-white font-bold bg-red-500 rounded-lg px-2 py-1 text-nowrap"
-                                            >
-                                            NOT MORBID
+                                            <span v-else
+                                                class="text-white font-bold bg-red-500 rounded-lg px-2 py-1 text-nowrap">
+                                                NOT MORBID
                                             </span>
                                         </div>
-                                        </a>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
