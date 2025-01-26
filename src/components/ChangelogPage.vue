@@ -29,6 +29,16 @@ export default {
     data() {
         return {
             changelogEntries: [
+            {
+                    date: 'January 2025',
+                    changes: [
+                        'Quick access to more PubMatch articles',
+                        'ClinVar Lookup update',
+                        'About Page update',
+                        'OMIM Status available',
+                        'Gene constraints on V4 added'
+                    ],
+                },
                 {
                     date: 'December 2024',
                     changes: [
