@@ -48,7 +48,7 @@
 
       <!-- Center Section: Text -->
       <div class="container flex flex-col mx-auto text-center justify-center">
-        <p>&copy; 2024 PubMatcher. All rights reserved.</p>
+        <p>&copy; 2025 PubMatcher. All rights reserved.</p>
         <p class="text-sm">Made by Victor Marin</p>
       </div>
 
