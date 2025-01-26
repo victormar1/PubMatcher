@@ -34,7 +34,7 @@
                                 </div>
                                 <div data-popover :id="'popover-pubmatch-' + slide.dotset + '-' + index" role="tooltip"
                                     class="absolute z-10 invisible text-md font-medium text-gray-600 transition-opacity duration-300
-         bg-white border border-gray-200 rounded-lg shadow-sm p-3 max-w-sm
+         bg-white border border-gray-200 rounded-lg shadow-sm p-3 
          whitespace-normal break-words text-nowrap">
                                     {{ dot.info }}
                                     <div data-popper-arrow></div>
@@ -75,7 +75,7 @@ export default {
                 { top: "60%", left: "70%", info: "Add phenotype(s) to match the case" },
             ],
             dots_read: [
-                { top: "10%", left: "5%", info: "Check for gene constraints" },
+                { top: "10%", left: "5%", info: "Check for gene constraints. Click to swap version" },
                 { top: "8%", left: "25%", info: "Quickly get pubMed articles" },
                 { top: "50%", left: "50%", info: "Verify protein function" },
                 { top: "67%", left: "73%", info: "MouseKO related to gene" },
