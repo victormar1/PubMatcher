@@ -6,7 +6,7 @@
           <img class="max-h-12 w-auto object-cover" src="/images/pmlogo.svg" alt="PubMatcher Logo" />
           <!-- Titre principal -->
           <div class="flex flex-row items-baseline space-x-1 ">
-            <h1 class="text-5xl font-bold  text-white">PUBMatcher</h1>
+            <h1 class="text-5xl font-bold  text-white">PubMatcher</h1>
           </div>
           <div class=" w-24 h-10 justify-end items-end flex">
             <svg width="50" height="20" viewBox="0 0 350 163" fill="none" xmlns="http://www.w3.org/2000/svg">
