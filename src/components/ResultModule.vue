@@ -443,7 +443,7 @@
                                     class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center mb-2">
                                     <span>GeneCC</span>
                                     <div :class="[getValidityColor(result.geneValidity)]"
-                                        class="text-white font-bold bg-green-500 rounded-lg px-2 py-1">
+                                        class="text-white font-bold rounded-lg px-2 py-1">
                                         <a :href="result.geneLink" target="_blank" rel="noopener noreferrer"
                                             class="text-white hover:underline">
                                             {{ result.geneValidity }}
@@ -688,6 +688,8 @@ export default {
             } else if (valid === 'Limited') {
                 return "bg-red-500"
             } else if (valid === 'Disputed Evidence') {
+                return "bg-red-600"
+            } else if (valid === 'Refuted Evidence') {
                 return "bg-red-600"
             } else if (valid === 'Refuted') {
                 return "bg-red-900"
