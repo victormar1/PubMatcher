@@ -13,7 +13,6 @@
                     PubMatcher bridges the gap between genomic data and actionable insights, aiming to quickly identitfy
                     possible association.
                 </p>
-
             </div>
         </div>
         <!-- <img class="  object-cover mx-auto drop-shadow" src="/images/pmchart.svg" alt="PubMatcher Logo" /> -->

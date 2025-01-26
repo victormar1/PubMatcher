@@ -441,9 +441,9 @@
                             <td class="px-6 py-4 text-center">
                                 <div
                                     class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center mb-2">
-                                    <span>GeneCC</span>
+                                    <span>GenCC</span>
                                     <div :class="[getValidityColor(result.geneValidity)]"
-                                        class="text-white font-bold rounded-lg px-2 py-1">
+                                        class="text-white font-bold rounded-lg px-2 py-1 text-nowrap">
                                         <a :href="result.geneLink" target="_blank" rel="noopener noreferrer"
                                             class="text-white hover:underline">
                                             {{ result.geneValidity }}

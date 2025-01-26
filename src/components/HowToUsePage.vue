@@ -76,11 +76,11 @@ export default {
             ],
             dots_read: [
                 { top: "10%", left: "5%", info: "Check for gene constraints. Click to swap version (GnomAd v2/v4)" },
-                { top: "8%", left: "25%", info: "View Number and Titles of matching PubMed articles" },
+                { top: "25%", left: "25%", info: "View Number and Titles of matching PubMed articles" },
                 { top: "50%", left: "50%", info: "Assess protein function on Uniprot" },
-                { top: "67%", left: "73%", info: "Phenotype in KO mice via IMPC" },
-                { top: "50%", left: "85%", info: " Clinvar ratios of P/PL and VUS variants" },
-                { top: "30%", left: "93%", info: "OMIM / GeneCC / PanelApp infos" }
+                { top: "10%", left: "68%", info: "Phenotype in KO mice via IMPC" },
+                { top: "90%", left: "75%", info: " Clinvar ratios of P/PL and VUS variants" },
+                { top: "30%", left: "90%", info: "OMIM / GeneCC / PanelApp infos" }
             ],
 
         };
