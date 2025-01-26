@@ -70,17 +70,17 @@ export default {
             ],
 
             dots_search: [
-                { top: "20%", left: "50%", info: "Extract from raw text or output" },
-                { top: "50%", left: "30%", info: "Add genes individually" },
-                { top: "60%", left: "70%", info: "Add phenotype(s) to match the case" },
+                { top: "20%", left: "50%", info: "Extract genes from raw text or any output" },
+                { top: "50%", left: "30%", info: "Add gene(s) individually" },
+                { top: "60%", left: "70%", info: "Add phenotype(s) to match" },
             ],
             dots_read: [
-                { top: "10%", left: "5%", info: "Check for gene constraints. Click to swap version" },
-                { top: "8%", left: "25%", info: "Quickly get pubMed articles" },
-                { top: "50%", left: "50%", info: "Verify protein function" },
-                { top: "67%", left: "73%", info: "MouseKO related to gene" },
-                { top: "50%", left: "85%", info: "VUS / LOF ratios" },
-                { top: "30%", left: "93%", info: "Panel APP / Classification / OMIM" }
+                { top: "10%", left: "5%", info: "Check for gene constraints. Click to swap version (GnomAd v2/v4)" },
+                { top: "8%", left: "25%", info: "View Number and Titles of matching PubMed articles" },
+                { top: "50%", left: "50%", info: "Assess protein function on Uniprot" },
+                { top: "67%", left: "73%", info: "Phenotype in KO mice via IMPC" },
+                { top: "50%", left: "85%", info: " Clinvar ratios of P/PL and VUS variants" },
+                { top: "30%", left: "93%", info: "OMIM / GeneCC / PanelApp infos" }
             ],
 
         };
