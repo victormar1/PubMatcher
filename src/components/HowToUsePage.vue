@@ -53,8 +53,14 @@
 
 
 <script>
+import { initPopovers } from 'flowbite';
+
 export default {
     name: "HowToUsePage",
+
+    mounted() {
+        initPopovers();
+    },
     data() {
         return {
             currentSlide: 0,

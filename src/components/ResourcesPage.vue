@@ -15,7 +15,7 @@
                         <div>
                             <a :href="ref.link" target="_blank" rel="noopener noreferrer"
                                 class="text-blue-500 hover:underline">
-                                {{ ref.version }}
+                                <!-- {{ ref.version }} -->
                             </a>
                         </div>
                     </li>
@@ -34,12 +34,6 @@ export default {
     data() {
         return {
             references: [
-                {
-                    name: 'NCBI PubMed API',
-                    desc: 'Provides access to biomedical literature and allows querying PubMed for scientific articles.',
-                    version: 'v3.0',
-                    link: 'https://www.ncbi.nlm.nih.gov/home/develop/api/',
-                },
                 {
                     name: 'UniProt API',
                     desc: 'Offers comprehensive information on protein sequence and functional annotation.',
