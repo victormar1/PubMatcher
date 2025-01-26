@@ -483,23 +483,42 @@
                                     <!-- Check if result.mim has at least one item -->
 
                                     <!-- Link to OMIM if result.omimId exists -->
-                                    <a :href="result.omimId ? `https://omim.org/entry/${result.omimId}` : '#'"
-                                        target="_blank" rel="noopener noreferrer" class="relative">
-                                        <div
-                                            class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center">
-                                            <span>
-                                                OMIM Status
+                                    <a
+                                        :href="
+                                            result.omimId && result.omimId !== 'No match'
+                                            ? `https://omim.org/entry/${result.omimId}`
+                                            : '#'
+                                        "
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="relative"
+                                        >
+                                        <div class="border-2 border-gray-500 rounded-lg px-2 py-1 gap-3 flex items-center justify-center">
+                                            <span>OMIM Status</span>
+
+                                            <!-- Si l'omimId renvoie 'No match' on affiche NOT OMIM -->
+                                            <span
+                                            v-if="result.omimId === 'No match'"
+                                            class="text-white font-bold bg-red-500 rounded-lg px-2 py-1"
+                                            >
+                                            NOT OMIM
                                             </span>
-                                            <span v-if="result.mim && result.mim.length > 0"
-                                                class="text-white font-bold bg-green-500 rounded-lg px-2 py-1">
-                                                MORBID
+
+                                            <!-- Sinon, on garde la logique existante pour MORBID / NOT MORBID -->
+                                            <span
+                                            v-else-if="result.mim && result.mim.length > 0"
+                                            class="text-white font-bold bg-green-500 rounded-lg px-2 py-1"
+                                            >
+                                            MORBID
                                             </span>
-                                            <span v-else
-                                                class=" text-white font-bold bg-red-500 rounded-lg px-2 py-1 text-nowrap">
-                                                NOT MORBID
+                                            <span
+                                            v-else
+                                            class="text-white font-bold bg-red-500 rounded-lg px-2 py-1 text-nowrap"
+                                            >
+                                            NOT MORBID
                                             </span>
                                         </div>
-                                    </a>
+                                        </a>
                                 </div>
                             </td>
                         </tr>
