@@ -1,0 +1,287 @@
+{"level":"info","message":"🚀 Logger test: This should appear in console!","timestamp":"2025-01-29T23:00:46.600Z"}
+{"level":"error","message":"🔥 Logger error test!","timestamp":"2025-01-29T23:00:46.602Z"}
+{"level":"info","message":"getPubMedData called)","timestamp":"2025-01-29T23:00:58.660Z"}
+{"api":"https://pubmed.ncbi.nlm.nih.gov/?term=CPZ","level":"info","message":"API request","responseTime":609,"status":200,"timestamp":"2025-01-29T23:00:59.270Z"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend...","timestamp":"2025-01-29T23:02:15.211Z"}
+{"level":"info","message":"✅ Middleware configured successfully.","timestamp":"2025-01-29T23:02:15.216Z"}
+{"level":"info","message":"⚙️  Server configuration applied.","timestamp":"2025-01-29T23:02:15.219Z"}
+{"level":"info","message":"🛠️  API routes registered under `/api`.","timestamp":"2025-01-29T23:02:16.249Z"}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes.","timestamp":"2025-01-29T23:02:16.249Z"}
+{"level":"info","message":"📡 Server is ready to be started.","timestamp":"2025-01-29T23:02:16.250Z"}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections...","timestamp":"2025-01-29T23:02:16.250Z"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend...","timestamp":"2025-01-29T23:02:50.467Z"}
+{"level":"info","message":"✅ Middleware configured successfully.","timestamp":"2025-01-29T23:02:50.471Z"}
+{"level":"info","message":"⚙️  Server configuration applied.","timestamp":"2025-01-29T23:02:50.475Z"}
+{"level":"info","message":"🛠️  API routes registered under `/api`.","timestamp":"2025-01-29T23:02:51.373Z"}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes.","timestamp":"2025-01-29T23:02:51.373Z"}
+{"level":"info","message":"📡 Server is ready to be started.","timestamp":"2025-01-29T23:02:51.374Z"}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections...","timestamp":"2025-01-29T23:02:51.374Z"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"getPubMedData called)"}
+{"api":"https://pubmed.ncbi.nlm.nih.gov/?term=CPZ","level":"info","message":"API request","responseTime":894,"status":200}
+{"level":"info","message":"getPubMedData called)"}
+{"api":"https://pubmed.ncbi.nlm.nih.gov/?term=CPZ","level":"info","message":"API request","responseTime":527,"status":200}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"api":"https://pubmed.ncbi.nlm.nih.gov/?term=CPZ","level":"info","message":"API request","responseTime":"0.665s","status":200}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"api":"Pudmed","level":"info","message":"API request","responseTime":"0.653s","status":200}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | API: PubMed | Response Time: 0.584ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.645ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.846ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.984ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79)}} | Response Time: 1.109ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130)}} | Response Time: 1.121ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114)}} | Response Time: 1.011ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.654ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.675ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.902ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 0.998ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.146ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.029ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.601ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.730ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.890ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.012ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.131ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.096ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.527ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.670ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.735ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.090ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.064ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.038ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.701ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.862ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.981ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.049ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.056ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.226ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.601ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.721ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.781ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.048ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.130ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.040ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.498ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.688ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.892ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.031ss | Status: 200"}
+{"level":"warn","message":"Hello distributed log files!"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.261ss | Status: 200"}
+{"level":"warn","message":"Hello distributed log files!"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.043ss | Status: 200"}
+{"level":"warn","message":"Hello distributed log files!"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.468ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.664ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.759ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.151ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.088ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.199ss | Status: 200"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.498ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.760ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.818ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.079ss | Status: 200"}
+{"level":"warn","message":"test"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.035ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.039ss | Status: 200"}
+{"level":"warn","message":"test"}
+{"level":"warn","message":"test"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.673ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.818ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.925ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.072ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.010ss | Status: 200"}
+{"level":"warn","message":"🛠️  API Request | IMPC | FAILED | No results found for this gene."}
+{"level":"warn","message":"🛠️  API Request | IMPC | FAILED | No results found for this gene."}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.040ss | Status: 200"}
+{"level":"warn","message":"🛠️  API Request | IMPC | FAILED | No results found for this gene."}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.501ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.689ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.769ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 1.212ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.131ss | Status: 200"}
+{"api":"IMPC","error":"response is not defined","level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88487"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.119ss | Status: 200"}
+{"api":"IMPC","error":"response is not defined","level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88052"}
+{"api":"IMPC","error":"response is not defined","level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:96765"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.526ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.797ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.966ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.096ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88052"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 0.946ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.054ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88487"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:96765"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.529ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.655ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.743ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 0.904ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.030ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88487"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88052"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 0.955ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:96765"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.475ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.611ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.666ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 0.861ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88487"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.050ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.019ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88052"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:96765"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.574ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.760ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.833ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.889ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P10768 | Response Time: 0.934ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 0.892ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.140ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:95421"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.013ss | Status: 200"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88487"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:96765"}
+{"api":"IMPC","error":{},"level":"warn","message":"🛠️  API Request | FAILED | No results found for gene: MGI:88052"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.517ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.632ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.724ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | PubMed | Response Time: 0.871ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: Q66K79 | Response Time: 0.971ss | Status: 200"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P10768 | Response Time: 1.097ss | Status: 200"}
+{"level":"warn","message":"🛠️  API Request FAILED  | IMPC | No results found for gene: MGI:88487"}
+{"level":"warn","message":"🛠️  API Request FAILED  | IMPC | No results found for gene: MGI:95421"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P01130 | Response Time: 1.118ss | Status: 200"}
+{"level":"warn","message":"🛠️  API Request FAILED  | IMPC | No results found for gene: MGI:96765"}
+{"level":"info","message":"🛠️  API Request | UniProt | Gene: P04114 | Response Time: 1.004ss | Status: 200"}
+{"level":"warn","message":"🛠️  API Request FAILED  | IMPC | No results found for gene: MGI:88052"}
+{"level":"info","message":"🚀 Starting PubMatcher Backend..."}
+{"level":"info","message":"✅ Middleware configured successfully."}
+{"level":"info","message":"⚙️  Server configuration applied."}
+{"level":"info","message":"🛠️  API routes registered under `/api`."}
+{"level":"info","message":"🎨 SPA routing enabled: Serving `index.html` for unknown routes."}
+{"level":"info","message":"📡 Server is ready to be started."}
+{"level":"debug","message":"🔧 Debug mode active. Awaiting connections..."}

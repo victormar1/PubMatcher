@@ -2,10 +2,15 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const path = require('path')
 const fs = require('fs')
+const logger = require('../services/logger')
 
 let svgIcons = []
+const flow = 'IMPC'
+let fetchDuration = 0
+let processDuration = 0
 
 async function getMouseKO(mgdId) {
+  const start = Date.now()
   const mouseUrl = `https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_accession_id:"${mgdId}"`
   const matchingPhenotypes = []
   const groupedPhenotypes = {}
@@ -13,6 +18,15 @@ async function getMouseKO(mgdId) {
   try {
     // * FETCH MOUSE API
     const mouseResponse = await axios.get(mouseUrl)
+    fetchDuration = ((Date.now() - start) / 1000).toFixed(3) + 's'
+
+    if (mouseResponse.data.response.numFound == 0) {
+      logger.warn(`${fetchDuration} | ${flow} | ❔ NO DATA FOUND`, {
+        apiUrl: mouseUrl,
+        resolveDuration: fetchDuration,
+        status: mouseResponse.status
+      })
+    }
     mouseResponse.data.response.docs.forEach((doc) => {
       const phenotype = {
         phenotypeName: doc.mp_term_name, // Set the phenotype name
@@ -49,7 +63,9 @@ async function getMouseKO(mgdId) {
       }
     })
   } catch (error) {
-    console.error('Error fetching phenotypes from IMPC')
+    logger.warn(`Exited after ${processDuration} | ${flow} | ❌ API Request FAILED`, {
+      resolveDuration: processDuration
+    })
   }
 
   //Add caps to first word of each phenotypes
@@ -72,6 +88,10 @@ async function getMouseKO(mgdId) {
   }
   // * RETURN THE RESULT
   impcUrl = `https://www.mousephenotype.org/data/genes/${mgdId}`
+
+  processDuration = ((Date.now() - start) / 1000).toFixed(3) + 's'
+  logger.info(`⚙️ PROCESS: ${processDuration} | 📢 API FETCH: ${fetchDuration} | ${flow}`)
+
   return { mousePhenotypes: groupedPhenotypes, impcUrl: impcUrl }
 }
 

@@ -8,6 +8,7 @@ const getPanelApps = require('../utils/getPanelApps.js')
 const getClinVarData = require('../utils/getClinVarData.js')
 const fetchOmimData = require('../utils/fetchOMIM.js')
 const axios = require('axios')
+const logger = require('../services/logger')
 
 async function getData(req) {
   const genes = req.body.genes || []

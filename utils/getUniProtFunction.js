@@ -1,7 +1,13 @@
 const axios = require('axios')
+const logger = require('../services/logger')
+const flow = 'UNIPROT'
+
+let fetchDuration = 0
+let processDuration = 0
 
 async function getUniProtFunction(uniprotId) {
   try {
+    let start = Date.now()
     // * FETCH UNIPROT API
     const uniProtApiUrl = `https://www.ebi.ac.uk/proteins/api/proteins/${uniprotId}.xml`
     const urlAccession = `https://www.uniprot.org/uniprotkb/${uniprotId}/entry`
@@ -9,6 +15,9 @@ async function getUniProtFunction(uniprotId) {
     const response = await axios.get(uniProtApiUrl, { headers: { Accept: 'application/json' } })
     // * FETCH KEYWORDS LIST
     const getKeywordsCSV = await axios.get('https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/docs/keywlist.txt')
+
+    fetchDuration = ((Date.now() - start) / 1000).toFixed(3) + 's'
+
     const keywordsCSV = getKeywordsCSV.data
     let functionKeywords = []
     const bioProcessKeywordsOnly = []
@@ -44,6 +53,8 @@ async function getUniProtFunction(uniprotId) {
         })
       }
       // * RETURN THE RESULT
+      processDuration = ((Date.now() - start) / 1000).toFixed(3) + 's'
+      logger.info(`⚙️ PROCESS: ${processDuration} | 📢 API FETCH: ${fetchDuration} | ${flow}`)
       return {
         geneFunction,
         bioProcessKeywordsOnly,

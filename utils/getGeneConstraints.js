@@ -1,6 +1,11 @@
 const path = require('path')
 const fs = require('fs')
 const csv = require('csv-parser')
+const logger = require('../services/logger')
+
+const flow = 'CONSTRAINTS'
+let fetchDuration = 0
+let processDuration = 0
 
 let constraints = {}
 loadConstraints('v2', 'constraints_v2.csv')
@@ -10,6 +15,8 @@ const constraints_v4 = constraints.v4 || {}
 
 // TODO Refactor needed
 async function getGeneConstraints(gene) {
+  let start = Date.now()
+
   let geneConstraintsV2 = null
   let geneConstraintsV4 = null
   let constraintsDelta = false
@@ -65,6 +72,10 @@ async function getGeneConstraints(gene) {
     }
   }
 
+  fetchDuration = ((Date.now() - start) / 1000).toFixed(3) + 's'
+  processDuration = ((Date.now() - start) / 1000).toFixed(3) + 's'
+  logger.info(`⚙️ PROCESS: ${processDuration} | 📢 API FETCH: ${fetchDuration} | ${flow}`)
+
   // * RETURN THE RESULT
   return {
     constraints_v2: geneConstraintsV2,
@@ -92,7 +103,7 @@ function loadConstraints(datasetKey, fileName) {
       }
     })
     .on('end', () => {
-      console.log(`Constraints CSV file (${datasetKey}) successfully processed`)
+      // console.log(`Constraints CSV file (${datasetKey}) successfully processed`)
     })
     .on('error', (error) => {
       console.error(`Error reading constraints CSV (${datasetKey}):`, error)

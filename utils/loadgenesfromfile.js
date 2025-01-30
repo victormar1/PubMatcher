@@ -16,7 +16,7 @@ function loadGenesFromFile(filePath) {
         genes.push(row.geneName)
       })
       .on('end', () => {
-        console.log('Genes CSV file successfully processed')
+        // console.log('Genes CSV file successfully processed')
         resolve(genes)
       })
       .on('error', (error) => {

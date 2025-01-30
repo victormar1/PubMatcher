@@ -1,0 +1,17 @@
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:44:51.913Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:44:51.918Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:45:25.812Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:45:25.816Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:45:28.993Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:45:28.998Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:46:35.831Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:46:37.182Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:47:03.139Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:47:45.706Z"}
+{"api":"Unknown API","error":"apiUrl is not defined","level":"error","message":"API request failed","timestamp":"2025-01-29T22:48:15.180Z"}
+{"api":"https://pubmed.ncbi.nlm.nih.gov/?term=CPZ","level":"info","message":"API request","responseTime":700,"status":200,"timestamp":"2025-01-29T22:50:38.192Z"}
+{"api":"https://pubmed.ncbi.nlm.nih.gov/?term=CPZ","level":"info","message":"API request","responseTime":956,"status":200,"timestamp":"2025-01-29T22:52:17.303Z"}
+{"level":"info","message":"Logger is initialized!","timestamp":"2025-01-29T22:53:23.814Z"}
+{"level":"info","message":"Logger is initialized!","timestamp":"2025-01-29T22:53:46.413Z"}
+{"level":"info","message":"🚀 Logger test: This should appear in console!","timestamp":"2025-01-29T22:59:22.582Z"}
+{"level":"error","message":"🔥 Logger error test!","timestamp":"2025-01-29T22:59:22.585Z"}
