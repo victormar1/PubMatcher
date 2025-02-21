@@ -92,19 +92,48 @@
         </div>
       </div>
     </div>
-    <!-- GENES AND PHENOTYPES -->
+    <!-- GENES AND PHENOTYPES --------------------------------------------------------------------------------->
     <div class="flex flex-row h-full gap-2 min-h-72 mx-2 ">
       <!-- GENES -->
       <div
         class="flex flex-col w-1/2 min-w-[350px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
         <div class="flex flex-row justify-between items-center  w-full">
-          <button @click="clearContainer('gene')">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-              width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
-            </svg>
-          </button>
+          <div
+            class="bg-white p-2 w-24 h-12 flex flex-row justify-between items-center rounded-lg  border border-gray-200">
+            <!-- Delete Button -->
+            <button @click="clearContainer('gene')"
+              class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200" aria-label="Delete">
+              <svg class="w-6 h-6 text-gray-500 hover:text-red-500 transition-colors duration-200" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+              </svg>
+            </button>
+
+            <!-- Divider -->
+            <div class="w-px h-6 bg-gray-200"></div>
+
+            <!-- Clipboard Button -->
+            <button @click="handleClipboardClickGene" data-copy-to-clipboard-target="copy" data-tooltip-target="copy"
+              data-popover-placement="right" class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200"
+              aria-label="Clipboard">
+              <svg class="w-6 h-6 text-gray-500 hover:text-blue-500 transition-colors duration-200"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
+                <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
+              </svg>
+              <div id="copy" role="tooltip"
+                class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+                <span id="default-tooltip-message">Copy to clipboard</span>
+                <span id="success-tooltip-message" class="hidden">Copied!</span>
+                <div class="tooltip-arrow" data-popper-arrow></div>
+              </div>
+            </button>
+
+
+
+          </div>
           <form @submit.prevent class="w-2/3 ">
 
             <label for="default-search"
@@ -236,13 +265,39 @@
               </ul>
             </div>
           </form>
-          <button @click="clearContainer('phenotype')">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-              width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
-            </svg>
-          </button>
+          <div
+            class="bg-white p-2 w-24 h-12 flex flex-row justify-between items-center rounded-lg border border-gray-200">
+            <!-- Clipboard Button (Now on the Left) -->
+            <button @click="handleClipboardClickPheno" data-copy-to-clipboard-target="copyPheno"
+              data-tooltip-target="copyPheno" data-popover-placement="right"
+              class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200" aria-label="Clipboard">
+              <svg class="w-6 h-6 text-gray-500 hover:text-blue-500 transition-colors duration-200"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
+                <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
+              </svg>
+              <div id="copyPheno" role="tooltip"
+                class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+                <span id="default-tooltip-message">Copy to clipboard</span>
+                <span id="success-tooltip-message" class="hidden">Copied!</span>
+                <div class="tooltip-arrow" data-popper-arrow></div>
+              </div>
+            </button>
+
+            <!-- Divider -->
+            <div class="w-px h-6 bg-gray-200"></div>
+
+            <!-- Delete Button (Now on the Right) -->
+            <button @click="clearContainer('phenotype')"
+              class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200" aria-label="Delete">
+              <svg class="w-6 h-6 text-gray-500 hover:text-red-500 transition-colors duration-200" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
 
@@ -297,7 +352,6 @@
 
 <script>
 import { event } from 'vue-gtag';
-
 
 export default {
   name: 'SearchBuildingModule',
@@ -359,7 +413,12 @@ export default {
     cancel() {
       this.logoutModalVisible = false;
     },
-
+    async handleClipboardClickGene() {
+      await navigator.clipboard.writeText(this.getItems('gene').join(', '));
+    },
+    async handleClipboardClickPheno() {
+      await navigator.clipboard.writeText(this.getItems('phenotype').join(', '));
+    },
 
 
 
