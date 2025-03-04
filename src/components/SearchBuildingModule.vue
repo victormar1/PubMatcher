@@ -346,7 +346,7 @@
                     clip-rule="evenodd" />
                 </svg>
                 <h3 class="font-semibold text-gray-900 dark:text-white flex-grow">Copy options</h3>
-                <span v-if="copied" class="italic text-blue-600 mr-2">Copied!</span>
+                <span v-if="copiedPheno" class="italic text-blue-600 mr-2">Copied!</span>
               </div>
               <div class="px-3 py-2 flex flex-col gap-2">
                 <button @click="handleClipboardClickPheno(' ')"
@@ -464,6 +464,7 @@ export default {
       logoutModalVisible: false,
       blacklistedGenes: [],
       copied: false,
+      copiedPheno: false,
 
     };
   },
@@ -518,10 +519,10 @@ export default {
       }, 1500);
     },
     async handleClipboardClickPheno(exp) {
-      this.copied = true
+      this.copiedPheno = true
       await navigator.clipboard.writeText(this.getItems('phenotype').join(exp ? exp : ','));
       setTimeout(() => {
-        this.copied = false;
+        this.copiedPheno = false;
       }, 1500);
     },
 
