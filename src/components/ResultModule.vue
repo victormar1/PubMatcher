@@ -304,7 +304,7 @@
                                 <div v-if="result.mousePhenotypes && Object.keys(result.mousePhenotypes).length > 0"
                                     class="relative flex flex-wrap gap-2 justify-center z-50">
                                     <a :href="result.impcUrl" target="_blank"
-                                        v-for=" (details, category) in result.mousePhenotypes" :key="category"
+                                        v-for="(details, category) in result.mousePhenotypes" :key="category"
                                         class="relative flex items-center gap-2">
                                         <!-- Tooltip Trigger -->
                                         <span v-html="details.icon" class="w-6 h-6 cursor-pointer text-gray-600"
@@ -330,7 +330,7 @@
                                                     <li v-for="name in details.names" :key="name"
                                                         class="inline-flex px-2 justify-center items-center bg-blue-200 rounded-full">
                                                         <p class="text-gray-700 font-bold font-noto text-nowrap">{{ name
-                                                            }}</p>
+                                                        }}</p>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -495,7 +495,7 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <a :href="result.gene ? `https://panelapp.agha.umccr.org/panels/entities/${result.gene}` : '#'"
+                                    <a :href="result.gene ? `https://panelapp-aus.org/panels/entities/${result.gene}` : '#'"
                                         target="_blank" rel="noopener noreferrer" class="relative">
                                         <div class="relative">
                                             <img src="/images/australia.png" alt="Aussie Flag" style="cursor: pointer;"
