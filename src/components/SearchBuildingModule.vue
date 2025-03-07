@@ -113,23 +113,77 @@
             <!-- Divider -->
             <div class="w-px h-6 bg-gray-200"></div>
 
-            <!-- Clipboard Button -->
-            <button @click="handleClipboardClickGene" data-copy-to-clipboard-target="copy" data-tooltip-target="copy"
-              data-popover-placement="right" class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200"
-              aria-label="Clipboard">
+            <button data-popover-target="copy-to-clipboard-menu" type="button"
+              class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200" aria-label="Clipboard">
               <svg class="w-6 h-6 text-gray-500 hover:text-blue-500 transition-colors duration-200"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                 <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
                 <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
               </svg>
-              <div id="copy" role="tooltip"
-                class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                <span id="default-tooltip-message">Copy to clipboard</span>
-                <span id="success-tooltip-message" class="hidden">Copied!</span>
-                <div class="tooltip-arrow" data-popper-arrow></div>
-              </div>
             </button>
+
+            <div data-popover id="copy-to-clipboard-menu" role="tooltip"
+              class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700 flex items-center gap-x-1">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                    d="M18 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1V9a4 4 0 0 0-4-4h-3a1.99 1.99 0 0 0-1 .267V5a2 2 0 0 1 2-2h7Z"
+                    clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                    d="M8 7.054V11H4.2a2 2 0 0 1 .281-.432l2.46-2.87A2 2 0 0 1 8 7.054ZM10 7v4a2 2 0 0 1-2 2H4v6a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <h3 class="font-semibold text-gray-900 dark:text-white flex-grow">Copy options</h3>
+                <span v-if="copied" class="italic text-blue-600 mr-2">Copied!</span>
+              </div>
+              <div class="px-3 py-2 flex flex-col gap-2">
+                <button @click="handleClipboardClickGene(' ')"
+                  class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 text-left bg-gray-50">
+                  <h1>SPACE separated values</h1>
+                </button>
+
+                <button @click="handleClipboardClickGene(',')"
+                  class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 text-left bg-gray-50">
+                  <h1>COMMA separated values</h1>
+                </button>
+
+                <button @click="handleClipboardClickGene(';')"
+                  class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 text-left bg-gray-50">
+                  <h1>SEMICOLON separated values</h1>
+                </button>
+              </div>
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700 flex items-center gap-x-1">
+                <div class="flex items-center gap-2">
+                  <input v-model="customSeparator" type="text" placeholder="Custom separator"
+                    class="px-3 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-300">
+                  <button @click="handleClipboardClickGene(customSeparator)"
+                    class="px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition-colors duration-200">
+                    Copy
+                  </button>
+                </div>
+              </div>
+              <div data-popper-arrow></div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -267,9 +321,8 @@
           </form>
           <div
             class="bg-white p-2 w-24 h-12 flex flex-row justify-between items-center rounded-lg border border-gray-200">
-            <!-- Clipboard Button (Now on the Left) -->
-            <button @click="handleClipboardClickPheno" data-copy-to-clipboard-target="copyPheno"
-              data-tooltip-target="copyPheno" data-popover-placement="right"
+
+            <button data-popover-target="copy-to-clipboard-menu-pheno" type="button"
               class="p-1 rounded-md hover:bg-gray-100 transition-colors duration-200" aria-label="Clipboard">
               <svg class="w-6 h-6 text-gray-500 hover:text-blue-500 transition-colors duration-200"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -277,13 +330,55 @@
                 <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
                 <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
               </svg>
-              <div id="copyPheno" role="tooltip"
-                class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                <span id="default-tooltip-message">Copy to clipboard</span>
-                <span id="success-tooltip-message" class="hidden">Copied!</span>
-                <div class="tooltip-arrow" data-popper-arrow></div>
-              </div>
             </button>
+
+            <div data-popover id="copy-to-clipboard-menu-pheno" role="tooltip"
+              class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700 flex items-center gap-x-1">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                    d="M18 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1V9a4 4 0 0 0-4-4h-3a1.99 1.99 0 0 0-1 .267V5a2 2 0 0 1 2-2h7Z"
+                    clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                    d="M8 7.054V11H4.2a2 2 0 0 1 .281-.432l2.46-2.87A2 2 0 0 1 8 7.054ZM10 7v4a2 2 0 0 1-2 2H4v6a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <h3 class="font-semibold text-gray-900 dark:text-white flex-grow">Copy options</h3>
+                <span v-if="copiedPheno" class="italic text-blue-600 mr-2">Copied!</span>
+              </div>
+              <div class="px-3 py-2 flex flex-col gap-2">
+                <button @click="handleClipboardClickPheno(' ')"
+                  class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 text-left bg-gray-50">
+                  <h1>SPACE separated values</h1>
+                </button>
+
+                <button @click="handleClipboardClickPheno(',')"
+                  class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 text-left bg-gray-50">
+                  <h1>COMMA separated values</h1>
+                </button>
+
+                <button @click="handleClipboardClickPheno(';')"
+                  class="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 text-left bg-gray-50">
+                  <h1>SEMICOLON separated values</h1>
+                </button>
+              </div>
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-600 dark:bg-gray-700 flex items-center gap-x-1">
+                <div class="flex items-center gap-2">
+                  <input v-model="customSeparator" type="text" placeholder="Custom separator"
+                    class="px-3 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-300">
+                  <button @click="handleClipboardClickPheno(customSeparator)"
+                    class="px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 transition-colors duration-200">
+                    Copy
+                  </button>
+                </div>
+              </div>
+              <div data-popper-arrow></div>
+            </div>
+
+
 
             <!-- Divider -->
             <div class="w-px h-6 bg-gray-200"></div>
@@ -367,7 +462,9 @@ export default {
       batchInput: '',
       extractedGenes: [],
       logoutModalVisible: false,
-      blacklistedGenes: []
+      blacklistedGenes: [],
+      copied: false,
+      copiedPheno: false,
 
     };
   },
@@ -413,11 +510,20 @@ export default {
     cancel() {
       this.logoutModalVisible = false;
     },
-    async handleClipboardClickGene() {
-      await navigator.clipboard.writeText(this.getItems('gene').join(', '));
+    async handleClipboardClickGene(exp) {
+      console.log(exp)
+      this.copied = true
+      await navigator.clipboard.writeText(this.getItems('gene').join(exp ? exp : ','));
+      setTimeout(() => {
+        this.copied = false;
+      }, 1500);
     },
-    async handleClipboardClickPheno() {
-      await navigator.clipboard.writeText(this.getItems('phenotype').join(', '));
+    async handleClipboardClickPheno(exp) {
+      this.copiedPheno = true
+      await navigator.clipboard.writeText(this.getItems('phenotype').join(exp ? exp : ','));
+      setTimeout(() => {
+        this.copiedPheno = false;
+      }, 1500);
     },
 
 
