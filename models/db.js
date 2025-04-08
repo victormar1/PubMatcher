@@ -1,12 +1,12 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 
-// Database configuration
 const pool = new Pool({
-    user: 'root_user',         
-    host: 'mv292669-001.eu.clouddb.ovh.net',   
-    database: 'pubmatcher_db',
-    password: '5cFXwJep',     // Password 
-    port: 35645,                    
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
 });
 
 module.exports = pool;
