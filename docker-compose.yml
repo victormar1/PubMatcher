@@ -11,19 +11,19 @@ services:
       dockerfile: Dockerfile
     container_name: pubmatcher_legacy
     restart: unless-stopped
-    expose:
-      - "3000"  
     environment:
       - NODE_ENV=production
     env_file:
       - .env
     volumes:
       - ./logs:/app/logs
+    expose:
+      - "3000"
     networks:
       - traefik-proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.legacy.rule=Host(`pubmatcher.fr`)"
-      - "traefik.http.routers.legacy.entrypoints=websecure"
-      - "traefik.http.routers.legacy.tls.certresolver=le"
-      - "traefik.http.services.legacy.loadbalancer.server.port=3000"
+      - traefik.enable=true
+      - traefik.http.routers.legacy.rule=Host(`pubmatcher.fr`)
+      - traefik.http.routers.legacy.entrypoints=websecure
+      - traefik.http.routers.legacy.tls.certresolver=le
+      - traefik.http.services.legacy.loadbalancer.server.port=3000
