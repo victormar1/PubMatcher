@@ -8,8 +8,9 @@ function configureServer(app) {
   console.log(`Server is starting in ${mode} mode...`)
 
   const server = http.createServer(app)
+
   server.listen(port, () => {
-    console.log(`Running on http://localhost:${port}`)
+    console.log(`App listening on http://0.0.0.0:${port}`)
   })
 }
 
