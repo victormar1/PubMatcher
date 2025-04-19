@@ -1,0 +1,29 @@
+version: "3.8"
+
+networks:
+  traefik-proxy:
+    external: true
+
+services:
+  legacy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pubmatcher_legacy
+    restart: unless-stopped
+    expose:
+      - "3000"  
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - traefik-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.legacy.rule=Host(`pubmatcher.fr`)"
+      - "traefik.http.routers.legacy.entrypoints=websecure"
+      - "traefik.http.routers.legacy.tls.certresolver=le"
+      - "traefik.http.services.legacy.loadbalancer.server.port=3000"
