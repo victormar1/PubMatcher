@@ -932,47 +932,64 @@ export default {
       };
     },
     async fetchGenesListAndCache() {
-      if (sessionStorage.getItem('genesList')) {
+    if (sessionStorage.getItem('genesList')) {
         this.genesList = JSON.parse(sessionStorage.getItem('genesList'));
         return;
-      }
+    }
 
-      try {
+    try {
         const response = await fetch('api/geneslist');
         const data = await response.json();
-        this.genesList = data.genes;
-        sessionStorage.setItem('genesList', JSON.stringify(data.genes));
-      } catch (error) {
+        this.genesList = data.genes.map(gene => ({
+            symbol: gene.symbol,
+            previousSymbol: gene.previousSymbol
+        }));
+        sessionStorage.setItem('genesList', JSON.stringify(this.genesList));
+    } catch (error) {
         console.error('Error fetching genes:', error);
-      }
+    }
+},
 
-    },
-    extractGeneFromBatch() {
-      if (!this.batchInput.trim() || this.genesList.length === 0) {
-        this.extractedGenes = [];
-        return;
-      }
+extractGeneFromBatch() {
+  if (!this.batchInput.trim() || this.genesList.length === 0) {
+    this.extractedGenes = [];
+    return;
+  }
+
+  const text = this.batchInput;
+  const foundGenesSet = new Set();
+
+  this.genesList.forEach(gene => {
+    const regexCurrent = gene.symbol ? new RegExp(`\\b${gene.symbol}\\b`, 'i') : null;
+    const regexPrevious = gene.previousSymbol ? new RegExp(`\\b${gene.previousSymbol}\\b`, 'i') : null;
+
+    if (regexCurrent && regexCurrent.test(text)) {
+      foundGenesSet.add(gene.symbol);
+    } else if (regexPrevious && regexPrevious.test(text)) {
+      foundGenesSet.add(gene.symbol);
+    }
+  });
+
+  const foundGenes = Array.from(foundGenesSet).sort((a, b) => text.indexOf(a) - text.indexOf(b));
+
+  // filtre les undefined
+  const cleanGenes = foundGenes.filter(Boolean);
+
+  this.extractedGenes = cleanGenes;
+  this.populateSearchWithExtraction(cleanGenes);
+},
 
 
-      const text = this.batchInput;
-      // Filter genes from batch input
-      const foundGenes = this.genesList.filter((gene) => {
-        const regex = new RegExp(`\\b${gene}\\b`, 'i');
-        return regex.test(text);
-      });
+async populateSearchWithExtraction(genes) {
+  for (const gene of genes) {
+    if (typeof gene === 'string' && gene.trim()) {
+      this.addGene(gene);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+  }
+},
 
-      foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
 
-      this.extractedGenes = foundGenes;
-      this.populateSearchWithExtraction(foundGenes);
-    },
-
-    async populateSearchWithExtraction(genes) {
-      for (const gene of genes) {
-        this.addGene(gene);
-        await new Promise((resolve) => setTimeout(resolve, 10)); // test                                                 REMOVE BEFORE PROD
-      }
-    },
     clearBatchInput() {
       this.batchInput = '';
       document.getElementById('batchInput').value = '';

@@ -10,7 +10,10 @@ function loadGenesFromFile(filePath) {
         fs.createReadStream(filePath)
             .pipe(csv())
             .on('data', (row) => {
-                genes.push(row.geneName); 
+                genes.push({
+                    symbol: row.geneSymbol,
+                    previousSymbol: row.previousSymbol
+                });
             })
             .on('end', () => {
                 console.log('Genes CSV file successfully processed');
@@ -22,6 +25,7 @@ function loadGenesFromFile(filePath) {
             });
     });
 }
+
 
 const csvPath = path.join(__dirname, '..', 'BDD', 'genes.csv');
 loadGenesFromFile(csvPath)
