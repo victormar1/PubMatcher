@@ -96,8 +96,8 @@
     <div class="flex flex-row h-full gap-2 min-h-72 mx-2 ">
       <!-- GENES -->
       <div
-        class="flex flex-col w-1/2 min-w-[350px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
-        <div class="flex flex-row justify-between items-center  w-full">
+        class="flex flex-col w-1/2 min-w-[350px] items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
+        <div class="flex flex-row items-center w-full ">
           <div
             class="bg-white p-2 w-24 h-12 flex flex-row justify-between items-center rounded-lg  border border-gray-200">
             <!-- Delete Button -->
@@ -168,27 +168,8 @@
               </div>
               <div data-popper-arrow></div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           </div>
-          <form @submit.prevent class="w-2/3 ">
+          <form @submit.prevent class="w-2/3 px-8 ">
 
             <label for="default-search"
               class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
@@ -221,48 +202,78 @@
             </div>
           </form>
 
-          <button data-popover-target="popover-default" @click="clearBlacklist()"
-            class="bg-red-500 py-1 px-1  rounded-full text-white text-center">
-            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-              fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <span class="relative z-10 text-lg font-bold">{{ blacklistedGenes.length }}</span>
-          </button>
-          <!-- oppacity 0 invisible -->
-          <div data-popover id="popover-default" @click="clearBlacklist" role="tooltip"
-            class="absolute opacity 0 invisible z-10 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border
-            border-gray-200  rounded-lg shadow-sm opacity-100 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-            <div
-              class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-              <h3 class="font-bold text-gray-900 font-noto dark:text-white">Excluded Genes</h3>
-              <p class=" font-medium italic font-noto text-red-500">Click to clear</p>
-            </div>
-            <div class="px-3  pt-4">
-              <div v-if="blacklistedGenes.length > 0" class="flex flex-wrap   gap-2">
-                <div v-for="gene in blacklistedGenes" :key="gene"
-                  class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
-                  <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
+          <div class="flex flex-row gap-2">
+            <!-- Bouton pour les gènes blacklistés -->
+            <button data-popover-target="blacklisted-genes-popover" type="button"
+              class="bg-red-500 py-1 px-3 rounded-full text-white text-center flex items-center gap-2">
+              <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                  d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span class="text-lg font-bold">{{ blacklistedGenes.length }}</span>
+            </button>
+            <div data-popover id="blacklisted-genes-popover" role="tooltip"
+              class="absolute z-10 invisible opacity-0 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-bold text-gray-900 dark:text-white">Blacklisted Genes</h3>
+              </div>
+              <div class="px-3 py-2">
+                <div v-if="blacklistedGenes.length > 0" class="flex flex-wrap gap-2">
+                  <div v-for="gene in blacklistedGenes" :key="gene"
+                    class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
+                    <p class="text-gray-700 font-bold">{{ gene }}</p>
+                  </div>
+                </div>
+                <div v-else>
+                  <p class="text-gray-700">No genes are currently blacklisted.</p>
                 </div>
               </div>
-              <div v-if="blacklistedAliases.length > 0" class="flex flex-wrap gap-2 mt-2">
-                <div v-for="alias in blacklistedAliases" :key="alias"
-                  class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
-                  <p class="text-gray-700 font-bold font-noto">{{ alias }}</p>
-                </div>
-                </div>
+              <div class="px-3 py-2">
+                <button @click="clearBlacklist"
+                  class="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200">
+                  Clear All
+                </button>
+              </div>
+              <div data-popper-arrow></div>
+            </div>
 
-              <div v-else class="flex flex-wrap gap-2">
-                <p class="text-gray-700  font-noto">Select a gene to ignore it</p>
+            <!-- Bouton pour les alias blacklistés -->
+            <button data-popover-target="blacklisted-aliases-popover" type="button"
+              class="bg-blue-500 py-1 px-3 rounded-full text-white text-center flex items-center gap-2">
+              <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                  d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span class="text-lg font-bold">{{ blacklistedAliases.length }}</span>
+            </button>
+            <div data-popover id="blacklisted-aliases-popover" role="tooltip"
+              class="absolute z-10 invisible opacity-0 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-bold text-gray-900 dark:text-white">Blacklisted Aliases</h3>
               </div>
-            </div>
-            <div class="px-3 py-2">
-              <div class="flex flex-wrap gap-2">
-                <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
+              <div class="px-3 py-2">
+                <div v-if="blacklistedAliases.length > 0" class="flex flex-wrap gap-2">
+                  <div v-for="alias in blacklistedAliases" :key="alias"
+                    class="inline-flex px-2 justify-center items-center bg-blue-200 rounded-full">
+                    <p class="text-gray-700 font-bold">{{ alias }}</p>
+                  </div>
+                </div>
+                <div v-else>
+                  <p class="text-gray-700">No aliases are currently blacklisted.</p>
+                </div>
               </div>
+              <div class="px-3 py-2">
+                <button @click="clearAliasBlacklist"
+                  class="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200">
+                  Clear All
+                </button>
+              </div>
+              <div data-popper-arrow></div>
             </div>
-            <div data-popper-arrow></div>
           </div>
         </div>
         <div class=" flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto p-4">
@@ -837,6 +848,11 @@ handleGeneClick(gene, container) {
   this.displayItems('gene');
 },
 
+    clearAliasBlacklist() {
+      this.blacklistedAliases = [];
+      localStorage.removeItem('blacklistedAliases');
+      this.displayItems('gene');
+    },
 
     createSvgIcon(type, item) {
       const svgIcon = document.createElementNS(
