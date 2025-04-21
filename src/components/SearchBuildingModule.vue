@@ -96,8 +96,8 @@
     <div class="flex flex-row h-full gap-2 min-h-72 mx-2 ">
       <!-- GENES -->
       <div
-        class="flex flex-col w-1/2 min-w-[350px] justify-start items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
-        <div class="flex flex-row justify-between items-center  w-full">
+        class="flex flex-col w-1/2 min-w-[350px] items-center bg-gray-50  border border-gray-300 rounded-lg p-4 ">
+        <div class="flex flex-row items-center w-full ">
           <div
             class="bg-white p-2 w-24 h-12 flex flex-row justify-between items-center rounded-lg  border border-gray-200">
             <!-- Delete Button -->
@@ -168,27 +168,8 @@
               </div>
               <div data-popper-arrow></div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           </div>
-          <form @submit.prevent class="w-2/3 ">
+          <form @submit.prevent class="w-2/3 px-8 ">
 
             <label for="default-search"
               class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white ">Search</label>
@@ -221,41 +202,78 @@
             </div>
           </form>
 
-          <button data-popover-target="popover-default" @click="clearBlacklist()"
-            class="bg-red-500 py-1 px-1  rounded-full text-white text-center">
-            <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-              fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            <span class="relative z-10 text-lg font-bold">{{ blacklistedGenes.length }}</span>
-          </button>
-          <!-- oppacity 0 invisible -->
-          <div data-popover id="popover-default" @click="clearBlacklist" role="tooltip"
-            class="absolute opacity 0 invisible z-10 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border
-            border-gray-200  rounded-lg shadow-sm opacity-100 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-            <div
-              class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-              <h3 class="font-bold text-gray-900 font-noto dark:text-white">Excluded Genes</h3>
-              <p class=" font-medium italic font-noto text-red-500">Click to clear</p>
-            </div>
-            <div class="px-3  pt-4">
-              <div v-if="blacklistedGenes.length > 0" class="flex flex-wrap   gap-2">
-                <div v-for="gene in blacklistedGenes" :key="gene"
-                  class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
-                  <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
+          <div class="flex flex-row gap-2">
+            <!-- Bouton pour les gènes blacklistés -->
+            <button data-popover-target="blacklisted-genes-popover" type="button"
+              class="bg-red-500 py-1 px-3 rounded-full text-white text-center flex items-center gap-2">
+              <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                  d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span class="text-lg font-bold">{{ blacklistedGenes.length }}</span>
+            </button>
+            <div data-popover id="blacklisted-genes-popover" role="tooltip"
+              class="absolute z-10 invisible opacity-0 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-bold text-gray-900 dark:text-white">Blacklisted Genes</h3>
+              </div>
+              <div class="px-3 py-2">
+                <div v-if="blacklistedGenes.length > 0" class="flex flex-wrap gap-2">
+                  <div v-for="gene in blacklistedGenes" :key="gene"
+                    class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
+                    <p class="text-gray-700 font-bold">{{ gene }}</p>
+                  </div>
+                </div>
+                <div v-else>
+                  <p class="text-gray-700">No genes are currently blacklisted.</p>
                 </div>
               </div>
-              <div v-else class="flex flex-wrap gap-2">
-                <p class="text-gray-700  font-noto">Select a gene to ignore it</p>
+              <div class="px-3 py-2">
+                <button @click="clearBlacklist"
+                  class="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200">
+                  Clear All
+                </button>
               </div>
+              <div data-popper-arrow></div>
             </div>
-            <div class="px-3 py-2">
-              <div class="flex flex-wrap gap-2">
-                <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
+
+            <!-- Bouton pour les alias blacklistés -->
+            <button data-popover-target="blacklisted-aliases-popover" type="button"
+              class="bg-blue-500 py-1 px-3 rounded-full text-white text-center flex items-center gap-2">
+              <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                  d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span class="text-lg font-bold">{{ blacklistedAliases.length }}</span>
+            </button>
+            <div data-popover id="blacklisted-aliases-popover" role="tooltip"
+              class="absolute z-10 invisible opacity-0 inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+              <div
+                class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-bold text-gray-900 dark:text-white">Blacklisted Aliases</h3>
               </div>
+              <div class="px-3 py-2">
+                <div v-if="blacklistedAliases.length > 0" class="flex flex-wrap gap-2">
+                  <div v-for="alias in blacklistedAliases" :key="alias"
+                    class="inline-flex px-2 justify-center items-center bg-blue-200 rounded-full">
+                    <p class="text-gray-700 font-bold">{{ alias }}</p>
+                  </div>
+                </div>
+                <div v-else>
+                  <p class="text-gray-700">No aliases are currently blacklisted.</p>
+                </div>
+              </div>
+              <div class="px-3 py-2">
+                <button @click="clearAliasBlacklist"
+                  class="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200">
+                  Clear All
+                </button>
+              </div>
+              <div data-popper-arrow></div>
             </div>
-            <div data-popper-arrow></div>
           </div>
         </div>
         <div class=" flex flex-col items-center mt-2 space-y-4 rounded max-h-48 overflow-auto p-4">
@@ -463,6 +481,7 @@ export default {
       extractedGenes: [],
       logoutModalVisible: false,
       blacklistedGenes: [],
+      blacklistedAliases: [],
       copied: false,
       copiedPheno: false,
 
@@ -470,6 +489,10 @@ export default {
   },
 
   mounted() {
+
+    const storedAliasBlacklist = localStorage.getItem('blacklistedAliases');
+    this.blacklistedAliases = storedAliasBlacklist ? JSON.parse(storedAliasBlacklist) : [];
+
 
     this.fetchGenesListAndCache(); // Load genes list
     // Initialize sessionStorage
@@ -527,7 +550,16 @@ export default {
     },
 
 
-
+    removeBlacklistedGene(gene) {
+  this.blacklistedGenes = this.blacklistedGenes.filter(g => g !== gene);
+  localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+  this.displayItems('gene');
+},
+removeBlacklistedAlias(alias) {
+  this.blacklistedAliases = this.blacklistedAliases.filter(a => a !== alias);
+  localStorage.setItem('blacklistedAliases', JSON.stringify(this.blacklistedAliases));
+  this.displayItems('gene');
+},
 
 
     async searchFromUrl() {
@@ -695,78 +727,131 @@ export default {
       const typeObject = data.find((item) => item.type === type);
       return typeObject ? typeObject.items : []; // Return empty array if type not found
     },
-    displayItems(type) {
-      const items = this.getItems(type);
-      const container =
-        type === 'gene'
-          ? document.querySelector('.flex-wrap.gene-items')
-          : document.querySelector('.flex-wrap.phenotype-items');
-      if (container) {
-        container.innerHTML = ''; // Clear existing content
+displayItems(type) {
+  const items = this.getItems(type);
+  const container =
+    type === 'gene'
+      ? document.querySelector('.flex-wrap.gene-items')
+      : document.querySelector('.flex-wrap.phenotype-items');
 
-        items.forEach((item) => {
-          const cardElement = document.createElement('div');
-          const geneNameElement = document.createElement('div');
+  if (!container) {
+    console.error('Container element not found!');
+    return;
+  }
 
-          geneNameElement.textContent = item; // Set the text content directly
-          const svgIcon = this.createSvgIcon(type, item); // Create the SVG element with click handler
-          cardElement.appendChild(geneNameElement);
-          cardElement.appendChild(svgIcon);
-          if (type === 'gene') {
-            if (this.blacklistedGenes.includes(item)) {
-              cardElement.className =
-                'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4 select-none';
-            } else {
-              cardElement.className =
-                'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4 select-none';
-            }
-            cardElement.addEventListener('click', () => {
-              this.handleGeneClick(item, cardElement);
-            });
-          } else {
-            cardElement.className =
-              'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-          }
-          container.appendChild(cardElement);
-        });
-      } else {
-        console.error('Container element not found!');
-      }
-      if (type === 'gene') {
-        const activeBlacklistedGenes = this.blacklistedGenes.filter((gene) =>
-          items.includes(gene)
-        ).length;
+  container.innerHTML = '';
 
-        const geneCount = Math.max(
-          Object.keys(items).length - activeBlacklistedGenes,
-          0
-        );
+  const aliasInfoMap = new Map(
+    (this.extractedGenes || [])
+      .filter(g => g.fromAlias)
+      .map(g => [g.symbol.toUpperCase(), g.aliasUsed])
+  );
 
-        document.querySelector('.genes-count').textContent = `RESEARCH ${geneCount} GENES`;
-      }
+  const orderedItems = [...items].sort((a, b) => {
+  const aIndex = this.extractedGenes.findIndex(g => g.symbol.toUpperCase() === a);
+  const bIndex = this.extractedGenes.findIndex(g => g.symbol.toUpperCase() === b);
+  return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex);
+});
 
 
-    },
-    handleGeneClick(gene, container) {
-      const isBlacklisted = this.blacklistedGenes.includes(gene);
-      if (isBlacklisted) {
-        // Remove the gene from the blacklist
-        this.blacklistedGenes = this.blacklistedGenes.filter((item) => item !== gene);
-        container.className = 'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-      } else {
-        // Add the gene to the blacklist
-        this.blacklistedGenes.push(gene);
-        container.className = 'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-      }
 
-      this.displayItems('gene')
-      // Save the updated blacklist to sessionStorage
-      localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
-    },
+  orderedItems.forEach((item) => {
+    const isAlias = aliasInfoMap.has(item);
+    const aliasUsed = aliasInfoMap.get(item);
+
+    const cardElement = document.createElement('div');
+    const geneNameElement = document.createElement('span');
+    geneNameElement.textContent = item;
+
+    const svgIcon = this.createSvgIcon(type, item);
+    cardElement.appendChild(geneNameElement);
+
+    if (isAlias) {
+      const badge = document.createElement('span');
+      badge.textContent = 'alias';
+      badge.className =
+        'ml-2 px-2 py-0.5 text-xs font-semibold text-white bg-blue-500 rounded-full cursor-help';
+      badge.setAttribute('title', `Found via alias: ${aliasUsed}`);
+      cardElement.appendChild(badge);
+    }
+
+    cardElement.appendChild(svgIcon);
+
+    if (type === 'gene') {
+      cardElement.className =
+        (this.blacklistedGenes.includes(item)
+          ? 'bg-red-200'
+          : isAlias
+          ? 'bg-yellow-100'
+          : 'bg-gray-200') +
+        ' text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-2 select-none';
+      cardElement.addEventListener('click', () => {
+        this.handleGeneClick(item, cardElement);
+      });
+    } else {
+      cardElement.className =
+        'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+    }
+
+    container.appendChild(cardElement);
+  });
+
+  if (type === 'gene') {
+    const activeBlacklistedGenes = this.blacklistedGenes.filter((gene) =>
+      items.includes(gene)
+    ).length;
+
+    const geneCount = Math.max(items.length - activeBlacklistedGenes, 0);
+    document.querySelector('.genes-count').textContent = `RESEARCH ${geneCount} GENES`;
+  }
+},
+handleGeneClick(gene, container) {
+  const aliasInfo = this.extractedGenes.find(
+    (g) => g.symbol === gene && g.fromAlias
+  );
+
+  if (aliasInfo) {
+    // C’est un alias : toggle dans blacklistedAliases
+    this.toggleAliasBlacklist(aliasInfo.symbol, aliasInfo.aliasUsed);
+  } else {
+    // Sinon : blacklist du gène entier
+    const isBlacklisted = this.blacklistedGenes.includes(gene);
+    if (isBlacklisted) {
+      this.blacklistedGenes = this.blacklistedGenes.filter((item) => item !== gene);
+    } else {
+      this.blacklistedGenes.push(gene);
+    }
+    localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+  }
+
+  this.displayItems('gene');
+},
+
     clearBlacklist() {
       this.blacklistedGenes = []
       localStorage.removeItem('blacklistedGenes')
       this.displayItems('gene')
+    },
+
+
+    toggleAliasBlacklist(symbol, alias) {
+  const key = `${symbol}:${alias}`;
+  const index = this.blacklistedAliases.indexOf(key);
+
+  if (index !== -1) {
+    this.blacklistedAliases.splice(index, 1);
+  } else {
+    this.blacklistedAliases.push(key);
+  }
+
+  localStorage.setItem('blacklistedAliases', JSON.stringify(this.blacklistedAliases));
+  this.displayItems('gene');
+},
+
+    clearAliasBlacklist() {
+      this.blacklistedAliases = [];
+      localStorage.removeItem('blacklistedAliases');
+      this.displayItems('gene');
     },
 
     createSvgIcon(type, item) {
@@ -932,47 +1017,99 @@ export default {
       };
     },
     async fetchGenesListAndCache() {
-      if (sessionStorage.getItem('genesList')) {
-        this.genesList = JSON.parse(sessionStorage.getItem('genesList'));
-        return;
+  if (sessionStorage.getItem('genesList')) {
+    this.genesList = JSON.parse(sessionStorage.getItem('genesList'));
+    return;
+  }
+
+  try {
+    const response = await fetch('api/geneslist');
+    const data = await response.json();
+    this.genesList = data.genes.map(gene => ({
+      symbol: gene.symbol,
+      aliases: gene.aliases,
+    }));
+    sessionStorage.setItem('genesList', JSON.stringify(this.genesList));
+  } catch (error) {
+    console.error('Error fetching genes:', error);
+  }
+},
+
+extractGeneFromBatch() {
+  if (!this.batchInput.trim() || this.genesList.length === 0) {
+    this.extractedGenes = [];
+    return;
+  }
+
+  const text = this.batchInput;
+  const foundGenesMap = new Map();
+  const matchedSymbols = new Set();
+
+  // Étape 1 : matcher les symboles officiels
+  this.genesList.forEach(gene => {
+    const regexSymbol = new RegExp(`\\b${gene.symbol}\\b`, 'i');
+    if (regexSymbol.test(text)) {
+      foundGenesMap.set(gene.symbol, { fromAlias: false, aliasUsed: null });
+      matchedSymbols.add(gene.symbol);
+    }
+  });
+
+  // Étape 2 : matcher les alias uniquement si le symbole n’a pas été détecté
+  this.genesList.forEach(gene => {
+    if (matchedSymbols.has(gene.symbol)) return;
+    if (gene.aliases?.length) {
+      for (const alias of gene.aliases) {
+        if (alias.length < 3) continue;
+        if (this.blacklistedAliases.includes(`${gene.symbol}:${alias}`)) continue;
+        const regexAlias = new RegExp(`\\b${alias}\\b`, 'i');
+        if (regexAlias.test(text)) {
+          foundGenesMap.set(gene.symbol, { fromAlias: true, aliasUsed: alias });
+          break;
+        }
       }
+    }
+  });
 
-      try {
-        const response = await fetch('api/geneslist');
-        const data = await response.json();
-        this.genesList = data.genes;
-        sessionStorage.setItem('genesList', JSON.stringify(data.genes));
-      } catch (error) {
-        console.error('Error fetching genes:', error);
+  const foundGenes = Array.from(foundGenesMap.entries())
+    .map(([symbol, info]) => {
+      let index = text.search(new RegExp(`\\b${symbol}\\b`, 'i'));
+      if (index === -1 && info.fromAlias && info.aliasUsed) {
+        index = text.search(new RegExp(`\\b${info.aliasUsed}\\b`, 'i'));
       }
+      return {
+        symbol,
+        fromAlias: info.fromAlias,
+        aliasUsed: info.aliasUsed,
+        position: index
+      };
+    })
+    .sort((a, b) => a.position - b.position)
+    .map(({ symbol, fromAlias, aliasUsed }) => ({ symbol, fromAlias, aliasUsed }));
 
-    },
-    extractGeneFromBatch() {
-      if (!this.batchInput.trim() || this.genesList.length === 0) {
-        this.extractedGenes = [];
-        return;
-      }
+    const currentSymbols = new Set(this.extractedGenes.map(g => g.symbol));
+    const newGenes = foundGenes.filter(g => !currentSymbols.has(g.symbol));
+    this.extractedGenes = [...this.extractedGenes, ...newGenes];
+
+  this.populateSearchWithExtraction(foundGenes);
+},
 
 
-      const text = this.batchInput;
-      // Filter genes from batch input
-      const foundGenes = this.genesList.filter((gene) => {
-        const regex = new RegExp(`\\b${gene}\\b`, 'i');
-        return regex.test(text);
-      });
 
-      foundGenes.sort((a, b) => text.indexOf(a) - text.indexOf(b));
+async populateSearchWithExtraction(genes) {
+  const existingSessionGenes = new Set(this.getItems('gene'));
+  this.extractedGenes = genes; // on réinitialise ici
 
-      this.extractedGenes = foundGenes;
-      this.populateSearchWithExtraction(foundGenes);
-    },
+  for (const geneObj of genes) {
+    if (geneObj.symbol && !existingSessionGenes.has(geneObj.symbol)) {
+      this.addGene(geneObj.symbol);
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+  }
+},
 
-    async populateSearchWithExtraction(genes) {
-      for (const gene of genes) {
-        this.addGene(gene);
-        await new Promise((resolve) => setTimeout(resolve, 10)); // test                                                 REMOVE BEFORE PROD
-      }
-    },
+
+
+
     clearBatchInput() {
       this.batchInput = '';
       document.getElementById('batchInput').value = '';
