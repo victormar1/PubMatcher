@@ -52,4 +52,14 @@ router.get('/', (req, res) => {
   res.render('index', { results: [], phenotypes: '' })
 })
 
+// Attente de disponibilité de genesList avant d'ajouter la route
+const waitForGenesList = () => {
+  if (extractgenesController.genesReady()) {
+    router.get('/geneslist', extractgenesController.getGenesList);
+  } else {
+    setTimeout(waitForGenesList, 100);
+  }
+};
+waitForGenesList();
+
 module.exports = router

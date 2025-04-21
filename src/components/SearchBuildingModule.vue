@@ -246,6 +246,13 @@
                   <p class="text-gray-700 font-bold font-noto">{{ gene }}</p>
                 </div>
               </div>
+              <div v-if="blacklistedAliases.length > 0" class="flex flex-wrap gap-2 mt-2">
+                <div v-for="alias in blacklistedAliases" :key="alias"
+                  class="inline-flex px-2 justify-center items-center bg-red-200 rounded-full">
+                  <p class="text-gray-700 font-bold font-noto">{{ alias }}</p>
+                </div>
+                </div>
+
               <div v-else class="flex flex-wrap gap-2">
                 <p class="text-gray-700  font-noto">Select a gene to ignore it</p>
               </div>
@@ -463,6 +470,7 @@ export default {
       extractedGenes: [],
       logoutModalVisible: false,
       blacklistedGenes: [],
+      blacklistedAliases: [],
       copied: false,
       copiedPheno: false,
 
@@ -470,6 +478,10 @@ export default {
   },
 
   mounted() {
+
+    const storedAliasBlacklist = localStorage.getItem('blacklistedAliases');
+    this.blacklistedAliases = storedAliasBlacklist ? JSON.parse(storedAliasBlacklist) : [];
+
 
     this.fetchGenesListAndCache(); // Load genes list
     // Initialize sessionStorage
@@ -527,7 +539,16 @@ export default {
     },
 
 
-
+    removeBlacklistedGene(gene) {
+  this.blacklistedGenes = this.blacklistedGenes.filter(g => g !== gene);
+  localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+  this.displayItems('gene');
+},
+removeBlacklistedAlias(alias) {
+  this.blacklistedAliases = this.blacklistedAliases.filter(a => a !== alias);
+  localStorage.setItem('blacklistedAliases', JSON.stringify(this.blacklistedAliases));
+  this.displayItems('gene');
+},
 
 
     async searchFromUrl() {
@@ -695,79 +716,127 @@ export default {
       const typeObject = data.find((item) => item.type === type);
       return typeObject ? typeObject.items : []; // Return empty array if type not found
     },
-    displayItems(type) {
-      const items = this.getItems(type);
-      const container =
-        type === 'gene'
-          ? document.querySelector('.flex-wrap.gene-items')
-          : document.querySelector('.flex-wrap.phenotype-items');
-      if (container) {
-        container.innerHTML = ''; // Clear existing content
+displayItems(type) {
+  const items = this.getItems(type);
+  const container =
+    type === 'gene'
+      ? document.querySelector('.flex-wrap.gene-items')
+      : document.querySelector('.flex-wrap.phenotype-items');
 
-        items.forEach((item) => {
-          const cardElement = document.createElement('div');
-          const geneNameElement = document.createElement('div');
+  if (!container) {
+    console.error('Container element not found!');
+    return;
+  }
 
-          geneNameElement.textContent = item; // Set the text content directly
-          const svgIcon = this.createSvgIcon(type, item); // Create the SVG element with click handler
-          cardElement.appendChild(geneNameElement);
-          cardElement.appendChild(svgIcon);
-          if (type === 'gene') {
-            if (this.blacklistedGenes.includes(item)) {
-              cardElement.className =
-                'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4 select-none';
-            } else {
-              cardElement.className =
-                'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4 select-none';
-            }
-            cardElement.addEventListener('click', () => {
-              this.handleGeneClick(item, cardElement);
-            });
-          } else {
-            cardElement.className =
-              'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-          }
-          container.appendChild(cardElement);
-        });
-      } else {
-        console.error('Container element not found!');
-      }
-      if (type === 'gene') {
-        const activeBlacklistedGenes = this.blacklistedGenes.filter((gene) =>
-          items.includes(gene)
-        ).length;
+  container.innerHTML = '';
 
-        const geneCount = Math.max(
-          Object.keys(items).length - activeBlacklistedGenes,
-          0
-        );
+  const aliasInfoMap = new Map(
+    (this.extractedGenes || [])
+      .filter(g => g.fromAlias)
+      .map(g => [g.symbol.toUpperCase(), g.aliasUsed])
+  );
 
-        document.querySelector('.genes-count').textContent = `RESEARCH ${geneCount} GENES`;
-      }
+  const orderedItems = [...items].sort((a, b) => {
+  const aIndex = this.extractedGenes.findIndex(g => g.symbol.toUpperCase() === a);
+  const bIndex = this.extractedGenes.findIndex(g => g.symbol.toUpperCase() === b);
+  return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex);
+});
 
 
-    },
-    handleGeneClick(gene, container) {
-      const isBlacklisted = this.blacklistedGenes.includes(gene);
-      if (isBlacklisted) {
-        // Remove the gene from the blacklist
-        this.blacklistedGenes = this.blacklistedGenes.filter((item) => item !== gene);
-        container.className = 'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-      } else {
-        // Add the gene to the blacklist
-        this.blacklistedGenes.push(gene);
-        container.className = 'bg-red-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
-      }
 
-      this.displayItems('gene')
-      // Save the updated blacklist to sessionStorage
-      localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
-    },
+  orderedItems.forEach((item) => {
+    const isAlias = aliasInfoMap.has(item);
+    const aliasUsed = aliasInfoMap.get(item);
+
+    const cardElement = document.createElement('div');
+    const geneNameElement = document.createElement('span');
+    geneNameElement.textContent = item;
+
+    const svgIcon = this.createSvgIcon(type, item);
+    cardElement.appendChild(geneNameElement);
+
+    if (isAlias) {
+      const badge = document.createElement('span');
+      badge.textContent = 'alias';
+      badge.className =
+        'ml-2 px-2 py-0.5 text-xs font-semibold text-white bg-blue-500 rounded-full cursor-help';
+      badge.setAttribute('title', `Found via alias: ${aliasUsed}`);
+      cardElement.appendChild(badge);
+    }
+
+    cardElement.appendChild(svgIcon);
+
+    if (type === 'gene') {
+      cardElement.className =
+        (this.blacklistedGenes.includes(item)
+          ? 'bg-red-200'
+          : isAlias
+          ? 'bg-yellow-100'
+          : 'bg-gray-200') +
+        ' text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-2 select-none';
+      cardElement.addEventListener('click', () => {
+        this.handleGeneClick(item, cardElement);
+      });
+    } else {
+      cardElement.className =
+        'bg-gray-200 text-gray-700 rounded-full text-ml font-mono font-bold px-4 py-2 flex items-center space-x-4';
+    }
+
+    container.appendChild(cardElement);
+  });
+
+  if (type === 'gene') {
+    const activeBlacklistedGenes = this.blacklistedGenes.filter((gene) =>
+      items.includes(gene)
+    ).length;
+
+    const geneCount = Math.max(items.length - activeBlacklistedGenes, 0);
+    document.querySelector('.genes-count').textContent = `RESEARCH ${geneCount} GENES`;
+  }
+},
+handleGeneClick(gene, container) {
+  const aliasInfo = this.extractedGenes.find(
+    (g) => g.symbol === gene && g.fromAlias
+  );
+
+  if (aliasInfo) {
+    // C’est un alias : toggle dans blacklistedAliases
+    this.toggleAliasBlacklist(aliasInfo.symbol, aliasInfo.aliasUsed);
+  } else {
+    // Sinon : blacklist du gène entier
+    const isBlacklisted = this.blacklistedGenes.includes(gene);
+    if (isBlacklisted) {
+      this.blacklistedGenes = this.blacklistedGenes.filter((item) => item !== gene);
+    } else {
+      this.blacklistedGenes.push(gene);
+    }
+    localStorage.setItem('blacklistedGenes', JSON.stringify(this.blacklistedGenes));
+  }
+
+  this.displayItems('gene');
+},
+
     clearBlacklist() {
       this.blacklistedGenes = []
       localStorage.removeItem('blacklistedGenes')
       this.displayItems('gene')
     },
+
+
+    toggleAliasBlacklist(symbol, alias) {
+  const key = `${symbol}:${alias}`;
+  const index = this.blacklistedAliases.indexOf(key);
+
+  if (index !== -1) {
+    this.blacklistedAliases.splice(index, 1);
+  } else {
+    this.blacklistedAliases.push(key);
+  }
+
+  localStorage.setItem('blacklistedAliases', JSON.stringify(this.blacklistedAliases));
+  this.displayItems('gene');
+},
+
 
     createSvgIcon(type, item) {
       const svgIcon = document.createElementNS(
@@ -932,22 +1001,22 @@ export default {
       };
     },
     async fetchGenesListAndCache() {
-    if (sessionStorage.getItem('genesList')) {
-        this.genesList = JSON.parse(sessionStorage.getItem('genesList'));
-        return;
-    }
+  if (sessionStorage.getItem('genesList')) {
+    this.genesList = JSON.parse(sessionStorage.getItem('genesList'));
+    return;
+  }
 
-    try {
-        const response = await fetch('api/geneslist');
-        const data = await response.json();
-        this.genesList = data.genes.map(gene => ({
-            symbol: gene.symbol,
-            previousSymbol: gene.previousSymbol
-        }));
-        sessionStorage.setItem('genesList', JSON.stringify(this.genesList));
-    } catch (error) {
-        console.error('Error fetching genes:', error);
-    }
+  try {
+    const response = await fetch('api/geneslist');
+    const data = await response.json();
+    this.genesList = data.genes.map(gene => ({
+      symbol: gene.symbol,
+      aliases: gene.aliases,
+    }));
+    sessionStorage.setItem('genesList', JSON.stringify(this.genesList));
+  } catch (error) {
+    console.error('Error fetching genes:', error);
+  }
 },
 
 extractGeneFromBatch() {
@@ -957,37 +1026,72 @@ extractGeneFromBatch() {
   }
 
   const text = this.batchInput;
-  const foundGenesSet = new Set();
+  const foundGenesMap = new Map();
+  const matchedSymbols = new Set();
 
+  // Étape 1 : matcher les symboles officiels
   this.genesList.forEach(gene => {
-    const regexCurrent = gene.symbol ? new RegExp(`\\b${gene.symbol}\\b`, 'i') : null;
-    const regexPrevious = gene.previousSymbol ? new RegExp(`\\b${gene.previousSymbol}\\b`, 'i') : null;
-
-    if (regexCurrent && regexCurrent.test(text)) {
-      foundGenesSet.add(gene.symbol);
-    } else if (regexPrevious && regexPrevious.test(text)) {
-      foundGenesSet.add(gene.symbol);
+    const regexSymbol = new RegExp(`\\b${gene.symbol}\\b`, 'i');
+    if (regexSymbol.test(text)) {
+      foundGenesMap.set(gene.symbol, { fromAlias: false, aliasUsed: null });
+      matchedSymbols.add(gene.symbol);
     }
   });
 
-  const foundGenes = Array.from(foundGenesSet).sort((a, b) => text.indexOf(a) - text.indexOf(b));
+  // Étape 2 : matcher les alias uniquement si le symbole n’a pas été détecté
+  this.genesList.forEach(gene => {
+    if (matchedSymbols.has(gene.symbol)) return;
+    if (gene.aliases?.length) {
+      for (const alias of gene.aliases) {
+        if (alias.length < 3) continue;
+        if (this.blacklistedAliases.includes(`${gene.symbol}:${alias}`)) continue;
+        const regexAlias = new RegExp(`\\b${alias}\\b`, 'i');
+        if (regexAlias.test(text)) {
+          foundGenesMap.set(gene.symbol, { fromAlias: true, aliasUsed: alias });
+          break;
+        }
+      }
+    }
+  });
 
-  // filtre les undefined
-  const cleanGenes = foundGenes.filter(Boolean);
+  const foundGenes = Array.from(foundGenesMap.entries())
+    .map(([symbol, info]) => {
+      let index = text.search(new RegExp(`\\b${symbol}\\b`, 'i'));
+      if (index === -1 && info.fromAlias && info.aliasUsed) {
+        index = text.search(new RegExp(`\\b${info.aliasUsed}\\b`, 'i'));
+      }
+      return {
+        symbol,
+        fromAlias: info.fromAlias,
+        aliasUsed: info.aliasUsed,
+        position: index
+      };
+    })
+    .sort((a, b) => a.position - b.position)
+    .map(({ symbol, fromAlias, aliasUsed }) => ({ symbol, fromAlias, aliasUsed }));
 
-  this.extractedGenes = cleanGenes;
-  this.populateSearchWithExtraction(cleanGenes);
+    const currentSymbols = new Set(this.extractedGenes.map(g => g.symbol));
+    const newGenes = foundGenes.filter(g => !currentSymbols.has(g.symbol));
+    this.extractedGenes = [...this.extractedGenes, ...newGenes];
+
+  this.populateSearchWithExtraction(foundGenes);
 },
 
 
+
 async populateSearchWithExtraction(genes) {
-  for (const gene of genes) {
-    if (typeof gene === 'string' && gene.trim()) {
-      this.addGene(gene);
+  const existingSessionGenes = new Set(this.getItems('gene'));
+  this.extractedGenes = genes; // on réinitialise ici
+
+  for (const geneObj of genes) {
+    if (geneObj.symbol && !existingSessionGenes.has(geneObj.symbol)) {
+      this.addGene(geneObj.symbol);
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
   }
 },
+
+
 
 
     clearBatchInput() {
