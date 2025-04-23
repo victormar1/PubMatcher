@@ -23,5 +23,5 @@ services:
       - traefik.enable=true
       - traefik.http.routers.legacy.rule=Host(`pubmatcher.fr`)|| Host(`www.pubmatcher.fr`)
       - traefik.http.routers.legacy.entrypoints=websecure
-      - traefik.http.routers.legacy.tls.certresolver=le
+      - traefik.http.routers.legacy.tls.certresolver=prod
       - traefik.http.services.legacy.loadbalancer.server.port=3000
