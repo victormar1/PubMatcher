@@ -13,6 +13,7 @@ const authenticateToken = require('../src/authentication')
 const userHistoryController = require('../controllers/userHistoryController')
 const sendPwResetMailController = require('../controllers/sendPwResetMailController')
 const resetPasswordController = require('../controllers/resetPasswordController') // Add your new controller
+const mastodonController = require('../controllers/mastodonController')
 
 // Route pour la recherche
 router.post('/search', searchController.search)
@@ -43,6 +44,8 @@ router.post('/sendPwResetMail', sendPwResetMailController)
 router.get('/reset-password:token', resetPasswordController.validateToken)
 router.post('/reset-password', resetPasswordController.resetPassword)
 
+router.get('/mastodon/timeline', mastodonController.getTimeline)
+
 router.get('/account', authenticateToken, (req, res) => {
   userHistoryController.getHistory(req, res)
 })
@@ -55,11 +58,11 @@ router.get('/', (req, res) => {
 // Attente de disponibilité de genesList avant d'ajouter la route
 const waitForGenesList = () => {
   if (extractgenesController.genesReady()) {
-    router.get('/geneslist', extractgenesController.getGenesList);
+    router.get('/geneslist', extractgenesController.getGenesList)
   } else {
-    setTimeout(waitForGenesList, 100);
+    setTimeout(waitForGenesList, 100)
   }
-};
-waitForGenesList();
+}
+waitForGenesList()
 
 module.exports = router

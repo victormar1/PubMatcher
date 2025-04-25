@@ -59,6 +59,10 @@
         </router-link>
       </div>
       <nav class="flex space-x-2 text-nowrap pl-4">
+        <router-link to="/" class="text-white hover:text-blue-200 mx-3">
+          <MastodonFeed />
+        </router-link>
+
         <router-link to="/" class="text-white hover:text-blue-200 mx-2">Home</router-link>
         <router-link to="/about/general" class="text-white hover:text-blue-200 mx-2">About</router-link>
 
@@ -67,7 +71,7 @@
         </div>
         <div v-else class="relative group">
           <router-link to="/account" class="text-white font-bold hover:text-blue-200 mx-2">{{ authState.username
-            }}</router-link>
+          }}</router-link>
         </div>
 
 
@@ -79,6 +83,8 @@
 
 <script>
 import { authState, logout } from '../authStateManager.js';
+import BellIcon from './icons/BellIcon.vue';
+import MastodonFeed from './MastodonFeed.vue';
 
 export default {
   data() {
@@ -87,6 +93,10 @@ export default {
       logout,
 
     };
+  },
+  components: {
+    BellIcon,
+    MastodonFeed,
   },
 };
 </script>

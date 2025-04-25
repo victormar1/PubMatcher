@@ -7,9 +7,11 @@ import FloatingVue from 'floating-vue'
 import 'floating-vue/dist/style.css'
 import VueGtag, { event } from 'vue-gtag'
 import 'flowbite'
+import { createPinia } from 'pinia'
 
 createApp(App)
   .use(router)
+  .use(createPinia())
   .use(
     VueGtag,
     {
