@@ -1,5 +1,5 @@
 networks:
-  traefik-proxy:
+  main_network:
     external: true
 
 services:
