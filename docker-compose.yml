@@ -10,7 +10,7 @@ services:
     container_name: pubmatcher_legacy
     restart: unless-stopped
     networks:
-      - mùain_network
+      - main_network
     environment:
       - NODE_ENV=production
     env_file:
