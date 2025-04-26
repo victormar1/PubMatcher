@@ -1,24 +1,42 @@
 // controllers/exportPdfController.js
-
+require('dotenv').config()
 const axios = require('axios')
+
+const INSTANCE = 'mastodon.social'
+const TOKEN = process.env.MASTODON_TOKEN
+const ACCOUNT_ID = '114393723893979236'
+
+if (!TOKEN) {
+  throw new Error('MASTODON_TOKEN is missing in .env')
+}
+
+const masto = axios.create({
+  baseURL: `https://${INSTANCE}/api/v1/`,
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    'User-Agent': 'PubMatcher/1.0 (+https://www.pubmatcher.fr)'
+  },
+  timeout: 10_000
+})
 
 exports.getTimeline = async (req, res) => {
   try {
-    const accountId = '114393723893979236'
-    const instance = 'mastodon.social'
-    const limit = req.query.limit || 20
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 40)
+    const excludeReplies = req.query.excludeReplies === 'true'
+    const excludeReblogs = req.query.excludeReblogs === 'true'
 
-    const response = await axios.get(`https://${instance}/api/v1/accounts/${accountId}/statuses`, {
+    const { data } = await masto.get(`accounts/${ACCOUNT_ID}/statuses`, {
       params: {
-        limit: limit,
-        exclude_replies: req.query.excludeReplies === 'true',
-        exclude_reblogs: req.query.excludeReblogs === 'true'
+        limit,
+        exclude_replies: excludeReplies,
+        exclude_reblogs: excludeReblogs
       }
     })
 
-    res.json(response.data)
-  } catch (error) {
-    console.error('Error fetching timeline:', error)
-    res.status(500).send('Error fetching timeline')
+    res.json(data)
+  } catch (err) {
+    console.error('Error fetching Mastodon timeline:', err.response?.status, err.message)
+    const code = err.response?.status || 500
+    res.status(code).json({ error: 'Unable to fetch Mastodon timeline' })
   }
 }
