@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   traefik-proxy:
     external: true
@@ -12,7 +10,7 @@ services:
     container_name: pubmatcher_legacy
     restart: unless-stopped
     networks:
-      - traefik-proxy
+      - mùain_network
     environment:
       - NODE_ENV=production
     env_file:
@@ -23,5 +21,5 @@ services:
       - traefik.enable=true
       - traefik.http.routers.legacy.rule=Host(`pubmatcher.fr`)|| Host(`www.pubmatcher.fr`)
       - traefik.http.routers.legacy.entrypoints=websecure
-      - traefik.http.routers.legacy.tls.certresolver=prod
+      - traefik.http.routers.legacy.tls.certresolver=prod_resolver
       - traefik.http.services.legacy.loadbalancer.server.port=3000
