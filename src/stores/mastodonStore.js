@@ -44,7 +44,6 @@ export const useMastodonStore = defineStore('mastodon', () => {
       }))
 
       if (rawPosts.length > 0 && rawPosts[0].content.startsWith('<p>!Maintenance')) {
-        console.log(rawPosts[0].content)
         maintenanceMessage.value = rawPosts[0].content
       }
 

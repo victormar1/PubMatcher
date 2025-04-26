@@ -63,7 +63,7 @@
                             class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <div class="flex">
                                 <img :src="post.avatar || '/default-avatar.png'" alt="Avatar"
-                                    class="h-12 w-12 rounded-full mr-3 border-2 border-gray-200 dark:border-gray-600" />
+                                    class="h-12 w-12 rounded-full mr-3 border-2 border-gray-200 dark:border-gray-600 bg-gray-800" />
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center justify-between">
                                         <div class="font-bold text-gray-900 dark:text-white truncate">
@@ -169,7 +169,6 @@ const fetchPosts = async () => {
 
 
 onMounted(() => {
-    fetchPosts();
     useEventListener(document, 'click', (evt) => {
         if (showFeed.value && container.value && !container.value.contains(evt.target)) {
             mastodonStore.toggleFeed();
