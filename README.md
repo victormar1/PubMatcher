@@ -74,9 +74,10 @@ PubMatcher is an automated genomic research tool that integrates biological data
 - [PostgreSQL](https://www.postgresql.org/) 14 or higher
 - [npm](https://www.npmjs.com/) 9.x or higher
 
-### Option 1: Local Development
+<details>
+<summary><h3>Option 1: Local Development</h3></summary>
 
-1. Clone the repository
+**1. Clone the repository**
 ```bash
 git clone https://github.com/victormar1/PubMatcher.git
 ```
@@ -84,37 +85,40 @@ git clone https://github.com/victormar1/PubMatcher.git
 cd pubmatcher
 ```
 
-2. Install dependencies
+**2. Install dependencies**
 ```bash
 npm install
 ```
 
-3. Configure environment
+**3. Configure environment**
 ```bash
 cp .env.example .env
 ```
 Edit `.env` with your configuration
 
-4. Initialize database
+**4. Initialize database**
 ```bash
 psql -U postgres -f database/schema.sql
 ```
 
-5. Build frontend
+**5. Build frontend**
 ```bash
 npm run build
 ```
 
-6. Start the server
+**6. Start the server**
 ```bash
 node app.js
 ```
 
 The application will be available at `http://localhost:3000`
 
-### Option 2: Docker Deployment (Recommended)
+</details>
 
-1. Clone the repository
+<details open>
+<summary><h3>Option 2: Docker Deployment (Recommended)</h3></summary>
+
+**1. Clone the repository**
 ```bash
 git clone https://github.com/victormar1/PubMatcher.git
 ```
@@ -122,23 +126,25 @@ git clone https://github.com/victormar1/PubMatcher.git
 cd pubmatcher
 ```
 
-2. Configure environment
+**2. Configure environment**
 ```bash
 cp .env.example .env
 ```
-Edit `.env` with your configuration (at minimum, change `DB_PASSWORD` and `SECRET_KEY`)
+>Edit `.env` with your configuration (at minimum, change `DB_PASSWORD` and `SECRET_KEY`)
 
-3. Start with Docker Compose (includes PostgreSQL)
+**3. Start with Docker Compose** (includes PostgreSQL)
 ```bash
 docker-compose -f docker/docker-compose.yml up -d
 ```
 
-4. Check logs
+**4. Check logs**
 ```bash
 docker-compose -f docker/docker-compose.yml logs -f app
 ```
 
 The application will be available at `http://localhost:3000`
+
+</details>
 
 ---
 
