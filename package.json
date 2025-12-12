@@ -1,8 +1,12 @@
 {
-  "name": "pubmed-search",
+  "name": "pubmatcher",
   "version": "1.0.0",
-  "description": "A web app to search PubMed based on genes and phenotypes",
+  "description": "A web app to support genomic data interpretation through simplified bibliographic research",
   "main": "app.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.1",
     "@vueuse/core": "^11.2.0",
