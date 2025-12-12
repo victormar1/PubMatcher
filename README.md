@@ -56,7 +56,7 @@ PubMatcher is an automated genomic research tool that integrates biological data
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-repo/pubmatcher.git
+git clone https://github.com/victormar1/PubMatcher.git
 cd pubmatcher
 
 # 2. Install dependencies
@@ -82,7 +82,7 @@ The application will be available at `http://localhost:3000`
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-repo/pubmatcher.git
+git clone https://github.com/victormar1/PubMatcher.git
 cd pubmatcher
 
 # 2. Configure environment
