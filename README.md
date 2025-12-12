@@ -17,6 +17,28 @@
 
 ---
 
+<details>
+<summary><strong>Table of Contents</strong></summary>
+
+- [About](#-about)
+- [Technical Stack](#️-technical-stack)
+- [Installation](#-installation)
+- [Configuration](#️-configuration)
+- [Data Sources](#️-data-sources)
+- [Gene Recognition](#-gene-recognition)
+- [API](#-api)
+- [Project Structure](#-project-structure)
+- [Development](#-development)
+- [Deployment](#-deployment)
+- [License](#-license)
+- [Citation](#-citation)
+- [Authors](#-authors)
+- [Acknowledgments](#-acknowledgments)
+
+</details>
+
+---
+
 ## 📖 About
 
 PubMatcher is an automated genomic research tool that integrates biological databases and APIs to facilitate genetic interpretation. It enables batch analysis of gene lists, combining automated PubMed searches with curated databases to help geneticists identify relevant disease genes, especially those not yet fully documented in OMIM.
@@ -54,25 +76,37 @@ PubMatcher is an automated genomic research tool that integrates biological data
 
 ### Option 1: Local Development
 
+1. Clone the repository
 ```bash
-# 1. Clone the repository
 git clone https://github.com/victormar1/PubMatcher.git
+```
+```bash
 cd pubmatcher
+```
 
-# 2. Install dependencies
+2. Install dependencies
+```bash
 npm install
+```
 
-# 3. Configure environment
+3. Configure environment
+```bash
 cp .env.example .env
-# Edit .env with your configuration
+```
+Edit `.env` with your configuration
 
-# 4. Initialize database
+4. Initialize database
+```bash
 psql -U postgres -f database/schema.sql
+```
 
-# 5. Build frontend
+5. Build frontend
+```bash
 npm run build
+```
 
-# 6. Start the server
+6. Start the server
+```bash
 node app.js
 ```
 
@@ -80,19 +114,27 @@ The application will be available at `http://localhost:3000`
 
 ### Option 2: Docker Deployment (Recommended)
 
+1. Clone the repository
 ```bash
-# 1. Clone the repository
 git clone https://github.com/victormar1/PubMatcher.git
+```
+```bash
 cd pubmatcher
+```
 
-# 2. Configure environment
+2. Configure environment
+```bash
 cp .env.example .env
-# Edit .env with your configuration (at minimum, change DB_PASSWORD and SECRET_KEY)
+```
+Edit `.env` with your configuration (at minimum, change `DB_PASSWORD` and `SECRET_KEY`)
 
-# 3. Start with Docker Compose (includes PostgreSQL)
+3. Start with Docker Compose (includes PostgreSQL)
+```bash
 docker-compose -f docker/docker-compose.yml up -d
+```
 
-# 4. Check logs
+4. Check logs
+```bash
 docker-compose -f docker/docker-compose.yml logs -f app
 ```
 
@@ -225,14 +267,18 @@ pubmatcher/
 
 ## 🧪 Development
 
+Start development server with hot reload:
 ```bash
-# Start development server with hot reload
 npm run dev
+```
 
-# Build for production
+Build for production:
+```bash
 npm run build
+```
 
-# Format code
+Format code:
+```bash
 npx prettier --write .
 ```
 
@@ -244,27 +290,31 @@ npx prettier --write .
 
 This is the easiest way to deploy PubMatcher. It includes everything needed.
 
+Configure environment:
 ```bash
-# Configure environment
 cp .env.example .env
-nano .env  # Edit with your settings
+```
+Edit `.env` with your settings
 
-# Start the application
+Start the application:
+```bash
 docker-compose -f docker/docker-compose.yml up -d
+```
 
-# View logs
+View logs:
+```bash
 docker-compose -f docker/docker-compose.yml logs -f
+```
 
-# Stop the application
+Stop the application:
+```bash
 docker-compose -f docker/docker-compose.yml down
 ```
 
 ### Production Deployment (with Traefik)
 
 For production with an existing Traefik reverse proxy:
-
 ```bash
-# Use the production config
 docker-compose -f docker/docker-compose.production.yml up -d
 ```
 
