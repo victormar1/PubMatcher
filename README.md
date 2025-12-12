@@ -138,9 +138,30 @@ PubMatcher integrates data from multiple sources:
 
 ---
 
-## 🔌 API
+## 🧬 Gene Recognition
 
-PubMatcher provides a REST API for programmatic access:
+Gene recognition uses dictionary-based lookup with the HGNC (HUGO Gene Nomenclature Committee) nomenclature as the reference.
+
+### Method
+
+1. User input is compared against a local dictionary file (`genes.json`) containing approximately 43,000 approved gene symbols and their official aliases
+2. Matching uses exact string comparison on both symbols and aliases
+3. Each matched gene is validated via the HGNC REST API (`rest.genenames.org/fetch/symbol/{gene}`)
+4. The API returns cross-references to external databases (UniProt, OMIM, Ensembl, MGI)
+
+### Alias Resolution
+
+Aliases are resolved using HGNC official data. For example, `FANCS` is recognized as an alias for `BRCA1` and the system returns data for the official symbol.
+
+### Limitations
+
+- No fuzzy matching or typo tolerance
+- No NLP-based recognition
+- Exact match only
+
+---
+
+## 🔌 API
 
 ### Search Genes
 
