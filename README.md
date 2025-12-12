@@ -11,7 +11,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?logo=postgresql)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Live Demo](https://pubmatcher.fr) · [Report Bug](https://github.com/your-repo/issues) · [Request Feature](https://github.com/your-repo/issues)
+[Live Demo](https://pubmatcher.fr) · [Request Feature](https://github.com/victormar1/PubMatcher/issues)
 
 </div>
 
