@@ -5,20 +5,28 @@ import './assets/tailwind.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import FloatingVue from 'floating-vue'
 import 'floating-vue/dist/style.css'
-import VueGtag, { event } from 'vue-gtag'
+import VueGtag from 'vue-gtag'
 import 'flowbite'
 import { createPinia } from 'pinia'
 
-createApp(App)
+const app = createApp(App)
   .use(router)
   .use(createPinia())
-  .use(
+  .use(FloatingVue)
+
+const gaTrackingId = process.env.VUE_APP_GA_TRACKING_ID
+if (gaTrackingId) {
+  app.use(
     VueGtag,
     {
-      config: { id: 'G-PGNGTTRTN2' },
-      debug_mode: true
+      config: { id: gaTrackingId },
+      debug_mode: process.env.NODE_ENV !== 'production'
     },
     router
   )
-  .use(FloatingVue)
-  .mount('#app')
+  console.log('Google Analytics enabled')
+} else {
+  console.log('Google Analytics disabled (VUE_APP_GA_TRACKING_ID not set)')
+}
+
+app.mount('#app')

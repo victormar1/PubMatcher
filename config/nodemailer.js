@@ -1,29 +1,49 @@
 const nodemailer = require('nodemailer')
 
-// BUG REPORT TRANSPORTER
-const bugReportTransporter = nodemailer.createTransport({
-  host: 'ssl0.ovh.net', // MX Plan SMTP server
-  port: 465, // Use port 465 for SSL
-  secure: true, // Set to true for SSL
-  auth: {
-    user: process.env.NOREPLY_USER,
-    pass: process.env.NOREPLY_PASS
-  }
-})
+// Check if email configuration is available
+const isEmailConfigured = !!(process.env.NOREPLY_USER && process.env.NOREPLY_PASS)
 
-// PASSWORD RESET TRANSPORTER
-const passwordResetTransporter = nodemailer.createTransport({
-  host: 'ssl0.ovh.net', // MX Plan SMTP server
-  port: 465, // Use port 465 for SSL
-  secure: true, // Set to true for SSL
-  auth: {
-    user: process.env.NOREPLY_USER,
-    pass: process.env.NOREPLY_PASS
-  }
-})
+if (isEmailConfigured) {
+  console.log('Email integration enabled')
+} else {
+  console.log('Email integration disabled (NOREPLY_USER/NOREPLY_PASS not set)')
+}
+
+// Create transporters only if email is configured
+let bugReportTransporter = null
+let passwordResetTransporter = null
+
+if (isEmailConfigured) {
+  // BUG REPORT TRANSPORTER
+  bugReportTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'ssl0.ovh.net',
+    port: parseInt(process.env.SMTP_PORT) || 465,
+    secure: true,
+    auth: {
+      user: process.env.NOREPLY_USER,
+      pass: process.env.NOREPLY_PASS
+    }
+  })
+
+  // PASSWORD RESET TRANSPORTER
+  passwordResetTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'ssl0.ovh.net',
+    port: parseInt(process.env.SMTP_PORT) || 465,
+    secure: true,
+    auth: {
+      user: process.env.NOREPLY_USER,
+      pass: process.env.NOREPLY_PASS
+    }
+  })
+}
 
 // General email sender function
 async function sendEmail({ transporter, to, subject, text, html }) {
+  if (!transporter) {
+    console.warn('Email not sent - email integration is disabled')
+    throw new Error('Email integration is not configured')
+  }
+
   try {
     const info = await transporter.sendMail({
       from: transporter.options.auth.user,
@@ -42,7 +62,17 @@ async function sendEmail({ transporter, to, subject, text, html }) {
 
 // Function to send a bug report email
 async function sendBugReportEmail(reporterName, reportBody) {
-  const adminEmail = process.env.ADMIN_USER // Email address of the admin
+  if (!bugReportTransporter) {
+    console.warn('Bug report email not sent - email integration is disabled')
+    throw new Error('Email integration is not configured')
+  }
+
+  const adminEmail = process.env.ADMIN_USER
+  if (!adminEmail) {
+    console.warn('Bug report email not sent - ADMIN_USER not set')
+    throw new Error('Admin email is not configured')
+  }
+
   const subject = `Bug Report from ${reporterName}`
   const text = `Bug report details:\n\n${reportBody}`
   const html = `
@@ -53,8 +83,8 @@ async function sendBugReportEmail(reporterName, reportBody) {
 
   try {
     const info = await bugReportTransporter.sendMail({
-      from: bugReportTransporter.options.auth.user, // Sender email
-      to: adminEmail, // Admin email
+      from: bugReportTransporter.options.auth.user,
+      to: adminEmail,
       subject,
       text,
       html
@@ -68,6 +98,11 @@ async function sendBugReportEmail(reporterName, reportBody) {
 }
 
 async function sendPasswordResetEmail(to, resetLink) {
+  if (!passwordResetTransporter) {
+    console.warn('Password reset email not sent - email integration is disabled')
+    throw new Error('Email integration is not configured')
+  }
+
   const subject = 'Password Reset Request'
   const text = `You requested a password reset. Use this link: ${resetLink}`
   const html = `<p>You requested a password reset. Click <a href="${resetLink}">here</a> to reset your password.</p>`
@@ -80,7 +115,9 @@ async function sendPasswordResetEmail(to, resetLink) {
   })
 }
 
+// Export configuration status for other modules to check
 module.exports = {
   sendBugReportEmail,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  isEmailConfigured
 }

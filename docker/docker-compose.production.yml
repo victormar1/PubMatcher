@@ -1,0 +1,38 @@
+# ===========================================
+# PubMatcher - Production Docker Deployment
+# ===========================================
+# This config is for production with Traefik reverse proxy
+# Requires:
+#   - External Docker network "main_network"
+#   - Traefik configured with websecure entrypoint
+#   - External PostgreSQL database
+#
+# Usage (from project root):
+#   docker-compose -f docker/docker-compose.production.yml up -d
+# ===========================================
+
+networks:
+  main_network:
+    external: true
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: pubmatcher_app
+    restart: unless-stopped
+    networks:
+      - main_network
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ../.env
+    volumes:
+      - ../logs:/app/logs
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pubmatcher.rule=Host(`pubmatcher.fr`) || Host(`www.pubmatcher.fr`)
+      - traefik.http.routers.pubmatcher.entrypoints=websecure
+      - traefik.http.routers.pubmatcher.tls.certresolver=prod_resolver
+      - traefik.http.services.pubmatcher.loadbalancer.server.port=3000
