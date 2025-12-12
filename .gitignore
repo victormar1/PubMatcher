@@ -2,3 +2,7 @@ node_modules/*
 .env
 a.out
 package-lock.json
+back.code-workspace
+front.code-workspace
+BDD/clinvar.vcf
+dist

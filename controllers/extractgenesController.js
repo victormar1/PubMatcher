@@ -1,50 +1,38 @@
 const fs = require('fs');
-const csv = require('csv-parser');
 const path = require('path');
 
 let genesList = [];
+let isReady = false;
 
-/**
- * Function to load genes from a CSV file.
- * Returns a Promise that resolves to the list of genes.
- */
-function loadGenesFromFile(filePath) {
-    return new Promise((resolve, reject) => {
-        const genes = [];
-        fs.createReadStream(filePath)
-            .pipe(csv())
-            .on('data', (row) => {
-                genes.push(row.geneName); // Adjust 'geneName' to match your CSV column name
-            })
-            .on('end', () => {
-                console.log('Genes CSV file successfully processed');
-                resolve(genes);
-            })
-            .on('error', (error) => {
-                console.error('Error reading genes CSV:', error);
-                reject(error);
-            });
+function loadGenesFromJson(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+      try {
+        const parsed = JSON.parse(data);
+        genesList = parsed;
+        isReady = true;
+        console.log(`Loaded ${genesList.length} genes from JSON`);
+        resolve();
+      } catch (parseErr) {
+        reject(parseErr);
+      }
     });
+  });
 }
 
-// Load genes during server startup
-const csvPath = path.join(__dirname, '..', 'BDD', 'genes.csv');
-loadGenesFromFile(csvPath)
-    .then((genes) => {
-        genesList = genes; // Cache the loaded genes in memory
-        console.log('Genes loaded successfully.');
-    })
-    .catch((error) => {
-        console.error('Error loading genes during startup:', error);
-    });
+const jsonPath = path.resolve(__dirname, '..', 'BDD', 'genes.json');
+loadGenesFromJson(jsonPath).catch((err) => {
+  console.error('Error loading genes JSON:', err);
+});
 
-/**
- * Controller to return the list of genes.
- * Responds with the cached genes list.
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- */
 exports.getGenesList = (req, res) => {
-    console.log('Received /geneslist request');
-    res.json({ genes: genesList });
+  if (!isReady) {
+    return res.status(503).json({ error: 'Genes list not ready yet.' });
+  }
+  res.json({ genes: genesList });
 };
+
+exports.genesReady = () => isReady;

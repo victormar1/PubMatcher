@@ -1,54 +1,28 @@
 <template>
-  <div class="about py-10 text-center">
-    <p class="text-gray-700 text-lg mb-5">
-      PubMatcher is an automated genomic search tool that integrates
-      biological databases and APIs to facilitate genetic interpretation.
-    </p>
-    <p class="text-gray-800 text-xl font-semibold mb-2 ">
-It allows users to:
-    </p>
-    <div class="features flex flex-wrap justify-center mb-12">
-      <div class="feature-item w-64 m-4 text-center" v-for="feature in features" :key="feature.title">
-        <i :class="feature.icon" class="text-5xl text-blue-600 mb-2"></i>
-        <h3 class="text-gray-800 text-xl font-semibold mb-2">{{ feature.title }}</h3>
-        <p class="text-gray-600">{{ feature.description }}</p>
+   <div class="flex flex-grow">
+      <!-- Sidebar -->
+      <Sidebar class="w-1/6 bg-gray-800  shadow-lg overflow-y-auto" />
+
+      <!-- Content -->
+      <div class="w-5/6 p-4 overflow-y-auto">
+         <div class="h-full ">
+            <router-view />
+         </div>
       </div>
-    </div>
-  </div>
+   </div>
 </template>
 
+
+
 <script>
+import Sidebar from "./AboutSideBar.vue";
+
 export default {
-  name: 'AboutPage',
-  data() {
-    return {
-      features: [
-        {
-          title: 'Gene Constraint Verification',
-          icon: 'fas fa-dna',
-        },
-        {
-          title: 'Search for Scientific Publications',
-          icon: 'fas fa-book',
-        },
-        {
-          title: 'Extraction of Protein Functions',
-          icon: 'fas fa-flask',
-        },
-        {
-          title: 'Mouse Phenotype Verification',
-          icon: 'fas fa-mouse',
-        },
-        {
-          title: 'Access to GenCC and PanelApp',
-          icon: 'fas fa-database',
-        },
-      ],
-    };
-  },
+   name: "AboutPage",
+   components: {
+      Sidebar,
+   },
 };
 </script>
 
-<style scoped>
-@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
-</style>
+<style></style>
