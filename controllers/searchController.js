@@ -15,64 +15,48 @@ exports.search = async (req, res) => {
     const phenotypes = req.method === 'POST' ? req.body.phenotypes : req.query.phenotypes
     const userId = req.body.userId
 
-    //hash the query for easy compar
+    let query = null
     const queryHash = crypto
       .createHash('sha256')
       .update(`${genes.join(',')}:${phenotypes.join(',')}`)
       .digest('hex')
 
-    // Check or insert
-    const queryInsert = await pool.query(
-      `
+    // DB operations (optional - continue if DB unavailable)
+    try {
+      const queryInsert = await pool.query(
+        `
             INSERT INTO researched_queries (query_hash, genes, phenotypes)
             VALUES ($1, $2, $3)
             ON CONFLICT (query_hash)
             DO UPDATE SET last_used_at = CURRENT_TIMESTAMP
             RETURNING *;
             `,
-      [queryHash, genes.join(','), phenotypes.join(',')]
-    )
-
-    const query = queryInsert.rows[0]
-    if (userId) {
-      //If logged
-      await pool.query(
-        'INSERT INTO search_history (user_id, query_id, timestamp) VALUES ($1, $2, CURRENT_TIMESTAMP)',
-        [userId, query.id] //save as history entry
+        [queryHash, genes.join(','), phenotypes.join(',')]
       )
+      query = queryInsert.rows[0]
+
+      if (userId && query) {
+        await pool.query(
+          'INSERT INTO search_history (user_id, query_id, timestamp) VALUES ($1, $2, CURRENT_TIMESTAMP)',
+          [userId, query.id]
+        )
+      }
+    } catch (dbError) {
+      console.warn('DB unavailable, search continues without history/cache:', dbError.message)
     }
 
-    // // Check for cached results
-    // const cachedResult = await pool.query('SELECT * FROM query_results WHERE query_id = $1 AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)', [query.id])
-
-    // if (cachedResult.rows.length > 0) {
-    //   // ! EXCLUDE PUBMED DATA FROM DB BUFFERING | CONSIDER ALSO UPDATING OTHER DATA PERIODICALLY
-    //   const cachedData = cachedResult.rows[0].result_data
-    //   const phenotypes = req.body.phenotypes || []
-
-    //   const updatedResults = await Promise.all(
-    //     cachedData.map(async (item) => {
-    //       const gene = item.gene
-
-    //       const pubMedData = await getPubMedData(gene, phenotypes)
-    //       const clinVarData = await getClinVarData(gene)
-
-    //       return {
-    //         ...item,
-    //         ...pubMedData,
-    //         ...clinVarData
-    //       }
-    //     })
-    //   )
-    //   return res.json({ cached: true, results: updatedResults }) // * cachedResult.rows[0].result_data TO TEST FUNCTION EXCLUSION
-    // }
-
-    //If no result in db just fetch apis
+    // Fetch data from external APIs (core functionality)
     const queryParams = { body: { genes, phenotypes } }
     const apiResults = await getData(queryParams)
 
-    // Save the new results in db / where FK is research ID
-    await pool.query('INSERT INTO query_results (query_id, result_data, expires_at) VALUES ($1, $2::jsonb, $3)', [query.id, JSON.stringify(apiResults), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)])
+    // Save results in DB if available
+    if (query) {
+      try {
+        await pool.query('INSERT INTO query_results (query_id, result_data, expires_at) VALUES ($1, $2::jsonb, $3)', [query.id, JSON.stringify(apiResults), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)])
+      } catch (dbError) {
+        console.warn('Could not cache results:', dbError.message)
+      }
+    }
 
     res.json({ cached: false, results: apiResults })
   } catch (error) {

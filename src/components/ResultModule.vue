@@ -486,11 +486,14 @@
                                             <img src="/images/england.png" alt="England Flag" style="cursor: pointer;"
                                                 width="50" />
                                             <div class="absolute inset-0 flex items-center justify-center">
-                                                <div
-                                                    class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
-                                                    <p class="text-gray-700 font-bold text-sm">
-                                                        {{ result.panelAppEnglandCount || 0 }}
-                                                    </p>
+                                                <div v-if="result.panelAppEnglandError" class="group relative bg-white rounded-full w-5 h-5 flex items-center justify-center cursor-help">
+                                                    <p class="text-red-500 font-bold text-sm">!</p>
+                                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-50 w-48 bg-gray-800 text-white text-xs rounded p-2 shadow-lg">
+                                                        {{ result.panelAppEnglandError }}
+                                                    </div>
+                                                </div>
+                                                <div v-else class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
+                                                    <p class="text-gray-700 font-bold text-sm">{{ result.panelAppEnglandCount ?? 0 }}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -501,11 +504,14 @@
                                             <img src="/images/australia.png" alt="Aussie Flag" style="cursor: pointer;"
                                                 width="50" />
                                             <div class="absolute inset-0 flex items-center justify-center">
-                                                <div
-                                                    class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
-                                                    <p class="text-gray-700 font-bold text-sm">
-                                                        {{ result.panelAppAustraliaCount || 0 }}
-                                                    </p>
+                                                <div v-if="result.panelAppAustraliaError" class="group relative bg-white rounded-full w-5 h-5 flex items-center justify-center cursor-help">
+                                                    <p class="text-red-500 font-bold text-sm">!</p>
+                                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-50 w-48 bg-gray-800 text-white text-xs rounded p-2 shadow-lg">
+                                                        {{ result.panelAppAustraliaError }}
+                                                    </div>
+                                                </div>
+                                                <div v-else class="bg-white rounded-full w-5 h-5 flex items-center justify-center">
+                                                    <p class="text-gray-700 font-bold text-sm">{{ result.panelAppAustraliaCount ?? 0 }}</p>
                                                 </div>
                                             </div>
                                         </div>
