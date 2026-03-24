@@ -155,6 +155,69 @@ describe('getPubMedData', () => {
     expect(result.error).toBe('Network error')
   })
 
+  test('handles article with no abstract, no authors, no journal, no year, no DOI', async () => {
+    const xml = `<PubmedArticleSet><PubmedArticle>
+      <MedlineCitation><PMID>555</PMID>
+        <Article><ArticleTitle>Bare article</ArticleTitle>
+          <Journal><JournalIssue><PubDate></PubDate></JournalIssue></Journal>
+        </Article>
+      </MedlineCitation>
+      <PubmedData><ArticleIdList><ArticleId IdType="pubmed">555</ArticleId></ArticleIdList></PubmedData>
+    </PubmedArticle></PubmedArticleSet>`
+
+    rateLimitedGet
+      .mockResolvedValueOnce({ data: { esearchresult: { count: '1', idlist: ['555'] } } })
+      .mockResolvedValueOnce({ data: xml })
+
+    const result = await getPubMedData('BARE', [])
+    const a = result.articles[0]
+    expect(a.pmid).toBe('555')
+    expect(a.title).toBe('Bare article')
+    expect(a.authors).toEqual([])
+    expect(a.journal).toBe('')
+    expect(a.year).toBe('')
+    expect(a.doi).toBe('')
+    expect(a.abstract).toBe('')
+  })
+
+  test('handles PMID as direct text (not object with _)', async () => {
+    const xml = `<PubmedArticleSet><PubmedArticle>
+      <MedlineCitation><PMID>444</PMID>
+        <Article><ArticleTitle>Direct PMID</ArticleTitle>
+          <Journal><Title>J</Title><JournalIssue><PubDate><Year>2024</Year></PubDate></JournalIssue></Journal>
+        </Article>
+      </MedlineCitation>
+      <PubmedData><ArticleIdList><ArticleId IdType="pubmed">444</ArticleId></ArticleIdList></PubmedData>
+    </PubmedArticle></PubmedArticleSet>`
+
+    rateLimitedGet
+      .mockResolvedValueOnce({ data: { esearchresult: { count: '1', idlist: ['444'] } } })
+      .mockResolvedValueOnce({ data: xml })
+
+    const result = await getPubMedData('PMIDTEST', [])
+    expect(result.articles[0].pmid).toBe('444')
+  })
+
+  test('handles efetch returning no PubmedArticle', async () => {
+    rateLimitedGet
+      .mockResolvedValueOnce({ data: { esearchresult: { count: '1', idlist: ['333'] } } })
+      .mockResolvedValueOnce({ data: '<PubmedArticleSet></PubmedArticleSet>' })
+
+    const result = await getPubMedData('EMPTY_FETCH', [])
+    expect(result.articles).toEqual([])
+    expect(result.count).toBe(1)
+    expect(result.firstArticleTitle).toBe('No articles found')
+  })
+
+  test('handles NaN count from esearch', async () => {
+    rateLimitedGet.mockResolvedValueOnce({
+      data: { esearchresult: { count: 'not-a-number', idlist: [] } },
+    })
+
+    const result = await getPubMedData('NANCOUNT', [])
+    expect(result.count).toBe(0)
+  })
+
   test('caches results on second call', async () => {
     rateLimitedGet
       .mockResolvedValueOnce({ data: { esearchresult: { count: '10', idlist: ['111'] } } })

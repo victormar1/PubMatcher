@@ -188,4 +188,120 @@ describe('formatLiterature', () => {
     expect(result).toContain('0')
     expect(result).not.toContain('###')
   })
+
+  test('handles article with no authors, no DOI, no abstract, no citation', () => {
+    const result = formatLiterature({
+      gene: 'X', articleCount: 1, articles: [{
+        title: 'Bare', authors: [], journal: '', year: '', pmid: '999', doi: '', abstract: '',
+      }],
+    })
+    expect(result).toContain('### Bare')
+    expect(result).toContain('999')
+    expect(result).not.toContain('**Authors**')
+    expect(result).not.toContain('**Published in**')
+    expect(result).not.toContain('**DOI**')
+  })
+
+  test('handles article with null pubmedUrl', () => {
+    const result = formatLiterature({ gene: 'X', articleCount: 0, articles: [], pubmedUrl: null })
+    expect(result).not.toContain('Full PubMed search')
+  })
+})
+
+describe('formatGeneAnalysis — edge cases', () => {
+  test('skips UniProt section when geneFunction is null', () => {
+    const result = formatGeneAnalysis([{
+      gene: 'X', valid: true,
+      geneInfo: { name: 'X', geneValidity: 'No Known' },
+      sources: {
+        uniprot: { geneFunction: null, bioProcessKeywords: [] },
+        constraints: { constraints_v4: { pLI: 'N/A' }, constraints_v2: { pLI: 'N/A' } },
+        clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+        pubmed: { articleCount: 0, articles: [] },
+        panelApps: { panelAppEnglandCount: null, panelAppAustraliaCount: null },
+        mouseKO: { phenotypeCount: 0, mousePhenotypes: {} },
+        omim: { mim: [] },
+      },
+      sourceErrors: [],
+    }])
+    // UniProt still renders because geneFunction is null but no error
+    expect(result).toContain('No function data available')
+  })
+
+  test('renders gene with no geneLink', () => {
+    const result = formatGeneAnalysis([{
+      gene: 'X', valid: true,
+      geneInfo: { name: 'X', hgncId: null, geneValidity: 'No Known', geneLink: null },
+      sources: {
+        uniprot: {}, constraints: { constraints_v4: { pLI: 'N/A' }, constraints_v2: { pLI: 'N/A' } },
+        clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+        pubmed: { articleCount: 0, articles: [] }, panelApps: {}, mouseKO: { phenotypeCount: 0, mousePhenotypes: {} }, omim: { mim: [] },
+      },
+      sourceErrors: [],
+    }])
+    expect(result).not.toContain('GenCC')
+  })
+
+  test('renders PubMed article with no authors and partial citation', () => {
+    const result = formatGeneAnalysis([{
+      gene: 'X', valid: true,
+      geneInfo: { name: 'X', geneValidity: 'No Known' },
+      sources: {
+        uniprot: {}, constraints: { constraints_v4: { pLI: 'N/A' }, constraints_v2: { pLI: 'N/A' } },
+        clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+        pubmed: { articleCount: 1, articles: [{ title: 'Solo', authors: [], journal: 'Nature', year: '', pmid: '1', doi: '' }], pubmedUrl: 'http://x' },
+        panelApps: {}, mouseKO: { phenotypeCount: 0, mousePhenotypes: {} }, omim: { mim: [] },
+      },
+      sourceErrors: [],
+    }])
+    expect(result).toContain('Solo')
+    expect(result).toContain('Nature')
+  })
+
+  test('renders PanelApp with error strings instead of counts', () => {
+    const result = formatGeneAnalysis([{
+      gene: 'X', valid: true,
+      geneInfo: { name: 'X', geneValidity: 'No Known' },
+      sources: {
+        uniprot: {}, constraints: { constraints_v4: { pLI: 'N/A' }, constraints_v2: { pLI: 'N/A' } },
+        clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+        pubmed: { articleCount: 0, articles: [] },
+        panelApps: { panelAppEnglandCount: null, panelAppEnglandError: 'UK unavailable', panelAppAustraliaCount: null, panelAppAustraliaError: 'AUS unavailable' },
+        mouseKO: { phenotypeCount: 0, mousePhenotypes: {} }, omim: { mim: [] },
+      },
+      sourceErrors: [],
+    }])
+    expect(result).toContain('UK unavailable')
+    expect(result).toContain('AUS unavailable')
+  })
+
+  test('renders mouse phenotypes with flat array format', () => {
+    const result = formatGeneAnalysis([{
+      gene: 'X', valid: true,
+      geneInfo: { name: 'X', geneValidity: 'No Known' },
+      sources: {
+        uniprot: {}, constraints: { constraints_v4: { pLI: 'N/A' }, constraints_v2: { pLI: 'N/A' } },
+        clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+        pubmed: { articleCount: 0, articles: [] }, panelApps: {},
+        mouseKO: { phenotypeCount: 2, categoryCount: 1, mousePhenotypes: { growth: ['Weight gain', 'Size increase'] }, impcUrl: 'http://impc' },
+        omim: { mim: [] },
+      },
+      sourceErrors: [],
+    }])
+    expect(result).toContain('Weight gain, Size increase')
+  })
+
+  test('renders constraintsDelta note', () => {
+    const result = formatGeneAnalysis([{
+      gene: 'X', valid: true,
+      geneInfo: { name: 'X', geneValidity: 'No Known' },
+      sources: {
+        uniprot: {}, constraints: { constraints_v4: { pLI: 0.99, oe_lof_upper: 0.1, oe_mis_upper: 0.9, mis_z: 3.0 }, constraints_v2: { pLI: 0.2, oe_lof_upper: 0.5, oe_mis_upper: 0.8, mis_z: 1.0 }, constraintsDelta: true, gnomadUrl: 'http://gnomad' },
+        clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+        pubmed: { articleCount: 0, articles: [] }, panelApps: {}, mouseKO: { phenotypeCount: 0, mousePhenotypes: {} }, omim: { mim: [] },
+      },
+      sourceErrors: [],
+    }])
+    expect(result).toContain('Significant difference')
+  })
 })
