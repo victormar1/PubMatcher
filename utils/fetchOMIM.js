@@ -16,7 +16,7 @@ async function fetchOmimData(ensemblId) {
 
   try {
     const url = `https://rest.ensembl.org/phenotype/gene/homo_sapiens/${ensemblId}?content-type=application/json`
-    const response = await axios.get(url, { timeout: 10000 })
+    const response = await axios.get(url, { timeout: 30000 })
     const phenotypeData = response.data
 
     const mimDescriptions = []

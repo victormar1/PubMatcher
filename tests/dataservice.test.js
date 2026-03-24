@@ -214,3 +214,6 @@ describe('analyzeGenesStructured — rejected source and crash paths', () => {
     expect(pubmedError.error).toContain('PubMed exploded')
   })
 })
+
+// validateGene and searchLiterature tests are in dataservice-extra.test.js
+// (separate file to avoid jest.mock pollution from the rejected promise tests)

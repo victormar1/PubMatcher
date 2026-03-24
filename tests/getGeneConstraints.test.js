@@ -94,6 +94,37 @@ describe('getGeneConstraints', () => {
     expect(result.error).toBe('timeout')
   })
 
+  test('extractConstraints returns all fields when data is present', async () => {
+    axios.post
+      .mockResolvedValueOnce(mockGnomadResponse(0.99, 0.92, 0.15, 2.5))
+      .mockResolvedValueOnce(mockGnomadResponse(0.98, 0.90, 0.12, 2.3))
+
+    const result = await getGeneConstraints('FULL')
+    // Verify all extracted fields
+    const v4 = result.constraints_v4
+    expect(v4.pLI).toBe(0.99)
+    expect(v4.oe_mis_upper).toBe(0.92)
+    expect(v4.oe_lof_upper).toBe(0.15)
+    expect(v4.mis_z).toBe(2.5)
+    expect(v4.oe_mis).toBe(0.85)
+    expect(v4.oe_lof).toBe(0.1)
+    expect(v4.lof_z).toBe(4.5)
+  })
+
+  test('extractConstraints handles null fields gracefully', async () => {
+    axios.post
+      .mockResolvedValueOnce({
+        data: { data: { gene: { gnomad_constraint: { pLI: 0.5, oe_mis: null, oe_mis_lower: null, oe_mis_upper: null, oe_lof: null, oe_lof_lower: null, oe_lof_upper: null, mis_z: null, lof_z: null } } } },
+      })
+      .mockResolvedValueOnce({ data: { data: { gene: null } } })
+
+    const result = await getGeneConstraints('PARTIAL')
+    expect(result.constraints_v4.pLI).toBe(0.5)
+    expect(result.constraints_v4.oe_mis_upper).toBe('N/A')
+    expect(result.constraints_v4.oe_lof).toBe('N/A')
+    expect(result.constraints_v4.lof_z).toBe('N/A')
+  })
+
   test('caches results', async () => {
     axios.post
       .mockResolvedValueOnce(mockGnomadResponse(0.99, 0.92, 0.15, 2.5))

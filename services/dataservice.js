@@ -142,6 +142,40 @@ async function getData(req) {
   return analyzeGenes(genes, phenotypes)
 }
 
+/**
+ * Validate a single gene symbol against HGNC + ClinGen.
+ */
+async function validateGene(gene) {
+  const validatedGene = await fetchGeneCard(gene)
+  if (!validatedGene) {
+    return { valid: false, gene, message: `Gene symbol "${gene}" not found in HGNC` }
+  }
+  return {
+    valid: true,
+    gene,
+    name: validatedGene.geneName,
+    alias: validatedGene.aliasName,
+    location: validatedGene.location,
+    hgncId: validatedGene.hgncId,
+    omimId: validatedGene.omimId,
+    ensemblId: validatedGene.ensemblGeneId,
+    geneValidity: validatedGene.validityMarker,
+    maneSelect: validatedGene.maneSelect,
+    geneLink: validatedGene.hgncId
+      ? `https://search.thegencc.org/genes/${validatedGene.hgncId}`
+      : null,
+  }
+}
+
+/**
+ * Search PubMed literature for a gene, optionally refined by phenotypes.
+ */
+async function searchLiterature(gene, phenotypes = []) {
+  return getPubMedData(gene, phenotypes)
+}
+
 module.exports = getData
 module.exports.analyzeGenes = analyzeGenes
 module.exports.analyzeGenesStructured = analyzeGenesStructured
+module.exports.validateGene = validateGene
+module.exports.searchLiterature = searchLiterature

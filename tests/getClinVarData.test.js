@@ -58,6 +58,14 @@ describe('getClinVarData', () => {
     expect(result.clinvarUrl).toContain('BRCA1')
   })
 
+  test('handles undefined/null count from API response', async () => {
+    rateLimitedGet.mockResolvedValue({ data: { esearchresult: {} } })
+
+    const result = await getClinVarData('NOCOUNTS')
+    expect(result.lofVariants).toBe(0)
+    expect(result.totalPathogenic).toBe(0)
+  })
+
   test('caches results on second call', async () => {
     rateLimitedGet
       .mockResolvedValueOnce(mockClinVarCount(10))
