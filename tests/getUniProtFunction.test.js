@@ -79,6 +79,32 @@ describe('getUniProtFunction', () => {
     expect(result.uniprotUrl).toContain('P38398')
   })
 
+  test('handles keywords download failure gracefully', async () => {
+    // Need a fresh module to reset the cached keywordsData singleton
+    jest.resetModules()
+    const freshAxios = require('axios')
+    const freshGetUniProt = require('../utils/getUniProtFunction')
+    const freshCache = require('../utils/cache')
+    freshCache.cacheClear()
+
+    jest.spyOn(freshAxios, 'get').mockImplementation((url) => {
+      if (url.includes('ebi.ac.uk/proteins')) {
+        return Promise.resolve({
+          data: {
+            comments: [{ type: 'FUNCTION', text: [{ value: 'Some function' }] }],
+            keywords: [{ value: 'Apoptosis' }],
+          },
+        })
+      }
+      if (url.includes('ftp.uniprot.org')) return Promise.reject(new Error('FTP down'))
+      return Promise.reject(new Error(`Unmocked: ${url}`))
+    })
+
+    const result = await freshGetUniProt('P99999')
+    expect(result.geneFunction).toBe('Some function')
+    expect(result.bioProcessKeywords).toEqual([]) // Can't filter without keywords data
+  })
+
   test('caches results', async () => {
     axios.get.mockImplementation((url) => {
       if (url.includes('ebi.ac.uk/proteins')) {

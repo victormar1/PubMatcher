@@ -30,6 +30,16 @@ describe('fetchOmimData', () => {
     expect(axios.get).not.toHaveBeenCalled()
   })
 
+  test('uses "No description" fallback when description is missing', async () => {
+    axios.get.mockResolvedValue({
+      data: [
+        { source: 'MIM morbid' }, // no description field
+      ],
+    })
+    const result = await fetchOmimData('ENSG00000012048')
+    expect(result.mim).toEqual(['No description'])
+  })
+
   test('returns empty on API error', async () => {
     axios.get.mockRejectedValue(new Error('Ensembl timeout'))
 

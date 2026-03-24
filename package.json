@@ -61,6 +61,7 @@
     "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test": "jest --verbose"
+    "test": "jest --verbose --testPathIgnorePatterns=integration",
+    "test:integration": "jest --verbose --testPathPatterns=integration --testTimeout=180000"
   }
 }

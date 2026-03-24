@@ -150,3 +150,67 @@ describe('analyzeGenes (flat)', () => {
     expect(results).toHaveLength(0)
   })
 })
+
+describe('getData (Express handler)', () => {
+  beforeEach(() => {
+    cacheClear()
+    resetLimiter()
+    jest.clearAllMocks()
+    setupMocks()
+  })
+
+  test('extracts genes/phenotypes from req.body and returns results', async () => {
+    const getData = require('../services/dataservice')
+    const req = { body: { genes: ['BRCA1'], phenotypes: ['cancer'] } }
+    const results = await getData(req)
+    expect(results).toHaveLength(1)
+    expect(results[0].hgncId).toBe('HGNC:1100')
+  })
+
+  test('handles empty req.body gracefully', async () => {
+    const getData = require('../services/dataservice')
+    const results = await getData({ body: {} })
+    expect(results).toEqual([])
+  })
+})
+
+describe('analyzeGenesStructured — rejected source and crash paths', () => {
+  test('unwrapSource handles rejected promises from data sources', async () => {
+    // Use jest.resetModules to mock a specific util to reject
+    jest.resetModules()
+    const freshDataservice = require('../services/dataservice')
+    const freshCache = require('../utils/cache')
+    freshCache.cacheClear()
+
+    // Mock fetchGeneCard to return a valid gene
+    jest.mock('../utils/fetchGeneCard.js', () => {
+      return jest.fn().mockResolvedValue({
+        geneName: 'Test', aliasName: null, location: '1p', maneSelect: null,
+        mgdId: null, enzymeId: null, uniprotIds: null, hgncId: 'HGNC:999',
+        rgdId: null, ensemblGeneId: null, orphanet: null, dateModified: null,
+        dateApprovedReserved: null, validityMarker: 'No Known', omimId: null,
+      })
+    })
+    // Mock PubMed to REJECT (triggers the rejected path in unwrapSource)
+    jest.mock('../utils/getPubMedData.js', () => jest.fn().mockRejectedValue(new Error('PubMed exploded')))
+    // Mock everything else to resolve normally
+    jest.mock('../utils/getUniProtFunction.js', () => jest.fn().mockResolvedValue({ geneFunction: null, bioProcessKeywordsOnly: [], urlAccession: null, bioProcessKeywords: [], uniprotUrl: null }))
+    jest.mock('../utils/getMouseKO.js', () => jest.fn().mockResolvedValue({ mousePhenotypes: {}, phenotypeCount: 0, categoryCount: 0, impcUrl: null }))
+    jest.mock('../utils/getGeneConstraints.js', () => jest.fn().mockResolvedValue({ constraints_v2: {}, constraints_v4: {}, constraintsDelta: false }))
+    jest.mock('../utils/getPanelApps.js', () => jest.fn().mockResolvedValue({ panelAppEnglandCount: 0, panelAppAustraliaCount: 0, panelAppEnglandError: null, panelAppAustraliaError: null }))
+    jest.mock('../utils/getClinVarData.js', () => jest.fn().mockResolvedValue({ lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 }))
+    jest.mock('../utils/fetchOMIM.js', () => jest.fn().mockResolvedValue({ mim: [] }))
+
+    // Re-require to pick up mocks
+    jest.resetModules()
+    const { analyzeGenesStructured: freshAnalyze } = require('../services/dataservice')
+
+    const results = await freshAnalyze(['TEST'], [])
+    expect(results).toHaveLength(1)
+    expect(results[0].valid).toBe(true)
+    // PubMed should be in sourceErrors
+    const pubmedError = results[0].sourceErrors.find((e) => e.source === 'PubMed')
+    expect(pubmedError).toBeDefined()
+    expect(pubmedError.error).toContain('PubMed exploded')
+  })
+})

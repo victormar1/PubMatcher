@@ -6,3 +6,4 @@ back.code-workspace
 front.code-workspace
 BDD/clinvar.vcf
 dist
+coverage/
