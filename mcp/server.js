@@ -3,190 +3,136 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { createRequire } from 'node:module';
 
-// Bridge to import CJS utils from the parent project
 const require = createRequire(import.meta.url);
+const { analyzeGenesStructured } = require('../services/dataservice.js');
 const fetchGeneCard = require('../utils/fetchGeneCard.js');
 const getPubMedData = require('../utils/getPubMedData.js');
-const getUniProtFunction = require('../utils/getUniProtFunction.js');
-const getMouseKO = require('../utils/getMouseKO.js');
-const getGeneConstraints = require('../utils/getGeneConstraints.js');
-const getPanelApps = require('../utils/getPanelApps.js');
-const getClinVarData = require('../utils/getClinVarData.js');
-const fetchOmimData = require('../utils/fetchOMIM.js');
 
 const server = new McpServer({
     name: 'pubmatcher-mcp',
     version: '1.0.0',
 });
 
-// --- Core Data Functions ---
-
-async function analyzeGenes(genes, phenotypes = []) {
-    return Promise.all(
-        genes.map(async (gene) => {
-            try {
-                const validatedGene = await fetchGeneCard(gene);
-                if (!validatedGene) {
-                    return { gene, error: `Gene symbol "${gene}" not found in HGNC` };
-                }
-
-                const [pubmed, uniprot, mouseKO, constraints, panelApps, clinvar, omim] = await Promise.allSettled([
-                    getPubMedData(gene, phenotypes),
-                    getUniProtFunction(validatedGene.uniprotIds),
-                    getMouseKO(validatedGene.mgdId),
-                    getGeneConstraints(gene),
-                    getPanelApps(gene),
-                    getClinVarData(gene),
-                    fetchOmimData(validatedGene.ensemblGeneId),
-                ]);
-
-                const unwrap = (result, fallback) =>
-                    result.status === 'fulfilled' ? result.value : { ...fallback, error: result.reason?.message };
-
-                return {
-                    gene,
-                    geneInfo: {
-                        name: validatedGene.geneName,
-                        alias: validatedGene.aliasName,
-                        location: validatedGene.location,
-                        hgncId: validatedGene.hgncId,
-                        omimId: validatedGene.omimId,
-                        ensemblId: validatedGene.ensemblGeneId,
-                        geneValidity: validatedGene.validityMarker || 'No Known',
-                        geneLink: validatedGene.hgncId
-                            ? `https://search.thegencc.org/genes/${validatedGene.hgncId}`
-                            : null,
-                    },
-                    pubmed: unwrap(pubmed, { articles: [], articleCount: 0 }),
-                    uniprot: unwrap(uniprot, { geneFunction: null, bioProcessKeywords: [] }),
-                    mouseKO: unwrap(mouseKO, { mousePhenotypes: {}, phenotypeCount: 0 }),
-                    constraints: unwrap(constraints, { constraints_v2: {}, constraints_v4: {} }),
-                    panelApps: unwrap(panelApps, { panelAppEnglandCount: null, panelAppAustraliaCount: null }),
-                    clinvar: unwrap(clinvar, { lofVariants: 0, missenseVariants: 0 }),
-                    omim: unwrap(omim, { mim: [] }),
-                };
-            } catch (error) {
-                return { gene, error: error.message };
-            }
-        }),
-    );
-}
-
-async function validateGene(gene) {
-    const validatedGene = await fetchGeneCard(gene);
-    if (!validatedGene) {
-        return { valid: false, gene, message: `Gene symbol "${gene}" not found in HGNC` };
-    }
-    return {
-        valid: true,
-        gene,
-        name: validatedGene.geneName,
-        alias: validatedGene.aliasName,
-        location: validatedGene.location,
-        hgncId: validatedGene.hgncId,
-        omimId: validatedGene.omimId,
-        ensemblId: validatedGene.ensemblGeneId,
-        geneValidity: validatedGene.validityMarker,
-        maneSelect: validatedGene.maneSelect,
-        geneLink: validatedGene.hgncId
-            ? `https://search.thegencc.org/genes/${validatedGene.hgncId}`
-            : null,
-    };
-}
-
-async function searchLiterature(gene, phenotypes = []) {
-    return getPubMedData(gene, phenotypes);
-}
-
 // --- Output Formatters ---
+
+function formatSourceErrors(sourceErrors) {
+    if (!sourceErrors || sourceErrors.length === 0) return '';
+    const lines = ['\n### Data Source Warnings'];
+    for (const { source, error } of sourceErrors) {
+        lines.push(`- **${source}**: unavailable (${error})`);
+    }
+    lines.push('');
+    return lines.join('\n');
+}
 
 function formatGeneAnalysis(results) {
     if (!results || results.length === 0) return 'No results returned.';
 
     const sections = results.map((r) => {
-        if (r.error && !r.geneInfo) {
+        if (!r.valid) {
             return `## ${r.gene}\n**Error**: ${r.error}`;
         }
 
-        const lines = [`## ${r.gene} — ${r.geneInfo.name || 'Unknown'}`];
+        const { geneInfo, sources, sourceErrors } = r;
+        const lines = [`## ${r.gene} — ${geneInfo.name || 'Unknown'}`];
 
-        lines.push('### Gene Information');
-        lines.push(`- **HGNC ID**: ${r.geneInfo.hgncId || 'N/A'}`);
-        lines.push(`- **Location**: ${r.geneInfo.location || 'N/A'}`);
-        lines.push(`- **Alias**: ${r.geneInfo.alias || 'N/A'}`);
-        lines.push(`- **OMIM ID**: ${r.geneInfo.omimId || 'N/A'}`);
-        lines.push(`- **Ensembl**: ${r.geneInfo.ensemblId || 'N/A'}`);
-        lines.push(`- **Gene Validity (ClinGen)**: ${r.geneInfo.geneValidity}`);
-        if (r.geneInfo.geneLink) lines.push(`- **GenCC**: ${r.geneInfo.geneLink}`);
-
-        if (r.uniprot) {
-            lines.push('### UniProt Function');
-            lines.push(r.uniprot.geneFunction || 'No function data available.');
-            if (r.uniprot.bioProcessKeywords?.length > 0) {
-                lines.push(`**Biological processes**: ${r.uniprot.bioProcessKeywords.join(', ')}`);
-            }
-            if (r.uniprot.uniprotUrl) lines.push(`**UniProt entry**: ${r.uniprot.uniprotUrl}`);
+        // Source warnings at the top so the LLM sees them immediately
+        if (sourceErrors.length > 0) {
+            lines.push(formatSourceErrors(sourceErrors));
         }
 
-        if (r.constraints) {
+        // Gene Info
+        lines.push('### Gene Information');
+        lines.push(`- **HGNC ID**: ${geneInfo.hgncId || 'N/A'}`);
+        lines.push(`- **Location**: ${geneInfo.location || 'N/A'}`);
+        lines.push(`- **Alias**: ${geneInfo.alias || 'N/A'}`);
+        lines.push(`- **OMIM ID**: ${geneInfo.omimId || 'N/A'}`);
+        lines.push(`- **Ensembl**: ${geneInfo.ensemblId || 'N/A'}`);
+        lines.push(`- **Gene Validity (ClinGen)**: ${geneInfo.geneValidity}`);
+        if (geneInfo.geneLink) lines.push(`- **GenCC**: ${geneInfo.geneLink}`);
+
+        // UniProt
+        const uniprot = sources.uniprot;
+        if (uniprot && !uniprot.error) {
+            lines.push('### UniProt Function');
+            lines.push(uniprot.geneFunction || 'No function data available.');
+            if (uniprot.bioProcessKeywords?.length > 0) {
+                lines.push(`**Biological processes**: ${uniprot.bioProcessKeywords.join(', ')}`);
+            }
+            if (uniprot.uniprotUrl) lines.push(`**UniProt entry**: ${uniprot.uniprotUrl}`);
+        }
+
+        // Constraints
+        const constraints = sources.constraints;
+        if (constraints && !constraints.error) {
             lines.push('### gnomAD Constraint Scores');
             const fmtC = (label, c) => {
                 if (!c || c.pLI === 'N/A') return `**${label}**: No data available`;
                 return `**${label}**: pLI=${c.pLI}, o/e LoF upper=${c.oe_lof_upper}, o/e mis upper=${c.oe_mis_upper}, mis_z=${c.mis_z}`;
             };
-            lines.push(fmtC('gnomAD v4 (GRCh38)', r.constraints.constraints_v4));
-            lines.push(fmtC('gnomAD v2 (GRCh37)', r.constraints.constraints_v2));
-            if (r.constraints.constraintsDelta) {
+            lines.push(fmtC('gnomAD v4 (GRCh38)', constraints.constraints_v4));
+            lines.push(fmtC('gnomAD v2 (GRCh37)', constraints.constraints_v2));
+            if (constraints.constraintsDelta) {
                 lines.push('**Note**: Significant difference between v2 and v4 constraint scores.');
             }
-            if (r.constraints.gnomadUrl) lines.push(`**gnomAD page**: ${r.constraints.gnomadUrl}`);
+            if (constraints.gnomadUrl) lines.push(`**gnomAD page**: ${constraints.gnomadUrl}`);
         }
 
-        if (r.clinvar) {
+        // ClinVar
+        const clinvar = sources.clinvar;
+        if (clinvar && !clinvar.error) {
             lines.push('### ClinVar Variants');
-            lines.push(`- **Pathogenic LoF variants**: ${r.clinvar.lofVariants}`);
-            lines.push(`- **Pathogenic missense variants**: ${r.clinvar.missenseVariants}`);
-            lines.push(`- **VUS LoF**: ${r.clinvar.lofUnknown}`);
-            lines.push(`- **VUS missense**: ${r.clinvar.missenseUnknown}`);
-            lines.push(`- **Total pathogenic**: ${r.clinvar.totalPathogenic}`);
-            lines.push(`- **Total likely pathogenic**: ${r.clinvar.totalLikelyPathogenic}`);
-            if (r.clinvar.clinvarUrl) lines.push(`**ClinVar page**: ${r.clinvar.clinvarUrl}`);
+            lines.push(`- **Pathogenic LoF variants**: ${clinvar.lofVariants}`);
+            lines.push(`- **Pathogenic missense variants**: ${clinvar.missenseVariants}`);
+            lines.push(`- **VUS LoF**: ${clinvar.lofUnknown}`);
+            lines.push(`- **VUS missense**: ${clinvar.missenseUnknown}`);
+            lines.push(`- **Total pathogenic**: ${clinvar.totalPathogenic}`);
+            lines.push(`- **Total likely pathogenic**: ${clinvar.totalLikelyPathogenic}`);
+            if (clinvar.clinvarUrl) lines.push(`**ClinVar page**: ${clinvar.clinvarUrl}`);
         }
 
-        if (r.pubmed) {
+        // PubMed
+        const pubmed = sources.pubmed;
+        if (pubmed && !pubmed.error) {
             lines.push('### PubMed Literature');
-            lines.push(`**Total articles**: ${r.pubmed.articleCount}`);
-            if (r.pubmed.articles?.length > 0) {
+            lines.push(`**Total articles**: ${pubmed.articleCount}`);
+            if (pubmed.articles?.length > 0) {
                 lines.push('**Top articles**:');
-                for (const a of r.pubmed.articles) {
+                for (const a of pubmed.articles) {
                     const authors = a.authors?.join(', ') || '';
                     const citation = [a.journal, a.year].filter(Boolean).join(', ');
                     lines.push(`- ${a.title}${authors ? ` — ${authors}` : ''}${citation ? ` (${citation})` : ''} [PMID: ${a.pmid}]`);
                 }
             }
-            if (r.pubmed.pubmedUrl) lines.push(`**PubMed search**: ${r.pubmed.pubmedUrl}`);
+            if (pubmed.pubmedUrl) lines.push(`**PubMed search**: ${pubmed.pubmedUrl}`);
         }
 
-        if (r.panelApps) {
+        // PanelApp
+        const panelApps = sources.panelApps;
+        if (panelApps && !panelApps.error) {
             lines.push('### PanelApp Gene Panels');
-            lines.push(`- **Genomics England (UK)**: ${r.panelApps.panelAppEnglandCount ?? r.panelApps.panelAppEnglandError ?? 'N/A'} panels`);
-            lines.push(`- **PanelApp Australia**: ${r.panelApps.panelAppAustraliaCount ?? r.panelApps.panelAppAustraliaError ?? 'N/A'} panels`);
+            lines.push(`- **Genomics England (UK)**: ${panelApps.panelAppEnglandCount ?? panelApps.panelAppEnglandError ?? 'N/A'} panels`);
+            lines.push(`- **PanelApp Australia**: ${panelApps.panelAppAustraliaCount ?? panelApps.panelAppAustraliaError ?? 'N/A'} panels`);
         }
 
-        if (r.mouseKO && r.mouseKO.phenotypeCount > 0) {
+        // Mouse KO
+        const mouseKO = sources.mouseKO;
+        if (mouseKO && !mouseKO.error && mouseKO.phenotypeCount > 0) {
             lines.push('### IMPC Mouse Phenotypes');
-            lines.push(`**${r.mouseKO.phenotypeCount} phenotypes** across ${r.mouseKO.categoryCount} categories:`);
-            for (const [category, data] of Object.entries(r.mouseKO.mousePhenotypes)) {
+            lines.push(`**${mouseKO.phenotypeCount} phenotypes** across ${mouseKO.categoryCount} categories:`);
+            for (const [category, data] of Object.entries(mouseKO.mousePhenotypes)) {
                 const label = category.replace(/_/g, ' ');
                 const names = Array.isArray(data) ? data : data.names || [];
                 lines.push(`- **${label}**: ${names.join(', ')}`);
             }
-            if (r.mouseKO.impcUrl) lines.push(`**IMPC page**: ${r.mouseKO.impcUrl}`);
+            if (mouseKO.impcUrl) lines.push(`**IMPC page**: ${mouseKO.impcUrl}`);
         }
 
-        if (r.omim?.mim?.length > 0) {
+        // OMIM
+        const omim = sources.omim;
+        if (omim && !omim.error && omim.mim?.length > 0) {
             lines.push('### OMIM Diseases');
-            for (const desc of r.omim.mim) {
+            for (const desc of omim.mim) {
                 lines.push(`- ${desc}`);
             }
         }
@@ -221,6 +167,9 @@ function formatValidation(result) {
 function formatLiterature(result) {
     const lines = [`## PubMed results for ${result.gene}`];
     lines.push(`**Total articles found**: ${result.articleCount}`);
+    if (result.error) {
+        lines.push(`\n**Warning**: PubMed query failed (${result.error}). Results may be incomplete.`);
+    }
     if (result.articles?.length > 0) {
         lines.push('');
         for (const a of result.articles) {
@@ -250,7 +199,7 @@ server.tool(
     },
     async ({ genes, phenotypes }) => {
         process.stderr.write(`[PubMatcher] analyze_genes: ${genes.join(', ')}${phenotypes?.length ? ` | phenotypes: ${phenotypes.join(', ')}` : ''}\n`);
-        const results = await analyzeGenes(genes, phenotypes || []);
+        const results = await analyzeGenesStructured(genes, phenotypes || []);
         return { content: [{ type: 'text', text: formatGeneAnalysis(results) }] };
     },
 );
@@ -263,8 +212,28 @@ server.tool(
     },
     async ({ gene }) => {
         process.stderr.write(`[PubMatcher] validate_gene: ${gene}\n`);
-        const result = await validateGene(gene);
-        return { content: [{ type: 'text', text: formatValidation(result) }] };
+        const validatedGene = await fetchGeneCard(gene);
+        if (!validatedGene) {
+            return { content: [{ type: 'text', text: formatValidation({ valid: false, gene, message: `Gene symbol "${gene}" not found in HGNC` }) }] };
+        }
+        return {
+            content: [{
+                type: 'text',
+                text: formatValidation({
+                    valid: true,
+                    gene,
+                    name: validatedGene.geneName,
+                    alias: validatedGene.aliasName,
+                    location: validatedGene.location,
+                    hgncId: validatedGene.hgncId,
+                    omimId: validatedGene.omimId,
+                    ensemblId: validatedGene.ensemblGeneId,
+                    geneValidity: validatedGene.validityMarker,
+                    maneSelect: validatedGene.maneSelect,
+                    geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : null,
+                }),
+            }],
+        };
     },
 );
 
@@ -277,7 +246,7 @@ server.tool(
     },
     async ({ gene, phenotypes }) => {
         process.stderr.write(`[PubMatcher] search_literature: ${gene}${phenotypes?.length ? ` | phenotypes: ${phenotypes.join(', ')}` : ''}\n`);
-        const result = await searchLiterature(gene, phenotypes || []);
+        const result = await getPubMedData(gene, phenotypes || []);
         return { content: [{ type: 'text', text: formatLiterature(result) }] };
     },
 );

@@ -7,25 +7,62 @@ const getPanelApps = require('../utils/getPanelApps.js')
 const getClinVarData = require('../utils/getClinVarData.js')
 const fetchOmimData = require('../utils/fetchOMIM.js')
 
+const SOURCE_NAMES = {
+  pubmed: 'PubMed',
+  uniprot: 'UniProt',
+  mouseKO: 'IMPC Mouse Phenotypes',
+  constraints: 'gnomAD Constraints',
+  panelApps: 'PanelApp',
+  clinvar: 'ClinVar',
+  omim: 'OMIM',
+}
+
+const SOURCE_FALLBACKS = {
+  pubmed: { gene: '', url: '', firstArticleTitle: 'No articles found', firstArticleUrl: null, complArticles: [], count: 0, articles: [], articleCount: 0, pubmedUrl: '' },
+  uniprot: { geneFunction: null, bioProcessKeywordsOnly: [], urlAccession: null, bioProcessKeywords: [], uniprotUrl: null },
+  mouseKO: { mousePhenotypes: {}, phenotypeCount: 0, categoryCount: 0, impcUrl: null },
+  constraints: { constraints_v2: { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' }, constraints_v4: { pLI: 'N/A', oe_mis_upper: 'N/A', oe_lof_upper: 'N/A', mis_z: 'N/A' }, constraintsDelta: false },
+  panelApps: { panelAppEnglandCount: null, panelAppAustraliaCount: null },
+  clinvar: { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0, totalPathogenic: 0, totalLikelyPathogenic: 0 },
+  omim: { mim: [] },
+}
+
 /**
- * Core gene analysis logic — queries all data sources in parallel per gene.
- * Used by both the Express web app (via getData) and the MCP server.
- *
- * @param {string[]} genes - Gene symbols to analyze
- * @param {string[]} phenotypes - Phenotype terms for PubMed refinement
- * @returns {Promise<Object[]>} - Array of result objects (null entries filtered out)
+ * Unwraps a Promise.allSettled result. Returns the value on success,
+ * or the fallback + error info on failure. Also detects source-level
+ * errors (e.g. ClinVar returned zeros because of a 429).
  */
-async function analyzeGenes(genes, phenotypes = []) {
-  const results = await Promise.all(
+function unwrapSource(settled, key) {
+  if (settled.status === 'rejected') {
+    return {
+      data: { ...SOURCE_FALLBACKS[key] },
+      error: settled.reason?.message || 'Unknown error',
+    }
+  }
+  const data = settled.value
+  // Source resolved but may carry an internal error (e.g. rate limited, timeout).
+  // Some sources (PanelApp) use named error fields instead of a generic 'error' key.
+  const error = data?.error || data?.panelAppEnglandError || data?.panelAppAustraliaError || null
+  return { data, error }
+}
+
+/**
+ * Core gene analysis — queries all data sources in parallel per gene.
+ * Returns structured results with per-source data and explicit error tracking.
+ *
+ * Used by both the web app (via getData, which flattens) and the MCP server
+ * (which uses the structured format directly).
+ */
+async function analyzeGenesStructured(genes, phenotypes = []) {
+  return Promise.all(
     genes.map(async (gene) => {
       try {
         const validatedGene = await fetchGeneCard(gene)
         if (!validatedGene) {
-          return null
+          return { gene, valid: false, error: `Gene symbol "${gene}" not found in HGNC` }
         }
 
-        // Run all data sources in parallel — one failure won't block the rest
-        const [pubmed, uniprot, mouseKO, constraints, panelApps, clinvar, omim] = await Promise.allSettled([
+        const settled = await Promise.allSettled([
           getPubMedData(gene, phenotypes),
           getUniProtFunction(validatedGene.uniprotIds),
           getMouseKO(validatedGene.mgdId),
@@ -35,35 +72,69 @@ async function analyzeGenes(genes, phenotypes = []) {
           fetchOmimData(validatedGene.ensemblGeneId),
         ])
 
-        const unwrap = (result, fallback) =>
-          result.status === 'fulfilled' ? result.value : { ...fallback, error: result.reason?.message }
+        const keys = ['pubmed', 'uniprot', 'mouseKO', 'constraints', 'panelApps', 'clinvar', 'omim']
+        const sources = {}
+        const sourceErrors = []
 
-        const resultData = {
-          ...unwrap(pubmed, { gene, url: '', firstArticleTitle: 'No articles found', firstArticleUrl: null, complArticles: [], count: 0 }),
-          ...unwrap(uniprot, { geneFunction: null, bioProcessKeywordsOnly: [], urlAccession: null }),
-          ...unwrap(mouseKO, { mousePhenotypes: {}, impcUrl: null }),
-          ...unwrap(constraints, { constraints_v2: {}, constraints_v4: {}, constraintsDelta: false }),
-          ...unwrap(panelApps, { panelAppEnglandCount: null, panelAppAustraliaCount: null }),
-          ...unwrap(clinvar, { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0 }),
-          ...unwrap(omim, { mim: [] }),
-          geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : '',
-          geneValidity: validatedGene.validityMarker || 'No validity found',
-          hgncId: validatedGene.hgncId || 'No HGNC ID',
-          omimId: validatedGene.omimId || 'No OMIM ID',
+        keys.forEach((key, i) => {
+          const { data, error } = unwrapSource(settled[i], key)
+          sources[key] = data
+          if (error) {
+            sourceErrors.push({ source: SOURCE_NAMES[key], error })
+          }
+        })
+
+        return {
+          gene,
+          valid: true,
+          geneInfo: {
+            name: validatedGene.geneName,
+            alias: validatedGene.aliasName,
+            location: validatedGene.location,
+            hgncId: validatedGene.hgncId,
+            omimId: validatedGene.omimId,
+            ensemblId: validatedGene.ensemblGeneId,
+            geneValidity: validatedGene.validityMarker || 'No Known',
+            geneLink: validatedGene.hgncId
+              ? `https://search.thegencc.org/genes/${validatedGene.hgncId}`
+              : null,
+          },
+          sources,
+          sourceErrors,
         }
-        return resultData
       } catch (error) {
-        console.error(`Error analyzing gene ${gene}: ${error.message}`)
-        return null
+        return { gene, valid: false, error: error.message }
       }
     }),
   )
-
-  return results.filter((result) => result !== null)
 }
 
 /**
- * Express route handler — extracts genes/phenotypes from req.body and calls analyzeGenes.
+ * Flattened version for the web app — spreads all source data into a single object.
+ * Backward-compatible with the original dataservice return shape.
+ */
+async function analyzeGenes(genes, phenotypes = []) {
+  const structured = await analyzeGenesStructured(genes, phenotypes)
+
+  return structured
+    .filter((r) => r.valid)
+    .map((r) => ({
+      ...r.sources.pubmed,
+      ...r.sources.uniprot,
+      ...r.sources.mouseKO,
+      ...r.sources.constraints,
+      ...r.sources.panelApps,
+      ...r.sources.clinvar,
+      ...r.sources.omim,
+      geneLink: r.geneInfo.geneLink || '',
+      geneValidity: r.geneInfo.geneValidity || 'No validity found',
+      hgncId: r.geneInfo.hgncId || 'No HGNC ID',
+      omimId: r.geneInfo.omimId || 'No OMIM ID',
+    }))
+}
+
+/**
+ * Express route handler — extracts genes/phenotypes from req.body.
  */
 async function getData(req) {
   const genes = req.body.genes || []
@@ -73,3 +144,4 @@ async function getData(req) {
 
 module.exports = getData
 module.exports.analyzeGenes = analyzeGenes
+module.exports.analyzeGenesStructured = analyzeGenesStructured

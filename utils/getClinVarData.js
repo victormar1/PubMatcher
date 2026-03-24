@@ -28,13 +28,17 @@ async function getClinVarData(gene) {
   if (cached !== undefined) return cached
 
   try {
-    // Serialize queries to respect NCBI rate limits (3 req/s without API key)
-    const lofVariants = await queryCount(gene, 'pathogenic', 'loss of function')
-    const missenseVariants = await queryCount(gene, 'pathogenic', 'missense')
-    const lofUnknown = await queryCount(gene, 'uncertain significance', 'loss of function')
-    const missenseUnknown = await queryCount(gene, 'uncertain significance', 'missense')
-    const totalPathogenic = await queryCount(gene, 'pathogenic', null)
-    const totalLikelyPathogenic = await queryCount(gene, 'likely pathogenic', null)
+    // All 6 queries are independent — fire them all into the rate limiter queue.
+    // The queue serializes them with proper spacing (350ms), but this expresses
+    // the correct intent and benefits from retry logic on each individual query.
+    const [lofVariants, missenseVariants, lofUnknown, missenseUnknown, totalPathogenic, totalLikelyPathogenic] = await Promise.all([
+      queryCount(gene, 'pathogenic', 'loss of function'),
+      queryCount(gene, 'pathogenic', 'missense'),
+      queryCount(gene, 'uncertain significance', 'loss of function'),
+      queryCount(gene, 'uncertain significance', 'missense'),
+      queryCount(gene, 'pathogenic', null),
+      queryCount(gene, 'likely pathogenic', null),
+    ])
 
     const result = {
       lofVariants,
