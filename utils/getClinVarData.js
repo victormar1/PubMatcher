@@ -1,31 +1,68 @@
-const fs = require('fs')
+const axios = require('axios')
+const { cacheGet, cacheSet } = require('./cache')
+const { rateLimitedGet } = require('./rateLimiter')
+
+const EUTILS_BASE = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
+
 /**
- * Récupère les données ClinVar pour un gène donné à partir de la base de données JSON locale
- * @param {string} gene - Nom du gène
- * @param {string} jsonFilePath - Chemin vers le fichier JSON contenant les données
- * @returns {Promise<{lofVariants: number, missenseVariants: number, lofUnknown: number, missenseUnknown: number}>}
+ * Queries ClinVar E-utilities API for variant counts by gene, significance, and consequence.
+ * Replaces the previous static JSON file approach (BDD/clinvarCountsPerGene.json).
  */
-async function getClinVarData(gene, jsonFilePath = './BDD/clinvarCountsPerGene.json') {
+async function queryCount(gene, significance, consequence) {
+  const terms = [`${gene}[gene]`, `${significance}[clinsig]`]
+  if (consequence) terms.push(`${consequence}[molecular_consequence]`)
+  const term = terms.join('+AND+')
+  const url = `${EUTILS_BASE}/esearch.fcgi?db=clinvar&term=${term}&rettype=count&retmode=json`
+  const res = await rateLimitedGet(axios, url)
+  return parseInt(res.data.esearchresult?.count, 10) || 0
+}
+
+/**
+ * Fetches ClinVar variant counts for a gene using the live NCBI ClinVar API.
+ * Returns the same keys as before (lofVariants, missenseVariants, lofUnknown, missenseUnknown)
+ * plus new keys (totalPathogenic, totalLikelyPathogenic, clinvarUrl).
+ */
+async function getClinVarData(gene) {
+  const cacheKey = `clinvar:${gene}`
+  const cached = cacheGet(cacheKey)
+  if (cached !== undefined) return cached
+
   try {
-    // Charger les données JSON
-    const data = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'))
+    // All 6 queries are independent — fire them all into the rate limiter queue.
+    // The queue serializes them with proper spacing (350ms), but this expresses
+    // the correct intent and benefits from retry logic on each individual query.
+    const [lofVariants, missenseVariants, lofUnknown, missenseUnknown, totalPathogenic, totalLikelyPathogenic] = await Promise.all([
+      queryCount(gene, 'pathogenic', 'loss of function'),
+      queryCount(gene, 'pathogenic', 'missense'),
+      queryCount(gene, 'uncertain significance', 'loss of function'),
+      queryCount(gene, 'uncertain significance', 'missense'),
+      queryCount(gene, 'pathogenic', null),
+      queryCount(gene, 'likely pathogenic', null),
+    ])
 
-    // Vérifier si le gène existe dans la base
-    if (!data[gene]) {
-      console.warn(`Gène ${gene} introuvable dans la base de données.`)
-      return { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0 }
+    const result = {
+      lofVariants,
+      missenseVariants,
+      lofUnknown,
+      missenseUnknown,
+      totalPathogenic,
+      totalLikelyPathogenic,
+      clinvarUrl: `https://www.ncbi.nlm.nih.gov/clinvar/?term=${encodeURIComponent(gene)}[gene]`,
     }
-
-    // Retourner les données du gène
-    return {
-      lofVariants: data[gene].lofVariants || 0,
-      missenseVariants: data[gene].missenseVariants || 0,
-      lofUnknown: data[gene].lofUnknown || 0,
-      missenseUnknown: data[gene].missenseUnknown || 0
-    }
+    cacheSet(cacheKey, result)
+    return result
   } catch (error) {
-    console.error(`Erreur lors de la lecture des données ClinVar pour le gène ${gene}:`, error)
-    return { lofVariants: 0, missenseVariants: 0, lofUnknown: 0, missenseUnknown: 0 }
+    console.error(`ClinVar fetch failed for ${gene}: ${error.message}`)
+    return {
+      lofVariants: 0,
+      missenseVariants: 0,
+      lofUnknown: 0,
+      missenseUnknown: 0,
+      totalPathogenic: 0,
+      totalLikelyPathogenic: 0,
+      clinvarUrl: `https://www.ncbi.nlm.nih.gov/clinvar/?term=${encodeURIComponent(gene)}[gene]`,
+      error: error.message,
+    }
   }
 }
 
