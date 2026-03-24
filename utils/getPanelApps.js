@@ -1,43 +1,63 @@
 const axios = require('axios')
+const { cacheGet, cacheSet } = require('./cache')
 
 const HEADERS = {
-  'User-Agent': 'PubMatcher/1.0 (https://github.com/your-org/PubMatcher; genomics-research-tool)'
+  'User-Agent': 'PubMatcher/1.0 (genomics-research-tool)',
 }
 
+/**
+ * Fetches gene panel data from PanelApp UK and Australia.
+ * Now includes caching, timeouts, proper error handling per source,
+ * and a fallback to the PanelApp Australia staging endpoint.
+ */
 async function getPanelApps(gene) {
+  const cacheKey = `panelapp:${gene}`
+  const cached = cacheGet(cacheKey)
+  if (cached !== undefined) return cached
+
   let panelAppEnglandCount = null
   let panelAppAustraliaCount = null
   let panelAppEnglandError = null
   let panelAppAustraliaError = null
 
   try {
-    const res = await axios.get(`https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${gene}&format=json`, { headers: HEADERS })
+    const res = await axios.get(
+      `https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name=${encodeURIComponent(gene)}&format=json`,
+      { headers: HEADERS, timeout: 10000 },
+    )
     panelAppEnglandCount = res.data.count
   } catch (error) {
-    console.error(`Error fetching PanelApp England data for gene ${gene}: `, error.message)
-    panelAppEnglandError = `PanelApp UK is currently unavailable`
+    panelAppEnglandError = 'PanelApp UK is currently unavailable'
+    console.error(`PanelApp UK failed for ${gene}: ${error.message}`)
   }
 
   try {
-    const res = await axios.get(`https://panelapp-aus.org/api/v1/genes/?entity_name=${gene}&format=json`, { headers: HEADERS })
+    const res = await axios.get(
+      `https://panelapp-aus.org/api/v1/genes/?entity_name=${encodeURIComponent(gene)}&format=json`,
+      { headers: HEADERS, timeout: 10000 },
+    )
     panelAppAustraliaCount = res.data.count
-  } catch (error) {
-    console.warn(`PanelApp Australia main instance failed for gene ${gene}, trying fallback...`)
+  } catch {
     try {
-      const res = await axios.get(`https://panelapp-aus-staging.org/api/v1/genes/?entity_name=${gene}&format=json`, { headers: HEADERS })
+      const res = await axios.get(
+        `https://panelapp-aus-staging.org/api/v1/genes/?entity_name=${encodeURIComponent(gene)}&format=json`,
+        { headers: HEADERS, timeout: 10000 },
+      )
       panelAppAustraliaCount = res.data.count
-    } catch (fallbackError) {
-      console.error(`Error fetching PanelApp Australia data for gene ${gene}: `, fallbackError.message)
-      panelAppAustraliaError = `PanelApp Australia is currently unavailable`
+    } catch (error) {
+      panelAppAustraliaError = 'PanelApp Australia is currently unavailable'
+      console.error(`PanelApp Australia failed for ${gene}: ${error.message}`)
     }
   }
 
-  return {
+  const result = {
     panelAppEnglandCount,
     panelAppAustraliaCount,
     panelAppEnglandError,
-    panelAppAustraliaError
+    panelAppAustraliaError,
   }
+  cacheSet(cacheKey, result)
+  return result
 }
 
 module.exports = getPanelApps
