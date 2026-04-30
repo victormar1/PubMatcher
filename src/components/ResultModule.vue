@@ -223,9 +223,26 @@
                             </td>
                             <!-- PubMed Article -->
                             <td class=" w-96 py-4 pr-3   border-gray-200 hover:bg-gray-100 "
-                                :data-popover-target="'popover-pubmatch-' + result.firstArticleTitle"
+                                :data-popover-target="result.firstArticleTitle === 'Error' ? null : 'popover-pubmatch-' + result.firstArticleTitle"
                                 data-popover-placement="right">
-                                <div class="flex flex-row items-center justify-center">
+                                <!-- Error sentinel: PubMed unreachable -->
+                                <div v-if="result.firstArticleTitle === 'Error'"
+                                    class="flex flex-row items-center justify-center gap-3 px-2"
+                                    :title="result.error || 'PubMed unreachable, try again later'">
+                                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 border-2 border-red-400">
+                                        <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-bold text-red-700">PubMed unreachable</span>
+                                        <span class="text-xs text-gray-500">Try this gene again in a moment</span>
+                                    </div>
+                                </div>
+                                <!-- Normal rendering -->
+                                <div v-else class="flex flex-row items-center justify-center">
                                     <div class="w-32 h-32 flex items-center justify-center  border-green-500 ">
                                         <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                                             <!-- Background Circle -->

@@ -49,13 +49,17 @@ exports.search = async (req, res) => {
     const queryParams = { body: { genes, phenotypes } }
     const apiResults = await getData(queryParams)
 
-    // Save results in DB if available
-    if (query) {
+    // Save results in DB if available — but skip caching if any result has a fetch error
+    // (otherwise users keep seeing the error/false-zero for the cache TTL)
+    const hasErrors = Array.isArray(apiResults) && apiResults.some((r) => r && r.error)
+    if (query && !hasErrors) {
       try {
         await pool.query('INSERT INTO query_results (query_id, result_data, expires_at) VALUES ($1, $2::jsonb, $3)', [query.id, JSON.stringify(apiResults), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)])
       } catch (dbError) {
         console.warn('Could not cache results:', dbError.message)
       }
+    } else if (hasErrors) {
+      console.warn('Skipping cache write: at least one result has a fetch error')
     }
 
     res.json({ cached: false, results: apiResults })
