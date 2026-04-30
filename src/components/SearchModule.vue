@@ -1,6 +1,7 @@
 <template>
   <div class="mt-10 px-20 font-noto">
     <PublicationBanner />
+    <ServiceStatusBanner />
     <SearchBuildingModule @search-complete="handleSearchComplete" :genes="genes" :phenotypes="phenotypes" />
   </div>
   <ResultModule :results="searchResults" />
@@ -10,6 +11,7 @@
 import SearchBuildingModule from './SearchBuildingModule';
 import ResultModule from './ResultModule';
 import PublicationBanner from './PublicationBanner.vue';
+import ServiceStatusBanner from './ServiceStatusBanner.vue';
 import { onMounted, watch } from 'vue';
 import {
   initPopovers
@@ -21,6 +23,7 @@ export default {
     SearchBuildingModule,
     ResultModule,
     PublicationBanner,
+    ServiceStatusBanner,
   },
   props: {
     genes: { type: Array, default: () => [] },
