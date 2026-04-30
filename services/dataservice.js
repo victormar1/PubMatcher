@@ -22,15 +22,25 @@ async function getData(req) {
           return null
         }
 
-        // * BUILDING RESULT DATA
+        // * BUILDING RESULT DATA — fetch all sources in parallel (independent calls)
+        const [pubmed, uniprot, mouseko, constraints, panelapps, clinvar, omim] = await Promise.all([
+          getPubMedData(gene, phenotypes),
+          getUniProtFunction(validatedGene.uniprotIds),
+          getMouseKO(validatedGene.mgdId),
+          getGeneConstraints(gene),
+          getPanelApps(gene),
+          getClinVarData(gene),
+          fetchOmimData(validatedGene.ensemblGeneId)
+        ])
+
         let resultData = {
-          ...(await getPubMedData(gene, phenotypes)), // * PubMed data
-          ...(await getUniProtFunction(validatedGene.uniprotIds)), // * UniProt data
-          ...(await getMouseKO(validatedGene.mgdId)), // * Mouse KO data
-          ...(await getGeneConstraints(gene)), // * Gene constraint data
-          ...(await getPanelApps(gene)), // * PanelApp data
-          ...(await getClinVarData(gene)), // * ClinVar data
-          ...(await fetchOmimData(validatedGene.ensemblGeneId)), // * OMIM data
+          ...pubmed,
+          ...uniprot,
+          ...mouseko,
+          ...constraints,
+          ...panelapps,
+          ...clinvar,
+          ...omim,
           // * ADDITIONNAL
           geneLink: validatedGene.hgncId ? `https://search.thegencc.org/genes/${validatedGene.hgncId}` : '', // HGNC link
           geneValidity: validatedGene.validityMarker || 'No validity found',
