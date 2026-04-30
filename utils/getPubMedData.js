@@ -1,11 +1,39 @@
 const axios = require('axios')
-const cheerio = require('cheerio')
+
+const ESEARCH_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
+const ESUMMARY_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+const PUBMED_SEARCH_URL = 'https://pubmed.ncbi.nlm.nih.gov/?term='
+const PUBMED_ARTICLE_URL = 'https://pubmed.ncbi.nlm.nih.gov/'
 
 const MAX_ATTEMPTS = 3
 const RETRY_DELAY_MS = 600
-const REQUEST_TIMEOUT_MS = 10000
+const REQUEST_TIMEOUT_MS = 12000
+const TOP_N = 4
 
 const TRANSIENT_ERROR_CODES = ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENETUNREACH', 'EAI_AGAIN']
+
+// NCBI E-utilities limit without API key: 3 req/s per IP.
+// Stay slightly under to absorb clock drift and concurrent processes.
+const RATE_LIMIT_PER_SEC = 2.5
+const MIN_GAP_MS = Math.ceil(1000 / RATE_LIMIT_PER_SEC)
+let nextSlotAt = 0
+
+function reserveSlot() {
+  const now = Date.now()
+  const slotStart = Math.max(now, nextSlotAt)
+  nextSlotAt = slotStart + MIN_GAP_MS
+  return slotStart - now
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function throttledGet(url, params) {
+  const delay = reserveSlot()
+  if (delay > 0) await sleep(delay)
+  return axios.get(url, { params, timeout: REQUEST_TIMEOUT_MS })
+}
 
 function isTransientError(err) {
   if (TRANSIENT_ERROR_CODES.includes(err.code)) return true
@@ -14,110 +42,85 @@ function isTransientError(err) {
   return false
 }
 
-function looksLikeSilentFalseZero(parsed) {
-  return parsed.count === 0 && !parsed.hasZeroResultsBanner && !parsed.isAutocorrected && !parsed.isSingleArticleRedirect && parsed.complArticles.length === 0
-}
+async function eutilsFetch(combinedQuery) {
+  const searchResp = await throttledGet(ESEARCH_URL, {
+    db: 'pubmed',
+    term: combinedQuery,
+    retmode: 'json',
+    retmax: TOP_N,
+    sort: 'relevance'
+  })
 
-function parseScrape(html, response, combinedQuery) {
-  const $ = cheerio.load(html)
-
-  const countSelector = '#search-results > div.top-wrapper > div.results-amount-container > div.results-amount > h3 > span'
-  const countText = $(countSelector).text().trim().replace(',', '')
-  let count = parseInt(countText, 10) || 0
-
-  const spellCheckWarningSelector = '#spell-check-warning'
-  const warningText = $(spellCheckWarningSelector).text().trim()
-  const isAutocorrected = warningText.includes('Showing results for')
-
-  const zeroResultsBannerSelector = '.solr-message.query-error-message.usa-alert.usa-alert-slim.usa-alert-warning .usa-alert-body .usa-alert-text'
-  const zeroResultsBannerText = $(zeroResultsBannerSelector).text().trim()
-  const hasZeroResultsBanner = zeroResultsBannerText.includes('Your search was processed without automatic term mapping because it retrieved zero results.')
-
-  const requestPath = response.request.path || ''
-  const isSingleArticleRedirect = !requestPath.includes('term')
-
-  let firstArticleTitle = 'No articles found'
-  let firstArticleUrl = null
-  const complArticles = []
-
-  if (isSingleArticleRedirect) {
-    firstArticleTitle = $('#full-view-heading > h1.heading-title').text().trim() || 'No articles found'
-    count = 1
-    return { count, firstArticleTitle, firstArticleUrl, complArticles, isAutocorrected, hasZeroResultsBanner, isSingleArticleRedirect }
+  const esr = searchResp.data && searchResp.data.esearchresult
+  if (!esr) {
+    const err = new Error('esearch malformed response')
+    err.code = 'EPARSE'
+    throw err
+  }
+  if (esr.ERROR) {
+    const err = new Error(`esearch error: ${esr.ERROR}`)
+    err.code = 'EAPI'
+    throw err
   }
 
-  if (hasZeroResultsBanner) {
-    return { count: 0, firstArticleTitle: 'No articles found', firstArticleUrl: null, complArticles: [], isAutocorrected, hasZeroResultsBanner, isSingleArticleRedirect }
+  const count = parseInt(esr.count, 10) || 0
+  const ids = Array.isArray(esr.idlist) ? esr.idlist : []
+
+  if (count === 0 || ids.length === 0) {
+    return { count, articles: [] }
   }
 
-  if (!isAutocorrected) {
-    const articles = $('#search-results > section > div.search-results-chunks > div > article')
-    articles.each((index, article) => {
-      const titleElement = $(article).find('.docsum-wrap > .docsum-content > a')
-      const title = titleElement.text().trim()
-      const href = titleElement.attr('href')
+  const summaryResp = await throttledGet(ESUMMARY_URL, {
+    db: 'pubmed',
+    id: ids.join(','),
+    retmode: 'json'
+  })
 
-      if (title && href) {
-        const match = href.match(/\/(\d+)\//)
-        const articleId = match ? match[1] : null
-        const articleUrl = articleId ? `https://pubmed.ncbi.nlm.nih.gov/${articleId}/` : null
+  const result = summaryResp.data && summaryResp.data.result
+  if (!result) {
+    const err = new Error('esummary malformed response')
+    err.code = 'EPARSE'
+    throw err
+  }
 
-        if (index === 0) {
-          firstArticleTitle = title
-          firstArticleUrl = articleUrl
-        } else if (index >= 1 && index <= 3) {
-          complArticles.push({ title, url: articleUrl })
-        }
-        if (index >= 3) return false
-      }
+  const articles = ids
+    .map((id) => {
+      const item = result[id]
+      if (!item || item.error) return null
+      const rawTitle = item.title || ''
+      const title = String(rawTitle).replace(/<[^>]+>/g, '').trim()
+      return title ? { id, title, url: `${PUBMED_ARTICLE_URL}${id}/` } : null
     })
-  } else {
-    firstArticleUrl = `https://pubmed.ncbi.nlm.nih.gov/${combinedQuery}/`
-  }
+    .filter(Boolean)
 
-  return { count, firstArticleTitle, firstArticleUrl, complArticles, isAutocorrected, hasZeroResultsBanner, isSingleArticleRedirect }
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+  return { count, articles }
 }
 
 async function getPubMedData(gene, phenotypes) {
-  let combinedQuery = ''
-  if (phenotypes.length > 0) {
-    const queries = phenotypes.map((phenotype) => `(${gene} AND ${phenotype})`)
-    combinedQuery = queries.join(' OR ')
+  let combinedQuery
+  if (phenotypes && phenotypes.length > 0) {
+    combinedQuery = phenotypes.map((p) => `(${gene} AND ${p})`).join(' OR ')
   } else {
-    combinedQuery = `${gene}`
+    combinedQuery = gene
   }
 
-  const url = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(combinedQuery)}`
+  const url = `${PUBMED_SEARCH_URL}${encodeURIComponent(combinedQuery)}`
 
   let lastError = null
-  let sawSilentFalseZero = false
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
-      const response = await axios.get(url, { timeout: REQUEST_TIMEOUT_MS })
-      const parsed = parseScrape(response.data, response, combinedQuery)
-
-      if (looksLikeSilentFalseZero(parsed)) {
-        sawSilentFalseZero = true
-        if (attempt < MAX_ATTEMPTS) {
-          const jitter = Math.floor(Math.random() * 400)
-          await sleep(RETRY_DELAY_MS * attempt + jitter)
-          continue
-        }
-        break
-      }
+      const { count, articles } = await eutilsFetch(combinedQuery)
+      const first = articles[0]
+      const complArticles = articles.slice(1, 4).map((a) => ({ title: a.title, url: a.url }))
 
       return {
         gene,
         url,
-        firstArticleTitle: parsed.firstArticleTitle,
-        firstArticleUrl: parsed.firstArticleUrl,
-        complArticles: parsed.complArticles,
-        count: parsed.count
+        firstArticleTitle: first ? first.title : 'No articles found',
+        firstArticleUrl: first ? first.url : null,
+        complArticles,
+        count
       }
     } catch (err) {
       lastError = err
@@ -127,15 +130,6 @@ async function getPubMedData(gene, phenotypes) {
     }
   }
 
-  let errorMsg
-  if (lastError) {
-    errorMsg = `PubMed unreachable: ${lastError.code || lastError.message}`
-  } else if (sawSilentFalseZero) {
-    errorMsg = 'PubMed returned no usable data after retries (likely throttled/CAPTCHA)'
-  } else {
-    errorMsg = 'PubMed returned no usable data after retries'
-  }
-
   return {
     gene,
     url,
@@ -143,7 +137,7 @@ async function getPubMedData(gene, phenotypes) {
     firstArticleUrl: null,
     complArticles: [],
     count: null,
-    error: errorMsg
+    error: lastError ? `PubMed E-utilities unreachable: ${lastError.code || lastError.message}` : 'PubMed unreachable'
   }
 }
 
