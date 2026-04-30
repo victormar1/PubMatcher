@@ -29,8 +29,8 @@
         </h3>
 
         <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">
-          Due to upstream API rate limits, fetching publications may take longer than usual (about 25 seconds for 30 genes).
-          Results remain accurate. We apologize for the inconvenience and are working on improvements.
+          Due to upstream API rate limits, fetching publications may take a few seconds longer than usual.
+          Results remain accurate. We apologize for the inconvenience.
         </p>
       </div>
     </div>

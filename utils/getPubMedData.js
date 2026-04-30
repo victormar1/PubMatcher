@@ -12,9 +12,12 @@ const TOP_N = 4
 
 const TRANSIENT_ERROR_CODES = ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENETUNREACH', 'EAI_AGAIN']
 
-// NCBI E-utilities limit without API key: 3 req/s per IP.
-// Stay slightly under to absorb clock drift and concurrent processes.
-const RATE_LIMIT_PER_SEC = 2.5
+// NCBI E-utilities limits:
+//   - without API key: 3 req/s per IP
+//   - with API key:   10 req/s per key
+// Stay slightly under each ceiling to absorb clock drift and other processes.
+const NCBI_API_KEY = process.env.NCBI_API_KEY || null
+const RATE_LIMIT_PER_SEC = NCBI_API_KEY ? 8 : 2.5
 const MIN_GAP_MS = Math.ceil(1000 / RATE_LIMIT_PER_SEC)
 let nextSlotAt = 0
 
@@ -43,7 +46,10 @@ function isTransientError(err) {
 }
 
 async function eutilsFetch(combinedQuery) {
+  const authParams = NCBI_API_KEY ? { api_key: NCBI_API_KEY } : {}
+
   const searchResp = await throttledGet(ESEARCH_URL, {
+    ...authParams,
     db: 'pubmed',
     term: combinedQuery,
     retmode: 'json',
@@ -71,6 +77,7 @@ async function eutilsFetch(combinedQuery) {
   }
 
   const summaryResp = await throttledGet(ESUMMARY_URL, {
+    ...authParams,
     db: 'pubmed',
     id: ids.join(','),
     retmode: 'json'
