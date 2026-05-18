@@ -1,7 +1,7 @@
 <template>
   <div class="mt-10 px-20 font-noto">
     <PublicationBanner />
-    <ServiceStatusBanner />
+    <BetaPromoBanner />
     <SearchBuildingModule @search-complete="handleSearchComplete" :genes="genes" :phenotypes="phenotypes" />
   </div>
   <ResultModule :results="searchResults" />
@@ -11,7 +11,7 @@
 import SearchBuildingModule from './SearchBuildingModule';
 import ResultModule from './ResultModule';
 import PublicationBanner from './PublicationBanner.vue';
-import ServiceStatusBanner from './ServiceStatusBanner.vue';
+import BetaPromoBanner from './BetaPromoBanner.vue';
 import { onMounted, watch } from 'vue';
 import {
   initPopovers
@@ -23,7 +23,7 @@ export default {
     SearchBuildingModule,
     ResultModule,
     PublicationBanner,
-    ServiceStatusBanner,
+    BetaPromoBanner,
   },
   props: {
     genes: { type: Array, default: () => [] },
