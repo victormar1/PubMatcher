@@ -1,5 +1,5 @@
 <template>
-  <a href="https://staging.pubmatcher.fr/" target="_blank" rel="noopener noreferrer"
+  <a href="https://pubmatcher.fr/" target="_blank" rel="noopener noreferrer"
     class="group relative mx-auto mb-6 flex max-w-4xl items-center gap-4 overflow-hidden rounded-lg bg-blue-600 px-5 py-3 shadow-md transition-all hover:bg-blue-700 hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-600">
 
     <!-- Icon -->
